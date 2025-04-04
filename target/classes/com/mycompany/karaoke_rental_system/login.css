@@ -1,0 +1,43 @@
+/*
+ * Empty Stylesheet file.
+ */
+.anchor-pane {
+    -fx-background-color: linear-gradient(to bottom, #00008B, #000000); /* Dark Blue to Black */
+    -fx-padding: 20px;
+}
+.rounded-button {
+     -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #00008B, #000000);
+    -fx-text-fill: white;         /* Text color */
+    -fx-font-size: 14px;          /* Font size */
+    -fx-background-radius: 10px;  /* Adjust this value to control corner rounding */
+    -fx-border-radius: 10px;      /* Ensures the border matches the background rounding */
+}
+.rounded-button:hover {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #0000FF, #333333); /* Brighter blue to dark gray */
+    -fx-cursor: hand;             /* Changes the cursor to a pointer */
+    -fx-scale-x: 1.05;            /* Slightly enlarges the button horizontally */
+    -fx-scale-y: 1.05;            /* Slightly enlarges the button vertically */
+}
+.dark-text-field {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #00008B, #000000); /* Dark blue to black gradient */
+    -fx-text-fill: white; /* White text color */
+    -fx-font-size: 14px; /* Font size */
+    -fx-border-radius: 5px; /* Rounded corners */
+    -fx-background-radius: 5px; /* Ensures the background matches */
+    -fx-border-color: #FFFFFF; /* Optional: Adds a white border */
+    -fx-border-width: 1px; /* Border thickness */
+    -fx-padding: 5px; /* Padding inside the field */
+}
+
+/* Hover effect for TextField and PasswordField */
+.dark-text-field:hover {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #0000FF, #333333); /* Brighter blue to dark gray */
+    -fx-cursor: text; /* Changes cursor to indicate text input */
+}
+
+/* Focus effect for TextField and PasswordField */
+.dark-text-field:focused {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #0000FF, #00008B); /* Even brighter blue */
+    -fx-border-color: #00FFFF; /* Cyan border for focus */
+    -fx-border-width: 2px; /* Thicker border when focused */
+}
