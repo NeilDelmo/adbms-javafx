@@ -2,6 +2,80 @@
  * Empty Stylesheet file.
  */
 
-.mainFxmlClass {
+.root {
+    -fx-font-family: "Arial", sans-serif;
+    -fx-background-color: #4a4a4a; /* Dark background */
+}
 
+/* Sidebar Container */
+.sidebar-container {
+    -fx-background-color: #232323; /* Slightly darker than root */
+    -fx-padding: 20px;
+}
+.AnchorPane {
+    -fx-background-color: #333333; /* Dark background for the sidebar */
+    -fx-padding: 10px; /* Add padding around the content */
+}
+.VBox {
+    -fx-spacing: 10px; /* Space between buttons */
+    -fx-padding: 10px; /* Padding inside the VBox */
+    -fx-alignment: center; /* Center alignment for children */
+}
+
+/* Button Styling */
+.Button {
+    -fx-background-color: #555555; /* Dark gray button */
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-pref-width: 160px;
+    -fx-pref-height: 40px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 3, 0, 0, 1);
+    -fx-cursor: hand;
+}
+
+/* Hover Effect */
+.Button:hover {
+    -fx-background-color: #6d6d6d; /* Lighter gray */
+    -fx-effect: dropshadow(three-pass-box, rgba(255,255,255,0.2), 5, 0, 0, 2);
+}
+
+/* Click Effect */
+.Button:pressed {
+    -fx-background-color: #4a4a4a; /* Darker on click */
+    -fx-effect: dropshadow(three-pass-box, rgba(255,255,255,0.3), 8, 0, 0, 3);
+}
+
+
+
+/* Icon Styling */
+.FontAwesomeIcon {
+    -fx-fill: white; /* White color for icons */
+    -fx-padding: 0 10px 0 0; /* Add spacing between icon and text */
+}
+
+/* Line Styling */
+.Line {
+    -fx-stroke: #ffffff; /* White line */
+    -fx-stroke-width: 1px; /* Thin line */
+    -fx-opacity: 0.5; /* Semi-transparent */
+}
+
+/* Logout Button */
+.Button[text="Logout"] {
+    -fx-background-color: #f44336; /* Red */
+}
+
+.Button[text="Logout"]:hover {
+    -fx-background-color: #e53935; /* Darker red */
+}
+
+.Button[text="Logout"]:pressed {
+    -fx-background-color: #c62828; /* Even darker red */
+}
+.Text {
+    -fx-fill: black;
+    -fx-font-weight: bold;
 }

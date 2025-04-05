@@ -1,41 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import java.lang.String?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.shape.Line?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
 
-
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" 
+           prefHeight="750.0" prefWidth="850.0" styleClass="anchor-pane" stylesheets="@dashboard.css" 
+           xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <BorderPane prefHeight="200.0" prefWidth="200.0">
-         <top>
-            <AnchorPane prefHeight="45.0" prefWidth="1200.0" BorderPane.alignment="CENTER">
-               <children>
-                  <AnchorPane layoutY="-4.0" prefHeight="31.0" prefWidth="1200.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-               </children>
-            </AnchorPane>
-         </top>
-         <left>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <children>
-                  <AnchorPane layoutX="23.0" layoutY="70.0" prefHeight="754.4" prefWidth="223.2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <FontAwesomeIcon glyphName="USER" layoutX="63.0" layoutY="119.0" size="7em" />
-                        <Label layoutX="39.0" layoutY="134.0" text="welcome">
-                           <font>
-                              <Font name="System Bold" size="29.0" />
-                           </font>
-                        </Label>
-                        <Line endX="100.0" layoutX="70.0" layoutY="177.0" startX="-41.29999923706055" />
-                     </children>
-                  </AnchorPane>
-               </children>
-            </AnchorPane>
-         </left>
-      </BorderPane>
+      <!-- Header Section -->
+      <HBox spacing="12" AnchorPane.leftAnchor="24" AnchorPane.rightAnchor="24" AnchorPane.topAnchor="24">
+         <Text text="Hello" styleClass="welcome-label" />
+         <Text fx:id="username_lbl" text="Puge" styleClass="welcome-label" />
+         <Region HBox.hgrow="ALWAYS" />
+         <Label fx:id="date_lbl" text="Date" styleClass="date-label" />
+      </HBox>
+
+      <!-- Main Content Grid -->
+      <GridPane hgap="15" vgap="15" AnchorPane.leftAnchor="24" AnchorPane.rightAnchor="24" AnchorPane.topAnchor="80">
+         <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="65" />
+            <ColumnConstraints percentWidth="35" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints percentHeight="50" />
+            <RowConstraints percentHeight="50" />
+         </rowConstraints>
+
+         <!-- Income Section -->
+         <VBox spacing="15" GridPane.columnIndex="0" GridPane.rowIndex="0">
+            <Text text="Income Revenue" styleClass="section-title" />
+            <LineChart fx:id="lineChart" prefHeight="320" prefWidth="522">
+               <xAxis>
+                  <CategoryAxis side="BOTTOM" fx:id="xAxis" />
+               </xAxis>
+               <yAxis>
+                  <NumberAxis fx:id="yAxis" side="LEFT" />
+               </yAxis>
+            </LineChart>
+         </VBox>
+
+         <!-- Money Section -->
+         <VBox spacing="15" GridPane.columnIndex="1" GridPane.rowIndex="0">
+            <HBox spacing="8" alignment="CENTER_LEFT">
+               <Text text="Money" styleClass="section-title" />
+               <Label fx:id="total_money_lbl" styleClass="label_total_money" text="Total Money" />
+            </HBox>
+            <ListView fx:id="money_listview" prefHeight="302" prefWidth="279" VBox.vgrow="ALWAYS" />
+         </VBox>
+
+         <!-- Availability Section -->
+         <VBox spacing="15" GridPane.columnIndex="0" GridPane.rowIndex="1">
+            <Text text="Karaoke Availability" styleClass="section-title" />
+            <ListView fx:id="karaoke_availability_listview" prefHeight="294" prefWidth="522" VBox.vgrow="ALWAYS" />
+         </VBox>
+
+         <!-- Total Rents Section -->
+         <AnchorPane styleClass="anchor-pane-total-rents-pane" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <children>
+               <VBox spacing="15" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
+                  <Text text="Total Rents" styleClass="total-rents-text" />
+                  <Label fx:id="total_rents_lbl" text="Total rents" styleClass="total-rents-label" />
+               </VBox>
+            </children>
+         </AnchorPane>
+      </GridPane>
    </children>
-</StackPane>
+</AnchorPane>

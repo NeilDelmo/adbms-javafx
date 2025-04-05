@@ -1,5 +1,9 @@
+com\mycompany\karaoke_rental_system\StaffMenuController.class
+com\mycompany\karaoke_rental_system\data\DatabaseConnection.class
 com\mycompany\karaoke_rental_system\App.class
+com\mycompany\karaoke_rental_system\StaffController.class
 module-info.class
 com\mycompany\karaoke_rental_system\LoginController.class
 com\mycompany\karaoke_rental_system\DashboardController.class
-com\mycompany\karaoke_rental_system\data\DatabaseConnection.class
+com\mycompany\karaoke_rental_system\ViewFactory.class
+com\mycompany\karaoke_rental_system\Model\Model.class

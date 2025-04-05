@@ -4,6 +4,7 @@
  */
 package com.mycompany.karaoke_rental_system;
 
+import com.mycompany.karaoke_rental_system.Model.Model;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -86,21 +87,16 @@ public class LoginController implements Initializable {
 
     private void handleSuccessfulLogin() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Dashboard.fxml"));
-            Parent root = loader.load();
-            
-            Stage currentStage = (Stage) login_button.getScene().getWindow();;
-            currentStage.hide();
-            
-            Stage dashboardStage = new Stage();
-            dashboardStage.setScene(new Scene(root));
-            dashboardStage.setTitle("Karaoke Rental");
-            dashboardStage.show();
-        } catch(IOException ex) {
-            showAlert(Alert.AlertType.ERROR, "UI Error","Failed to load dashboard" + ex.getMessage());
-            ex.printStackTrace();
-            
-        }
+        // Use the singleton ViewFactory to show the staff window
+        Model.getInstance().getViewFactory().showStaffWindow();
+        
+        // Close the login window
+        Stage currentStage = (Stage) login_button.getScene().getWindow();
+        currentStage.close();
+    } catch (Exception ex) {
+        showAlert(Alert.AlertType.ERROR, "UI Error", "Failed to load staff window: " + ex.getMessage());
+        ex.printStackTrace();
+    }
     }
 
     private void showAlert(Alert.AlertType type, String title, String content) {

@@ -1,41 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import java.lang.String?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.shape.Line?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="850.0" styleClass="anchor-pane" stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <BorderPane prefHeight="200.0" prefWidth="200.0">
-         <top>
-            <AnchorPane prefHeight="45.0" prefWidth="1200.0" BorderPane.alignment="CENTER">
-               <children>
-                  <AnchorPane layoutY="-4.0" prefHeight="31.0" prefWidth="1200.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-               </children>
-            </AnchorPane>
-         </top>
-         <left>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <children>
-                  <AnchorPane layoutX="23.0" layoutY="70.0" prefHeight="754.4" prefWidth="223.2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <FontAwesomeIcon glyphName="USER" layoutX="63.0" layoutY="119.0" size="7em" />
-                        <Label layoutX="39.0" layoutY="134.0" text="welcome">
-                           <font>
-                              <Font name="System Bold" size="29.0" />
-                           </font>
-                        </Label>
-                        <Line endX="100.0" layoutX="70.0" layoutY="177.0" startX="-41.29999923706055" />
-                     </children>
-                  </AnchorPane>
-               </children>
-            </AnchorPane>
-         </left>
-      </BorderPane>
+      <Text layoutX="27.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="welcome-label" text="Hello" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="27.0" />
+      <Label fx:id="date_lbl" layoutX="777.0" layoutY="19.0" text="Date" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="27.0" />
+      <LineChart fx:id="lineChart" layoutX="14.0" layoutY="94.0" prefHeight="319.0" prefWidth="522.0" stylesheets="@dashboard.css">
+        <xAxis>
+          <CategoryAxis side="BOTTOM" fx:id="xAxis" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis fx:id="yAxis" side="LEFT" />
+        </yAxis>
+         <styleClass>
+            <String fx:value="line-chart" />
+            <String fx:value="chart-plot-background" />
+         </styleClass>
+      </LineChart>
+      <Text layoutX="24.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="total-rents-text" text="Income Revenue" AnchorPane.leftAnchor="24.0" AnchorPane.topAnchor="65.15625" />
+      <Text layoutX="24.0" layoutY="440.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="total-rents-text" text="Karaoke Availability" AnchorPane.leftAnchor="24.0" />
+      <ListView fx:id="karaoke_availability_listview" layoutX="14.0" layoutY="444.0" prefHeight="294.0" prefWidth="522.0" stylesheets="@dashboard.css" />
+      <Text layoutX="790.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="total-rents-text" text="Money" AnchorPane.rightAnchor="11.296875" />
+      <ListView fx:id="money_listview" layoutX="559.0" layoutY="113.0" prefHeight="302.0" prefWidth="279.0" stylesheets="@dashboard.css" />
+      <Label fx:id="total_money_lbl" layoutX="748.0" layoutY="84.0" styleClass="label_total_money" stylesheets="@dashboard.css" text="Total Money" AnchorPane.rightAnchor="11.600000000000023" />
+      <AnchorPane layoutX="556.0" layoutY="444.0" prefHeight="294.0" prefWidth="279.0" styleClass="anchor-pane-total-rents-pane" stylesheets="@dashboard.css" AnchorPane.rightAnchor="15.0">
+         <children>
+            <Label fx:id="total_rents_lbl" layoutX="90.0" layoutY="105.0" styleClass="total-rents-label" stylesheets="@dashboard.css" text="Total rents" />
+            <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="total-rents-text" text="Total Rents" />
+         </children>
+      </AnchorPane>
+      <Text fx:id="username_lbl" layoutX="84.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="welcome-label" text="Puge" AnchorPane.topAnchor="27.0" />
    </children>
-</StackPane>
+</AnchorPane>

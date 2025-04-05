@@ -7,6 +7,7 @@ module com.mycompany.karaoke_rental_system {
     opens com.mycompany.karaoke_rental_system to javafx.fxml;
     exports com.mycompany.karaoke_rental_system;
     requires jbcrypt;
+    requires fontawesomefx;
     
     
 }
