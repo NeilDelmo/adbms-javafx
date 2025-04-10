@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 public class ViewFactory {
 
     private AnchorPane dashboardView;
+    private AnchorPane customerView;
 
     public ViewFactory() {
     }
@@ -24,30 +25,43 @@ public class ViewFactory {
         return dashboardView;
     }
 
+    public AnchorPane getCustomerView() {
+        if (customerView == null) {
+            try {
+                customerView = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/Customer.fxml")).load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return customerView;
+    }
+
     public void showLoginWindow() {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/login.fxml"));
         createStage(loader);
-       
 
     }
-    public void showStaffWindow(){
+
+    public void showStaffWindow() {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/Staff.fxml"));
-        StaffController staffController = new StaffController();
-        loader.setController(staffController);
         createStage(loader);
     }
-    
-    private void createStage(FXMLLoader loader){
+
+    private void createStage(FXMLLoader loader) {
         Scene scene = null;
-        try{
+        try {
             scene = new Scene(loader.load());
-        }catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
 
         }
-         Stage stage = new Stage();
-         stage.setScene(scene);
-         stage.setTitle("Karaoke Rental");
-         stage.show();
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.setTitle("Karaoke Rental");
+        stage.show();
+    }
+
+    public void clearViews() {
+        dashboardView = null;
     }
 }

@@ -1,6 +1,9 @@
+com\mycompany\karaoke_rental_system\CustomerController$Customer.class
+com\mycompany\karaoke_rental_system\CustomerController.class
 com\mycompany\karaoke_rental_system\StaffMenuController.class
 com\mycompany\karaoke_rental_system\data\DatabaseConnection.class
 com\mycompany\karaoke_rental_system\App.class
+com\mycompany\karaoke_rental_system\CustomerController$RentalHistory.class
 com\mycompany\karaoke_rental_system\StaffController.class
 module-info.class
 com\mycompany\karaoke_rental_system\LoginController.class

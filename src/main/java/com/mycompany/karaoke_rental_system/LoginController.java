@@ -60,15 +60,20 @@ public class LoginController implements Initializable {
         }
         try (Connection conn = DatabaseConnection.getConnection()) {
 
-            String query = "SELECT password FROM users WHERE username = ?";
+            String query = "SELECT user_id,password, role FROM users WHERE username = ?";
             PreparedStatement pst = conn.prepareStatement(query);
             pst.setString(1, usernameText);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
+                int userID = rs.getInt("user_id");
                 // Verify BCrypt hashed password
                 String storedHash = rs.getString("password");
+                String userRole = rs.getString("role");
                 if (BCrypt.checkpw(new String(passwordChars), storedHash)) {
+                    Model.getInstance().setcurrentuserid(userID);
+                    Model.getInstance().setRole(userRole);
                     handleSuccessfulLogin();
+
                 } else {
                     showAlert(Alert.AlertType.ERROR, "Login Failed", "Incorrect password");
                 }
@@ -87,16 +92,16 @@ public class LoginController implements Initializable {
 
     private void handleSuccessfulLogin() {
         try {
-        // Use the singleton ViewFactory to show the staff window
-        Model.getInstance().getViewFactory().showStaffWindow();
-        
-        // Close the login window
-        Stage currentStage = (Stage) login_button.getScene().getWindow();
-        currentStage.close();
-    } catch (Exception ex) {
-        showAlert(Alert.AlertType.ERROR, "UI Error", "Failed to load staff window: " + ex.getMessage());
-        ex.printStackTrace();
-    }
+            // Use the singleton ViewFactory to show the staff window
+            Model.getInstance().getViewFactory().showStaffWindow();
+
+            // Close the login window
+            Stage currentStage = (Stage) login_button.getScene().getWindow();
+            currentStage.close();
+        } catch (Exception ex) {
+            showAlert(Alert.AlertType.ERROR, "UI Error", "Failed to load staff window: " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
 
     private void showAlert(Alert.AlertType type, String title, String content) {
@@ -110,6 +115,7 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         login_button.setOnAction(event -> login());
+        
     }
 
 }

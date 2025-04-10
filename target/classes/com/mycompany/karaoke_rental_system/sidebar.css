@@ -79,3 +79,12 @@
     -fx-fill: black;
     -fx-font-weight: bold;
 }
+.admin-button {
+    -fx-border-color: gold;
+    -fx-border-width: 2px;
+    -fx-background-color: derive(#2c3e50, 20%);
+}
+
+.admin-button .glyph-icon {
+    -fx-fill: gold;
+}

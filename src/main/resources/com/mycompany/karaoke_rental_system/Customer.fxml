@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane id="AnchorPane" prefHeight="750.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.CustomerController">
+   <children>
+      <AnchorPane layoutX="38.0" layoutY="138.0" prefHeight="194.0" prefWidth="402.0">
+         <children>
+            <GridPane layoutX="29.0" layoutY="13.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="32.799993896484374" minHeight="10.0" prefHeight="32.799993896484374" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="49.60001220703125" minHeight="10.0" prefHeight="28.000006103515624" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Phone:" GridPane.rowIndex="1" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Address:" GridPane.rowIndex="2" />
+               </children>
+            </GridPane>
+            <GridPane layoutX="101.0" layoutY="14.0" prefHeight="91.0" prefWidth="282.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <TextField fx:id="name_txt" />
+                  <TextField fx:id="phone_txt" GridPane.rowIndex="1" />
+                  <TextField fx:id="address_txt" GridPane.rowIndex="2" />
+               </children>
+            </GridPane>
+            <Button fx:id="submit_btn" layoutX="185.0" layoutY="143.0" mnemonicParsing="false" onAction="#saveCustomer" prefHeight="30.0" prefWidth="131.0" text="Submit" />
+         </children>
+      </AnchorPane>
+      <Text layoutX="74.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Information" />
+      <ListView fx:id="rental_historylist" layoutX="470.0" layoutY="106.0" prefHeight="264.0" prefWidth="326.0" />
+      <AnchorPane layoutX="20.0" layoutY="398.0" prefHeight="327.0" prefWidth="810.0">
+         <children>
+            <Text layoutX="41.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Search" />
+            <FontAwesomeIcon glyphName="SEARCH" layoutX="18.0" layoutY="30.0" />
+            <TableView fx:id="customer_table" layoutX="18.0" layoutY="64.0" prefHeight="249.0" prefWidth="778.0" />
+            <TextField fx:id="search_txt" layoutX="99.0" layoutY="14.0" prefHeight="26.0" prefWidth="302.0" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

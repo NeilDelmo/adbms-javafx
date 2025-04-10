@@ -6,11 +6,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane  xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane  xmlns:fx="http://javafx.com/fxml/1" 
+             fx:id="rootPane"
+             fx:controller="com.mycompany.karaoke_rental_system.StaffController">
     
-        <left>
-            <fx:include source="StaffMenu.fxml"/>
-        </left>
+    <left>
+        <fx:include fx:id="staffMenu" source="StaffMenu.fxml"/>
+    </left>
     <center>
         <fx:include source = "Dashboard.fxml"/>
     </center>
