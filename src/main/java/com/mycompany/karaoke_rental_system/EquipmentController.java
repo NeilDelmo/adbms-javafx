@@ -91,6 +91,7 @@ public class EquipmentController implements Initializable {
 
         // Initialize the status filter combo box
         status_filter_cmb.getItems().addAll("Available", "Rented", "Maintenance");
+        status_filter_cmb.setOnAction(e -> filterEquipmentByStatus()); // Add event handler
 
         // Add search functionality
         search_txtfield.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -206,6 +207,21 @@ public class EquipmentController implements Initializable {
             if (equipment.getName().toLowerCase().contains(searchText.toLowerCase())
                     || equipment.getDescription().toLowerCase().contains(searchText.toLowerCase())) {
                 filteredList.add(equipment);
+            }
+        }
+        equipment_table.setItems(filteredList);
+    }
+    
+     private void filterEquipmentByStatus() {
+        String selectedStatus = status_filter_cmb.getValue();
+        ObservableList<Equipment> filteredList = FXCollections.observableArrayList();
+        if (selectedStatus == null || selectedStatus.isEmpty()) {
+            filteredList.addAll(equipmentList);
+        } else {
+            for (Equipment equipment : equipmentList) {
+                if (equipment.getStatus().equalsIgnoreCase(selectedStatus)) {
+                    filteredList.add(equipment);
+                }
             }
         }
         equipment_table.setItems(filteredList);
