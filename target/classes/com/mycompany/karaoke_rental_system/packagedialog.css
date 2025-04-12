@@ -1,0 +1,82 @@
+/* Root VBox Styling */
+.vbox {
+    -fx-background-color: #f2f2f2; /* Light gray background */
+    -fx-padding: 15px;
+    -fx-spacing: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 2); /* Subtle shadow */
+}
+
+/* TextField and TextArea Styling */
+.text-field, .text-area {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-color: #007BFF; /* Blue border */
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-padding: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2); /* Light shadow */
+}
+
+/* TableView Styling */
+.table-view {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0, 0, 2); /* Light shadow */
+}
+
+.table-view .column-header {
+    -fx-background-color: #007BFF; /* Blue header */
+    -fx-text-fill: white;
+    -fx-alignment: CENTER;
+    -fx-padding: 8px;
+}
+
+/* Button Styling */
+.button {
+    -fx-background-color: #007BFF; /* Blue background */
+    -fx-text-fill: white;
+    -fx-background-radius: 8px;
+    -fx-padding: 8px 16px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0, 0, 2); /* Light shadow */
+}
+
+.button:hover {
+    -fx-background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* HBox Styling */
+.hbox {
+    -fx-spacing: 10px;
+    -fx-alignment: CENTER;
+}
+
+/* ListView Styling */
+.list-view {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 8, 0.5, 2, 2); /* Stronger shadow */
+    -fx-border-radius: 8px;
+    -fx-padding: 8px;
+}
+
+/* ListCell Styling for Card-like Design */
+.list-cell {
+    -fx-padding: 1em;
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 1 0; /* Bottom border only */
+    -fx-pref-height: 45px; /* Consistent height */
+    -fx-background-insets: 5 10 5 10; /* Space around each cell */
+    -fx-background-radius: 6px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1); /* Subtle shadow */
+}
+
+.list-cell:filled:selected {
+    -fx-background-color: #e3f2fd; /* Light blue when selected */
+}
+
+.list-cell:empty {
+    -fx-padding: 0;
+    -fx-border-width: 0;
+}

@@ -2,12 +2,14 @@ com\mycompany\karaoke_rental_system\ReservationController.class
 com\mycompany\karaoke_rental_system\ReservationController$Customer.class
 com\mycompany\karaoke_rental_system\CustomerController$Customer.class
 com\mycompany\karaoke_rental_system\CustomerController.class
+com\mycompany\karaoke_rental_system\PackageDialogController.class
 com\mycompany\karaoke_rental_system\StaffMenuController.class
 com\mycompany\karaoke_rental_system\ReservationController$Equipment.class
 module-info.class
 com\mycompany\karaoke_rental_system\ReservationController$RentalPackage.class
 com\mycompany\karaoke_rental_system\LoginController.class
 com\mycompany\karaoke_rental_system\DashboardController.class
+com\mycompany\karaoke_rental_system\Package.class
 com\mycompany\karaoke_rental_system\EquipmentDialogController.class
 com\mycompany\karaoke_rental_system\EquipmentController.class
 com\mycompany\karaoke_rental_system\data\DatabaseConnection.class

@@ -66,4 +66,9 @@ package com.mycompany.karaoke_rental_system;
     public void setStatus(String status) {
         this.status = status;
     }
+    
+    @Override
+    public String toString(){
+        return name;
+    }
 }

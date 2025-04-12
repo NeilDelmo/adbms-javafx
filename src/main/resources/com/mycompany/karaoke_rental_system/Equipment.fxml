@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" prefHeight="750.0" prefWidth="850.0" styleClass="AnchorPane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.EquipmentController">
+<AnchorPane id="AnchorPane" prefHeight="735.0" prefWidth="828.0" styleClass="AnchorPane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.EquipmentController">
     <stylesheets>
         <URL value="@equipment.css" />
     </stylesheets>
@@ -39,7 +39,7 @@
                                     <children>
                                         <FontAwesomeIcon glyphName="SEARCH" styleClass="fontawesome-icon" />
                                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Search" />
-                                        <TextField fx:id="search_txtfield" prefHeight="26.0" prefWidth="202.0" styleClass="text-field" />
+                                        <TextField fx:id="search_txtfield" prefHeight="26.0" prefWidth="202.0" promptText="Search for Equipment" styleClass="text-field" />
                                         <ComboBox fx:id="status_filter_cmb" prefWidth="150.0" promptText="Filter by Status" styleClass="combo-box" />
                                     </children>
                                 </HBox>
@@ -59,28 +59,28 @@
                     <content>
                         <AnchorPane styleClass="AnchorPane">
                             <children>
-                                <TableView layoutX="10.0" layoutY="66.0" prefHeight="506.0" prefWidth="344.0" styleClass="table-view">
+                                <TableView fx:id="package_table" layoutX="10.0" layoutY="66.0" prefHeight="506.0" prefWidth="344.0" styleClass="table-view">
                                     <columns>
                                         <TableColumn minWidth="0.0" prefWidth="0.0" text="ID" />
-                                        <TableColumn prefWidth="117.60000610351562" styleClass="column-header" text="Name" />
-                                        <TableColumn prefWidth="124.79998779296875" styleClass="column-header" text="Description" />
-                                        <TableColumn prefWidth="99.20001220703125" styleClass="column-header" text="Bundle Price" />
+                                        <TableColumn fx:id="package_nameCol" prefWidth="117.60000610351562" styleClass="column-header" text="Name" />
+                                        <TableColumn fx:id="package_decriptionCol" prefWidth="124.79998779296875" styleClass="column-header" text="Description" />
+                                        <TableColumn fx:id="package_priceCol" prefWidth="99.20001220703125" styleClass="column-header" text="Bundle Price" />
                                     </columns>
                                 </TableView>
                                 <HBox layoutX="10.0" layoutY="10.0" spacing="10" styleClass="hbox">
                                     <children>
                                         <FontAwesomeIcon glyphName="SEARCH" styleClass="fontawesome-icon" />
                                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Search" />
-                                        <TextField prefHeight="26.0" prefWidth="202.0" promptText="package_searchfield" styleClass="text-field" />
-                                        <ComboBox prefWidth="150.0" promptText="Filter by Status" styleClass="combo-box" />
+                                        <TextField fx:id="package_searchfield" prefHeight="26.0" prefWidth="202.0" promptText="Search Package" styleClass="text-field" />
+                                        <ComboBox fx:id="package_status_filter" prefWidth="150.0" promptText="Filter by Status" styleClass="combo-box" />
                                     </children>
                                 </HBox>
                                 <VBox layoutX="373.0" layoutY="94.0" prefHeight="477.0" prefWidth="176.0" spacing="10" styleClass="vbox">
                                     <children>
-                                        <Button styleClass="button" text="Add Package" />
-                                        <Button styleClass="button" text="Edit Package" />
-                                        <Button styleClass="button" text="Delete Package" />
-                                        <Button styleClass="button" text="Configure Package Equipment" />
+                                        <Button fx:id="add_package_btn" styleClass="button" text="Add Package" />
+                                        <Button fx:id="edit_package_btn" styleClass="button" text="Edit Package" />
+                                        <Button fx:id="delete_package_btn" styleClass="button" text="Delete Package" />
+                                        <Button fx:id="config_package_btn" styleClass="button" text="Configure Package Equipment" />
                                     </children>
                                 </VBox>
                             </children>

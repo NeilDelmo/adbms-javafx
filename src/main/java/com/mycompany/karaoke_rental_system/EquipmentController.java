@@ -17,6 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import com.mycompany.karaoke_rental_system.data.DatabaseConnection;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -63,7 +64,32 @@ public class EquipmentController implements Initializable {
     @FXML
     private Button view_maintenance_btn;
 
+    //package tabbedpane
+    @FXML
+    private Button edit_package_btn;
+    @FXML
+    private TableColumn<?, ?> package_decriptionCol;
+
+    @FXML
+    private TableColumn<?, ?> package_nameCol;
+
+    @FXML
+    private TableColumn<?, ?> package_priceCol;
+    @FXML
+    private TextField package_searchfield;
+
+    @FXML
+    private ComboBox<?> package_status_filter;
+    @FXML
+    private Button add_package_btn;
+
+    @FXML
+    private Button config_package_btn;
+    @FXML
+    private TableView<Package> package_table;
+
     private ObservableList<Equipment> equipmentList;
+    private ObservableList<Package> packageList;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -79,7 +105,18 @@ public class EquipmentController implements Initializable {
         equipment_table.setItems(equipmentList);
         loadEquipmentData(); // Load data after initializing the list
 
+        packageList = FXCollections.observableArrayList();
+        package_table.setItems(packageList);
+        loadPackageData(); // Load data after initializing the list
+
         // Add event handlers
+        add_package_btn.setOnAction(e -> openPackageDialog(null));
+        edit_package_btn.setOnAction(e -> {
+            Package selectedPackage = package_table.getSelectionModel().getSelectedItem();
+            if (selectedPackage != null) {
+                openPackageDialog(selectedPackage);
+            }
+        });
         add_equipment_btn.setOnAction(e -> openEquipmentDialog(null));
         edit_equipment_btn.setOnAction(e -> {
             Equipment selectedEquipment = equipment_table.getSelectionModel().getSelectedItem();
@@ -179,7 +216,7 @@ public class EquipmentController implements Initializable {
 
             // Refresh the table after the dialog is closed
             loadEquipmentData();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -211,8 +248,8 @@ public class EquipmentController implements Initializable {
         }
         equipment_table.setItems(filteredList);
     }
-    
-     private void filterEquipmentByStatus() {
+
+    private void filterEquipmentByStatus() {
         String selectedStatus = status_filter_cmb.getValue();
         ObservableList<Equipment> filteredList = FXCollections.observableArrayList();
         if (selectedStatus == null || selectedStatus.isEmpty()) {
@@ -232,5 +269,61 @@ public class EquipmentController implements Initializable {
         // For now, just clear and re-add dummy data
         equipmentList.clear();
         equipmentList.addAll(/* reload data from database */);
+    }
+
+    private void loadPackageData() {
+        packageList.clear();
+        String query = "SELECT * FROM packages";
+        try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement statement = connection.prepareStatement(query); ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                Package pkg = new Package(
+                        resultSet.getInt("package_id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("description"),
+                        resultSet.getDouble("bundle_price")
+                );
+                packageList.add(pkg);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void openPackageDialog(Package pkg) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("PackageDialog.fxml"));
+            Stage stage = new Stage();
+            stage.setScene(new Scene(loader.load()));
+            stage.initModality(Modality.APPLICATION_MODAL);
+
+            PackageDialogController controller = loader.getController();
+            controller.setPackageData(pkg, pkg != null); // Pass package data and edit mode
+            controller.setDialogStage(stage);
+
+            stage.showAndWait();
+
+            // Refresh the table after the dialog is closed
+            loadPackageData();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteSelectedPackage() {
+        Package selectedPackage = package_table.getSelectionModel().getSelectedItem();
+        if (selectedPackage != null) {
+            String deleteQuery = "DELETE FROM packages WHERE package_id = ?";
+            try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement statement = connection.prepareStatement(deleteQuery)) {
+
+                statement.setInt(1, selectedPackage.getPackageId());
+                statement.executeUpdate();
+
+                // Remove from the observable list
+                packageList.remove(selectedPackage);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
