@@ -31,6 +31,12 @@ public class StaffController implements Initializable {
             staffMenuController.getcustomer_btn().setOnAction(e
                     -> rootPane.setCenter(Model.getInstance().getViewFactory().getCustomerView())
             );
+            staffMenuController.getreservation_btn().setOnAction(e
+                    -> rootPane.setCenter(Model.getInstance().getViewFactory().getReservationView())
+            );
+            staffMenuController.getequipment_btn().setOnAction(e
+                    -> rootPane.setCenter(Model.getInstance().getViewFactory().getEquipmentView())
+            );
 
             staffMenuController.getlogout_btn().setOnAction(e -> handleLogout());
         } else {

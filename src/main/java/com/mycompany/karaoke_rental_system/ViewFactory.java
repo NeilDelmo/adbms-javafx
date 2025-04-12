@@ -10,6 +10,8 @@ public class ViewFactory {
 
     private AnchorPane dashboardView;
     private AnchorPane customerView;
+    private AnchorPane reservationView;
+    private AnchorPane equipmentView;
 
     public ViewFactory() {
     }
@@ -34,6 +36,30 @@ public class ViewFactory {
             }
         }
         return customerView;
+    }
+    
+    public AnchorPane getReservationView(){
+    if(reservationView == null){
+        try{
+            reservationView = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/Reservation.fxml")).load();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        
+    }
+    return reservationView;
+    }
+    
+    public AnchorPane getEquipmentView(){
+    if(equipmentView == null){
+        try{
+            equipmentView = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/Equipment.fxml")).load();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        
+    }
+    return equipmentView;
     }
 
     public void showLoginWindow() {

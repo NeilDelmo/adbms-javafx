@@ -1,0 +1,143 @@
+/* Root Styling */
+.root {
+    -fx-font-family: "Arial", sans-serif;
+    -fx-background-color: linear-gradient(to bottom, #f9f9f9, #e6f7ff);
+}
+
+/* AnchorPane Styling */
+.AnchorPane {
+    -fx-padding: 10px;
+}
+
+/* TabPane and Tab Styling */
+.tab-pane {
+    -fx-tab-min-width: 120px;
+}
+
+.tab-pane .tab-header-area {
+    -fx-background-color: linear-gradient(to bottom, #ffffff, #e6f7ff);
+    -fx-border-color: transparent;
+}
+
+.tab-pane .tab {
+    -fx-background-color: transparent;
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #1e90ff;
+    -fx-underline: true;
+}
+
+/* TableView Styling */
+.table-view {
+    -fx-background-color: #fafafa; /* Slightly off-white background */
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0.3, 0, 2); /* Add shadow */
+    -fx-selection-bar: #1e90ff; /* Color for the selection bar */
+    -fx-selection-bar-non-focused: #1e90ff; /* Color for the selection bar when not focused */
+}
+
+.table-view .column-header {
+    -fx-background-color: linear-gradient(to bottom, #1e90ff, #00bfff);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER;
+    -fx-padding: 8px; /* Add padding to headers */
+}
+
+.table-view .column-header:hover {
+    -fx-background-color: #007acc;
+}
+
+.table-view .cell {
+    -fx-padding: 8px; /* Add padding to cells */
+    -fx-alignment: CENTER_LEFT;
+    -fx-background-color: #ffffff; /* White background for cells */
+    -fx-border-color: #e0e0e0; /* Light border for cells */
+    -fx-border-width: 0 0 1px 0; /* Bottom border for cells */
+    -fx-text-fill: #333333; /* Dark text color for visibility */
+}
+
+/* Style for selected row */
+.table-view:focused .table-row-cell:selected {
+    -fx-background-color: #d1e7ff; /* Light blue background for selected row */
+    -fx-text-fill: #333333; /* Dark text color for visibility */
+}
+
+.table-view .table-row-cell:hover {
+    -fx-background-color: #f0f8ff; /* Light blue background for hovered row */
+}
+
+/* Button Styling */
+.button {
+    -fx-background-color: linear-gradient(to right, #1e90ff, #00bfff);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-pref-width: 200px;
+    -fx-pref-height: 60px;
+    -fx-border-radius: 30px;
+    -fx-background-radius: 30px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.5, 0, 1);
+    -fx-cursor: hand;
+    -fx-padding: 10px 20px 10px 20px;
+
+}
+
+.button:pressed {
+    -fx-background-color: #1c86ee;
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+    -fx-effect: innershadow(gaussian, #007acc, 10, 0, 0, 0);
+}
+
+/* TextField and ComboBox Styling */
+.text-field, .combo-box {
+    -fx-background-color: #f0f8ff;
+    -fx-background-radius: 5px;
+    -fx-border-color: #b0c4de;
+    -fx-border-radius: 5px;
+    -fx-border-width: 1.5px;
+    -fx-padding: 8px;
+    -fx-prompt-text-fill: gray;
+    -fx-text-fill: #333333;
+}
+
+.text-field:focused, .combo-box:focused {
+    -fx-border-color: #1e90ff;
+    -fx-background-color: white;
+}
+
+/* FontAwesomeIcon Styling */
+.fontawesome-icon {
+    -fx-fill: #1e90ff;
+    -fx-padding: 0 10px 0 0;
+}
+
+/* HBox and VBox Styling */
+.hbox, .vbox {
+    -fx-spacing: 20px; /* Increased spacing between elements */
+    -fx-alignment: CENTER;
+}
+
+/* Specific Button Styling */
+.button[text="Delete Equipment"], .button[text="Delete Package"] {
+    -fx-background-color: #ff4d4d;
+}
+
+.button[text="Delete Equipment"]:hover, .button[text="Delete Package"]:hover {
+    -fx-background-color: #ff3333;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.button[text="Delete Equipment"]:pressed, .button[text="Delete Package"]:pressed {
+    -fx-background-color: #cc0000;
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}

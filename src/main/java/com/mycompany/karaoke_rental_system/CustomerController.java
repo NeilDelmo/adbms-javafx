@@ -22,8 +22,12 @@ import com.mycompany.karaoke_rental_system.data.DatabaseConnection;
 import java.sql.ResultSet;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.layout.BorderPane;
 
 public class CustomerController implements Initializable {
+
+    @FXML
+    private BorderPane rootPane;
 
     @FXML
     private TextField address_txt;
@@ -46,8 +50,28 @@ public class CustomerController implements Initializable {
     @FXML
     private Button submit_btn;
 
+    @FXML
+    private Button reservation_btn;
+
+    @FXML
+    private TableColumn<Customer, String> nameCol;
+    @FXML
+    private TableColumn<Customer, String> phoneCol;
+    @FXML
+    private TableColumn<Customer, String> addressCol;
+    @FXML
+    private TableColumn<Customer, Number> bookingsCol;
+    @FXML
+    private TableColumn<Customer, String> lastBookingCol;
+    @FXML
+    private TableColumn<Customer, String> spentCol;
+
     private ObservableList<Customer> customers = FXCollections.observableArrayList();
     private ObservableList<RentalHistory> rental_history = FXCollections.observableArrayList();
+
+    public Button getreservation_btn() {
+        return reservation_btn;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -56,33 +80,30 @@ public class CustomerController implements Initializable {
         setupSearch();
         setupTableSelection();
 
-    }
+        reservation_btn.setOnAction(e
+                    -> rootPane.setCenter(Model.getInstance().getViewFactory().getDashboardView())
+            );
+
+        }
 
     private void setupTableColumns() {
-        TableColumn<Customer, String> nameCol = new TableColumn<>("Name");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        TableColumn<Customer, String> phoneCol = new TableColumn<>("Phone");
         phoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
 
-        TableColumn<Customer, String> addressCol = new TableColumn<>("Address");
         addressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
 
-        TableColumn<Customer, Number> bookingsCol = new TableColumn<>("Total Bookings");
         bookingsCol.setCellValueFactory(new PropertyValueFactory<>("totalBookings"));
 
-        TableColumn<Customer, String> lastBookingCol = new TableColumn<>("Last Booking");
         lastBookingCol.setCellValueFactory(cell -> {
             LocalDateTime date = cell.getValue().getLastBooking();
             return new SimpleStringProperty(date != null
                     ? date.format(DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm")) : "N/A");
         });
 
-        TableColumn<Customer, String> spentCol = new TableColumn<>("Total Spent");
         spentCol.setCellValueFactory(cell
                 -> new SimpleStringProperty(String.format("₱%,.2f", cell.getValue().getTotalSpent())));
 
-        customer_table.getColumns().addAll(nameCol, phoneCol, addressCol, bookingsCol, lastBookingCol, spentCol);
         customer_table.setItems(customers);
     }
 
@@ -174,7 +195,16 @@ public class CustomerController implements Initializable {
 
     private void loadRentalHistory(int customerId) {
         rental_history.clear();
-        String query = "SELECT * FROM current_rentals WHERE customer_id = ?";
+        String query
+                = "SELECT r.reservation_id, c.name AS customer_name, "
+                + "r.start_datetime, r.end_datetime, r.status, "
+                + "COALESCE(SUM(CASE WHEN ri.package_id IS NOT NULL THEN p.bundle_price ELSE ri.price_per_unit END), 0) AS total_rental_value "
+                + "FROM reservations r "
+                + "JOIN customers c ON r.customer_id = c.customer_id "
+                + "LEFT JOIN reservation_items ri ON r.reservation_id = ri.reservation_id "
+                + "LEFT JOIN packages p ON ri.package_id = p.package_id "
+                + "WHERE r.customer_id = ? "
+                + "GROUP BY r.reservation_id, c.name, r.start_datetime, r.end_datetime, r.status";
 
         try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
 

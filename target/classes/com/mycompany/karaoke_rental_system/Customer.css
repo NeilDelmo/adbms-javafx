@@ -1,0 +1,173 @@
+/* General AnchorPane Styling */
+AnchorPane {
+    -fx-background-color: #f2f2f2; /* Light gray background */
+}
+/* Top AnchorPane */
+.top-anchor-pane {
+    -fx-background-color: linear-gradient(to right, #42a5f5, #1e88e5); /* Same gradient as styled-button */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0.5, 0, 2); /* Subtle shadow */
+    -fx-padding: 15px; /* Padding inside the pane */
+}
+
+/* Customer Information Section */
+.anchor-pane-customer-info {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 12, 0.5, 2, 4);
+    -fx-padding: 15px 15px 15px 15px; /* Corrected padding */
+}
+
+/* Text Labels */
+.text-label {
+    -fx-font-size: 16px;
+    -fx-fill: #333;
+    -fx-font-weight: bold;
+}
+
+/* TextFields */
+.text-field {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-padding: 8px 12px 8px 12px; /* Corrected padding */
+    -fx-pref-height: 30px;
+}
+
+.text-field:hover {
+    -fx-border-color: #42a5f5;
+}
+
+/* Buttons */
+.styled-button {
+    -fx-background-color: #42a5f5;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-padding: 8px 16px 8px 16px; /* Corrected padding */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0.5, 1, 1);
+    -fx-transition: all 0.2s ease;
+}
+
+.styled-button:hover {
+    -fx-background-color: #1e88e5;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 8, 0.5, 2, 2);
+}
+
+.styled-button:pressed {
+    -fx-background-color: #0d47a1;
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+
+/* ListView */
+.list-view {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 8, 0.5, 2, 2);
+    -fx-border-radius: 8px;
+    -fx-padding: 8px 8px 8px 8px; /* Corrected padding */
+}
+
+.list-cell {
+    -fx-padding: 8px 12px 8px 12px; /* Corrected padding */
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 1 0;
+    -fx-pref-height: 45px;
+    -fx-background-radius: 6px;
+}
+
+.list-cell:filled:selected {
+    -fx-background-color: #e3f2fd;
+}
+
+.list-cell:empty {
+    -fx-padding: 0 0 0 0; /* Corrected padding */
+    -fx-border-width: 0;
+}
+/* TableView */
+.table-view {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 8, 0.5, 2, 2);
+    -fx-border-radius: 8px;
+    -fx-padding: 8px 8px 8px 8px;
+}
+
+/* Table Row Cells */
+.table-view .table-row-cell {
+    -fx-background-color: white; /* Default background color */
+    -fx-padding: 4px 8px 4px 8px; /* Padding for rows */
+    -fx-transition: all 0.2s ease; /* Smooth transition for hover effects */
+}
+
+/* Hover Effect for Rows */
+.table-view .table-row-cell:hover {
+    -fx-background-color: #e3f2fd; /* Light blue hover effect */
+}
+
+/* Selected Row Style */
+.table-view .table-row-cell:selected {
+    -fx-background-color: #bbdefb; /* Pale blue for the entire row */
+    -fx-text-fill: black; /* Black text for better visibility */
+    -fx-font-weight: bold; /* Bold text for the selected row */
+}
+
+/* Table Cells */
+.table-view .table-cell {
+    -fx-padding: 8px 12px 8px 12px;
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 1 0;
+    -fx-pref-height: 45px;
+    -fx-transition: all 0.2s ease;
+    -fx-text-fill: #333; /* Default text color (dark gray) */
+}
+
+/* Hover Effect for Cells */
+.table-view .table-cell:hover {
+    -fx-background-color: #e3f2fd; /* Light blue hover effect */
+    -fx-border-color: #42a5f5;
+    -fx-border-width: 1px;
+}
+
+/* Selected Cell Style */
+.table-view .table-cell:selected {
+    -fx-background-color: #42a5f5; /* Bright blue for the specific cell */
+    -fx-text-fill: white; /* White text for contrast */
+    -fx-border-color: #1e88e5; /* Slightly darker border */
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0.5, 1, 1); /* Shadow for emphasis */
+}
+
+/* Search TextField */
+.search-text-field {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-padding: 8px 12px 8px 12px; /* Corrected padding */
+    -fx-pref-height: 30px;
+}
+
+.search-text-field:hover {
+    -fx-border-color: #42a5f5;
+}
+
+/* FontAwesome Icon */
+.font-awesome-icon {
+    -fx-fill: #42a5f5;
+    -fx-font-size: 18px;
+}
+
+/* Header Text */
+.header-text {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4169e1;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0.5, 1, 1);
+}

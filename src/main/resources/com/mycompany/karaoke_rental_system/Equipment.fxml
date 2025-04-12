@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane id="AnchorPane" prefHeight="750.0" prefWidth="850.0" styleClass="AnchorPane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.EquipmentController">
+    <stylesheets>
+        <URL value="@equipment.css" />
+    </stylesheets>
+    <children>
+        <TabPane prefHeight="750.0" prefWidth="850.0" styleClass="tab-pane">
+            <tabs>
+                <Tab text="Equipment Management">
+                    <content>
+                        <AnchorPane styleClass="AnchorPane">
+                            <children>
+                                <TableView fx:id="equipment_table" layoutX="10.0" layoutY="66.0" prefHeight="518.0" prefWidth="574.0" styleClass="table-view">
+                                    <columns>
+                                        <TableColumn minWidth="0.0" prefWidth="1.600006103515625" text="ID" />
+                                        <TableColumn fx:id="nameCol" prefWidth="148.79999351501465" styleClass="column-header" text="Name" />
+                                        <TableColumn fx:id="descriptionCol" prefWidth="130.0" styleClass="column-header" text="Description" />
+                                        <TableColumn fx:id="priceCol" prefWidth="80.0" styleClass="column-header" text="Rental Price" />
+                                        <TableColumn fx:id="statusCol" prefWidth="80.0" styleClass="column-header" text="Status" />
+                                        <TableColumn fx:id="penaltyCol" prefWidth="129.60003662109375" styleClass="column-header" text="Overdue Penalty" />
+                                    </columns>
+                                </TableView>
+                                <HBox layoutX="10.0" layoutY="10.0" spacing="10" styleClass="hbox">
+                                    <children>
+                                        <FontAwesomeIcon glyphName="SEARCH" styleClass="fontawesome-icon" />
+                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Search" />
+                                        <TextField fx:id="search_txtfield" prefHeight="26.0" prefWidth="202.0" styleClass="text-field" />
+                                        <ComboBox fx:id="status_filter_cmb" prefWidth="150.0" promptText="Filter by Status" styleClass="combo-box" />
+                                    </children>
+                                </HBox>
+                                <VBox layoutX="593.0" layoutY="66.0" prefHeight="518.0" prefWidth="200.0" spacing="10" styleClass="vbox">
+                                    <children>
+                                        <Button fx:id="add_equipment_btn" styleClass="button" text="Add Equipment" />
+                                        <Button fx:id="edit_equipment_btn" styleClass="button" text="Edit Equipment" />
+                                        <Button fx:id="delete_equipment_btn" styleClass="button" text="Delete Equipment" />
+                                        <Button fx:id="view_maintenance_btn" prefWidth="169.0" styleClass="button" text="Maintenance History" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab text="Package Configuration">
+                    <content>
+                        <AnchorPane styleClass="AnchorPane">
+                            <children>
+                                <TableView layoutX="10.0" layoutY="66.0" prefHeight="506.0" prefWidth="344.0" styleClass="table-view">
+                                    <columns>
+                                        <TableColumn minWidth="0.0" prefWidth="0.0" text="ID" />
+                                        <TableColumn prefWidth="117.60000610351562" styleClass="column-header" text="Name" />
+                                        <TableColumn prefWidth="124.79998779296875" styleClass="column-header" text="Description" />
+                                        <TableColumn prefWidth="99.20001220703125" styleClass="column-header" text="Bundle Price" />
+                                    </columns>
+                                </TableView>
+                                <HBox layoutX="10.0" layoutY="10.0" spacing="10" styleClass="hbox">
+                                    <children>
+                                        <FontAwesomeIcon glyphName="SEARCH" styleClass="fontawesome-icon" />
+                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Search" />
+                                        <TextField prefHeight="26.0" prefWidth="202.0" promptText="package_searchfield" styleClass="text-field" />
+                                        <ComboBox prefWidth="150.0" promptText="Filter by Status" styleClass="combo-box" />
+                                    </children>
+                                </HBox>
+                                <VBox layoutX="373.0" layoutY="94.0" prefHeight="477.0" prefWidth="176.0" spacing="10" styleClass="vbox">
+                                    <children>
+                                        <Button styleClass="button" text="Add Package" />
+                                        <Button styleClass="button" text="Edit Package" />
+                                        <Button styleClass="button" text="Delete Package" />
+                                        <Button styleClass="button" text="Configure Package Equipment" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab text="Maintenance History">
+                    <content>
+                        <AnchorPane styleClass="AnchorPane">
+                            <children>
+                                <TableView layoutX="150.0" layoutY="67.0" prefHeight="586.0" prefWidth="454.0" styleClass="table-view">
+                                    <columns>
+                                        <TableColumn prefWidth="150.0" styleClass="column-header" text="Maintenance Date" />
+                                        <TableColumn prefWidth="300.0" styleClass="column-header" text="Details" />
+                                    </columns>
+                                </TableView>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </children>
+</AnchorPane>
