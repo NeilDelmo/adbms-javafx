@@ -22,6 +22,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javafx.scene.control.Alert;
 
 public class EquipmentController implements Initializable {
 
@@ -142,6 +143,10 @@ public class EquipmentController implements Initializable {
         search_txtfield.textProperty().addListener((observable, oldValue, newValue) -> {
             filterEquipmentList(newValue);
         });
+        
+        package_searchfield.textProperty().addListener((observable,oldValue,newValue) ->{
+        filterPackageList(newValue);     
+    });
 
     }
 
@@ -212,6 +217,17 @@ public class EquipmentController implements Initializable {
         }
         equipment_table.setItems(filteredList);
     }
+    
+    private void filterPackageList(String searchText){
+        ObservableList<Package> filteredList = FXCollections.observableArrayList();
+        for(Package pkg : packageList){
+            if(pkg.getName().toLowerCase().contains(searchText.toLowerCase())
+                    ||pkg.getDescription().toLowerCase().contains(searchText.toLowerCase())){
+                filteredList.add(pkg);
+            }
+        }
+        package_table.setItems(filteredList);
+    }
 
     private void filterEquipmentByStatus() {
         String selectedStatus = status_filter_cmb.getValue();
@@ -268,22 +284,63 @@ public class EquipmentController implements Initializable {
         }
     }
 
-    private void deleteSelectedPackage() {
-        Package selectedPackage = package_table.getSelectionModel().getSelectedItem();
-        if (selectedPackage != null) {
-            String deleteQuery = "DELETE FROM packages WHERE package_id = ?";
-            try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement statement = connection.prepareStatement(deleteQuery)) {
-
-                statement.setInt(1, selectedPackage.getPackageId());
-                statement.executeUpdate();
-
-                // Remove from the observable list
-                packageList.remove(selectedPackage);
-            } catch (SQLException e) {
-                e.printStackTrace();
+ private void deleteSelectedPackage() {
+    Package selectedPackage = package_table.getSelectionModel().getSelectedItem();
+    if (selectedPackage != null) {
+        // Check if the package is used in any reservation
+        String checkQuery = "SELECT COUNT(*) FROM reservation_items WHERE package_id = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement checkStmt = connection.prepareStatement(checkQuery)) {
+            checkStmt.setInt(1, selectedPackage.getPackageId());
+            ResultSet rs = checkStmt.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                // Show warning and block deletion
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Deletion Blocked");
+                alert.setHeaderText("Cannot delete package");
+                alert.setContentText("This package is linked to existing reservations. Delete reservations first.");
+                alert.showAndWait();
+                return; // Exit the method to prevent further execution
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Optionally show an error dialog to inform the user
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Database Error");
+            alert.setHeaderText("Failed to check package usage");
+            alert.setContentText("An error occurred while checking if the package is in use.");
+            alert.showAndWait();
+            return; // Exit the method on database error
         }
+
+        // Proceed with deletion if no reservations exist
+        String deleteQuery = "DELETE FROM packages WHERE package_id = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement deleteStmt = connection.prepareStatement(deleteQuery)) {
+            deleteStmt.setInt(1, selectedPackage.getPackageId());
+            int rowsAffected = deleteStmt.executeUpdate();
+            if (rowsAffected > 0) {
+                // Remove the package from the observable list
+                packageList.remove(selectedPackage);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Optionally show an error dialog to inform the user
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Database Error");
+            alert.setHeaderText("Failed to delete package");
+            alert.setContentText("An error occurred while deleting the package.");
+            alert.showAndWait();
+        }
+    } else {
+        // Inform the user if no package is selected
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("No Selection");
+        alert.setHeaderText("No package selected");
+        alert.setContentText("Please select a package to delete.");
+        alert.showAndWait();
     }
+}
 
     private void filterPackageByStatus() {
     // Get the selected status from the combo box

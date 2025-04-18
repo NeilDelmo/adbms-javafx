@@ -1,5 +1,6 @@
 package com.mycompany.karaoke_rental_system;
 
+import com.mycompany.karaoke_rental_system.Model.Model;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -56,21 +57,37 @@ public class PackageDialogController {
         loadEquipmentData();
     }
 
-  private void loadEquipmentData() {
+private void loadEquipmentData() {
     Connection conn = DatabaseConnection.getConnection();
+    String query;
+    if (isEditMode) {
+        // Exclude equipment already in other packages, except those in the current package
+        query = "SELECT e.equipment_id, e.name, e.description, e.rental_price, e.overdue_penalty, e.status " +
+                "FROM equipment e " +
+                "WHERE e.equipment_id NOT IN (" +
+                "   SELECT pe.equipment_id FROM package_equipment pe WHERE pe.package_id != ?" +
+                ")";
+    } else {
+        // Exclude equipment already in any package
+        query = "SELECT e.equipment_id, e.name, e.description, e.rental_price, e.overdue_penalty, e.status " +
+                "FROM equipment e " +
+                "WHERE e.equipment_id NOT IN (SELECT equipment_id FROM package_equipment)";
+    }
 
-    String query = "SELECT equipment_id, name, description, rental_price, overdue_penalty, status FROM equipment";
-    try (PreparedStatement statement = conn.prepareStatement(query);
-         ResultSet resultSet = statement.executeQuery()) {
+    try (PreparedStatement statement = conn.prepareStatement(query)) {
+        if (isEditMode) {
+            statement.setInt(1, packageData.getPackageId());
+        }
 
+        ResultSet resultSet = statement.executeQuery();
         while (resultSet.next()) {
             Equipment equipment = new Equipment(
                 resultSet.getInt("equipment_id"),
                 resultSet.getString("name"),
-                resultSet.getString("description"), // Include description
+                resultSet.getString("description"),
                 resultSet.getDouble("rental_price"),
-                resultSet.getDouble("overdue_penalty"), // Include overdue penalty
-                resultSet.getString("status") // Include status
+                resultSet.getDouble("overdue_penalty"),
+                resultSet.getString("status")
             );
             equipmentList.add(equipment);
         }
@@ -116,7 +133,7 @@ public class PackageDialogController {
             statement.setString(1, name);
             statement.setString(2, description);
             statement.setDouble(3, bundlePrice);
-            statement.setInt(4, 1); // Assuming a default user ID for created_by
+            statement.setInt(4, Model.getInstance().getcurrentuserid()); 
 
             int affectedRows = statement.executeUpdate();
             if (affectedRows > 0) {
