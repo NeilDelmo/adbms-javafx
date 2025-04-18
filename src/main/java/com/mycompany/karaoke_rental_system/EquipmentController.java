@@ -66,9 +66,9 @@ public class EquipmentController implements Initializable {
     private Button edit_package_btn;
     @FXML
     private TableColumn<Package, String> package_decriptionCol;
-    
+
     @FXML
-    private TableColumn<Package,Integer>package_id;
+    private TableColumn<Package, Integer> package_id;
 
     @FXML
     private TableColumn<Package, String> package_nameCol;
@@ -79,7 +79,7 @@ public class EquipmentController implements Initializable {
     private TextField package_searchfield;
 
     @FXML
-    private ComboBox<?> package_status_filter;
+    private ComboBox<String> package_status_filter;
     @FXML
     private Button add_package_btn;
 
@@ -104,11 +104,14 @@ public class EquipmentController implements Initializable {
         equipmentList = FXCollections.observableArrayList();
         equipment_table.setItems(equipmentList);
         loadEquipmentData(); // Load data after initializing the list
-        
+
         package_id.setCellValueFactory(new PropertyValueFactory<>("packageId"));
         package_nameCol.setCellValueFactory((new PropertyValueFactory<>("name")));
         package_decriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         package_priceCol.setCellValueFactory(new PropertyValueFactory<>("bundlePrice"));
+
+        package_status_filter.getItems().addAll("Active", "Inactive");
+        package_status_filter.setOnAction(e -> filterPackageByStatus());
 
         packageList = FXCollections.observableArrayList();
         package_table.setItems(packageList);
@@ -142,7 +145,6 @@ public class EquipmentController implements Initializable {
 
     }
 
- 
     private void loadEquipmentData() {
         equipmentList.clear();
         String query = "SELECT * FROM equipment";
@@ -226,13 +228,6 @@ public class EquipmentController implements Initializable {
         equipment_table.setItems(filteredList);
     }
 
-    private void refreshEquipmentTable() {
-        // Logic to refresh the table, possibly reloading data from the database
-        // For now, just clear and re-add dummy data
-        equipmentList.clear();
-        equipmentList.addAll(/* reload data from database */);
-    }
-
     private void loadPackageData() {
         packageList.clear();
         String query = "SELECT * FROM packages";
@@ -243,7 +238,8 @@ public class EquipmentController implements Initializable {
                         resultSet.getInt("package_id"),
                         resultSet.getString("name"),
                         resultSet.getString("description"),
-                        resultSet.getDouble("bundle_price")
+                        resultSet.getDouble("bundle_price"),
+                        resultSet.getString("status")
                 );
                 packageList.add(pkg);
             }
@@ -288,4 +284,28 @@ public class EquipmentController implements Initializable {
             }
         }
     }
+
+    private void filterPackageByStatus() {
+    // Get the selected status from the combo box
+    String selectedStatus = (String) package_status_filter.getValue();
+
+    // Create a new observable list to hold filtered packages
+    ObservableList<Package> filteredList = FXCollections.observableArrayList();
+
+    // Check if no status is selected or the combo box is empty
+    if (selectedStatus == null || selectedStatus.isEmpty()) {
+        // If no status is selected, show all packages
+        filteredList.addAll(packageList);
+    } else {
+        // Filter packages by the selected status
+        for (Package pkg : packageList) { // Iterate through the full package list
+            if (pkg.getStatus().equalsIgnoreCase(selectedStatus)) { // Compare status (case-insensitive)
+                filteredList.add(pkg); // Add matching packages to the filtered list
+            }
+        }
+    }
+
+    // Update the package table with the filtered list
+    package_table.setItems(filteredList);
 }
+    }

@@ -6,13 +6,15 @@ public class Package {
     private String name;
     private String description;
     private double bundlePrice;
+    private String status;
 
     // Constructor
-    public Package(int packageId, String name, String description, double bundlePrice) {
+    public Package(int packageId, String name, String description, double bundlePrice, String status) {
         this.packageId = packageId;
         this.name = name;
         this.description = description;
         this.bundlePrice = bundlePrice;
+        this.status = status;
     }
 
     // Getters and Setters
@@ -46,6 +48,12 @@ public class Package {
 
     public void setBundlePrice(double bundlePrice) {
         this.bundlePrice = bundlePrice;
+    }
+    public void setstatus(String status){
+        this.status = status;
+    }
+    public String getStatus(){
+        return status;
     }
     
 }
