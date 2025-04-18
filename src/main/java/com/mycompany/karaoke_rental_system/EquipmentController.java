@@ -22,9 +22,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.InnerShadow;
-import javafx.scene.paint.Color;
 
 public class EquipmentController implements Initializable {
 
@@ -68,13 +65,16 @@ public class EquipmentController implements Initializable {
     @FXML
     private Button edit_package_btn;
     @FXML
-    private TableColumn<?, ?> package_decriptionCol;
+    private TableColumn<Package, String> package_decriptionCol;
+    
+    @FXML
+    private TableColumn<Package,Integer>package_id;
 
     @FXML
-    private TableColumn<?, ?> package_nameCol;
+    private TableColumn<Package, String> package_nameCol;
 
     @FXML
-    private TableColumn<?, ?> package_priceCol;
+    private TableColumn<Package, Double> package_priceCol;
     @FXML
     private TextField package_searchfield;
 
@@ -104,6 +104,11 @@ public class EquipmentController implements Initializable {
         equipmentList = FXCollections.observableArrayList();
         equipment_table.setItems(equipmentList);
         loadEquipmentData(); // Load data after initializing the list
+        
+        package_id.setCellValueFactory(new PropertyValueFactory<>("packageId"));
+        package_nameCol.setCellValueFactory((new PropertyValueFactory<>("name")));
+        package_decriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
+        package_priceCol.setCellValueFactory(new PropertyValueFactory<>("bundlePrice"));
 
         packageList = FXCollections.observableArrayList();
         package_table.setItems(packageList);
@@ -134,53 +139,10 @@ public class EquipmentController implements Initializable {
         search_txtfield.textProperty().addListener((observable, oldValue, newValue) -> {
             filterEquipmentList(newValue);
         });
-        DropShadow dropShadow = new DropShadow();
-        dropShadow.setColor(Color.rgb(255, 255, 255, 0.6));
-        dropShadow.setRadius(10);
-        dropShadow.setSpread(0.5);
-        dropShadow.setOffsetX(0);
-        dropShadow.setOffsetY(2);
-
-        InnerShadow innerShadow = new InnerShadow();
-        innerShadow.setColor(Color.web("#00bfff"));
-        innerShadow.setRadius(10);
-
-// Chain the effects
-        dropShadow.setInput(innerShadow);
-        addHoverEffect(add_equipment_btn, dropShadow);
-        addHoverEffect(edit_equipment_btn, dropShadow);
-        addHoverEffect(delete_equipment_btn, dropShadow);
-        addHoverEffect(view_maintenance_btn, dropShadow);
 
     }
 
-    private void addHoverEffect(Button button, DropShadow normalEffect) {
-        button.setOnMouseEntered(e -> {
-            DropShadow hoverShadow = new DropShadow();
-            hoverShadow.setColor(Color.rgb(255, 255, 255, 0.8));
-            hoverShadow.setRadius(15);
-            hoverShadow.setSpread(0.6);
-            hoverShadow.setOffsetX(0);
-            hoverShadow.setOffsetY(4);
-
-            InnerShadow hoverInner = new InnerShadow();
-            hoverInner.setColor(Color.web("#00bfff"));
-            hoverInner.setRadius(15);
-
-            hoverShadow.setInput(hoverInner);
-
-            button.setEffect(hoverShadow);
-            button.setScaleX(1.05);
-            button.setScaleY(1.05);
-        });
-
-        button.setOnMouseExited(e -> {
-            button.setEffect(normalEffect);
-            button.setScaleX(1);
-            button.setScaleY(1);
-        });
-    }
-
+ 
     private void loadEquipmentData() {
         equipmentList.clear();
         String query = "SELECT * FROM equipment";

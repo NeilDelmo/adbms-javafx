@@ -14,91 +14,69 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" prefHeight="735.0" prefWidth="828.0" styleClass="AnchorPane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.EquipmentController">
+<AnchorPane id="AnchorPane" styleClass="AnchorPane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.EquipmentController">
     <stylesheets>
         <URL value="@equipment.css" />
     </stylesheets>
     <children>
-        <TabPane prefHeight="750.0" prefWidth="850.0" styleClass="tab-pane">
+        <TabPane prefHeight="750.0" prefWidth="850.0" styleClass="tab-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <tabs>
                 <Tab text="Equipment Management">
                     <content>
-                        <AnchorPane styleClass="AnchorPane">
-                            <children>
-                                <TableView fx:id="equipment_table" layoutX="10.0" layoutY="66.0" prefHeight="518.0" prefWidth="574.0" styleClass="table-view">
+                        <VBox spacing="10" styleClass="vbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <HBox spacing="10" styleClass="hbox">
+                                <FontAwesomeIcon glyphName="SEARCH" styleClass="fontawesome-icon" />
+                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Search" />
+                                <TextField fx:id="search_txtfield" prefHeight="26.0" promptText="Search for Equipment" styleClass="text-field" HBox.hgrow="ALWAYS" />
+                                <ComboBox fx:id="status_filter_cmb" promptText="Filter by Status" styleClass="combo-box" />
+                            </HBox>
+                            <HBox spacing="10" styleClass="hbox" VBox.vgrow="ALWAYS">
+                                <TableView fx:id="equipment_table" styleClass="table-view" HBox.hgrow="ALWAYS">
                                     <columns>
-                                        <TableColumn minWidth="0.0" prefWidth="1.600006103515625" text="ID" />
-                                        <TableColumn fx:id="nameCol" prefWidth="148.79999351501465" styleClass="column-header" text="Name" />
-                                        <TableColumn fx:id="descriptionCol" prefWidth="130.0" styleClass="column-header" text="Description" />
-                                        <TableColumn fx:id="priceCol" prefWidth="80.0" styleClass="column-header" text="Rental Price" />
-                                        <TableColumn fx:id="statusCol" prefWidth="80.0" styleClass="column-header" text="Status" />
-                                        <TableColumn fx:id="penaltyCol" prefWidth="129.60003662109375" styleClass="column-header" text="Overdue Penalty" />
+                                        <TableColumn text="ID" />
+                                        <TableColumn fx:id="nameCol" text="Name" />
+                                        <TableColumn fx:id="descriptionCol" text="Description" />
+                                        <TableColumn fx:id="priceCol" text="Rental Price" />
+                                        <TableColumn fx:id="statusCol" text="Status" />
+                                        <TableColumn fx:id="penaltyCol" text="Overdue Penalty" />
                                     </columns>
                                 </TableView>
-                                <HBox layoutX="10.0" layoutY="10.0" spacing="10" styleClass="hbox">
-                                    <children>
-                                        <FontAwesomeIcon glyphName="SEARCH" styleClass="fontawesome-icon" />
-                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Search" />
-                                        <TextField fx:id="search_txtfield" prefHeight="26.0" prefWidth="202.0" promptText="Search for Equipment" styleClass="text-field" />
-                                        <ComboBox fx:id="status_filter_cmb" prefWidth="150.0" promptText="Filter by Status" styleClass="combo-box" />
-                                    </children>
-                                </HBox>
-                                <VBox layoutX="593.0" layoutY="66.0" prefHeight="518.0" prefWidth="200.0" spacing="10" styleClass="vbox">
-                                    <children>
-                                        <Button fx:id="add_equipment_btn" styleClass="button" text="Add Equipment" />
-                                        <Button fx:id="edit_equipment_btn" styleClass="button" text="Edit Equipment" />
-                                        <Button fx:id="delete_equipment_btn" styleClass="button" text="Delete Equipment" />
-                                        <Button fx:id="view_maintenance_btn" prefWidth="169.0" styleClass="button" text="Maintenance History" />
-                                    </children>
+                                <VBox spacing="10" styleClass="vbox">
+                                    <Button fx:id="add_equipment_btn" text="Add Equipment" />
+                                    <Button fx:id="edit_equipment_btn" text="Edit Equipment" />
+                                    <Button fx:id="delete_equipment_btn" text="Delete Equipment" />
+                                    <Button fx:id="view_maintenance_btn" text="Maintenance History" />
                                 </VBox>
-                            </children>
-                        </AnchorPane>
+                            </HBox>
+                        </VBox>
                     </content>
                 </Tab>
                 <Tab text="Package Configuration">
                     <content>
-                        <AnchorPane styleClass="AnchorPane">
-                            <children>
-                                <TableView fx:id="package_table" layoutX="10.0" layoutY="66.0" prefHeight="506.0" prefWidth="344.0" styleClass="table-view">
+                        <VBox spacing="10" styleClass="vbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <HBox spacing="10" styleClass="hbox">
+                                <FontAwesomeIcon glyphName="SEARCH" styleClass="fontawesome-icon" />
+                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Search" />
+                                <TextField fx:id="package_searchfield" prefHeight="26.0" promptText="Search Package" styleClass="text-field" HBox.hgrow="ALWAYS" />
+                                <ComboBox fx:id="package_status_filter" promptText="Filter by Status" styleClass="combo-box" />
+                            </HBox>
+                            <HBox spacing="10" styleClass="hbox" VBox.vgrow="ALWAYS">
+                                <TableView fx:id="package_table" styleClass="table-view" HBox.hgrow="ALWAYS">
                                     <columns>
-                                        <TableColumn minWidth="0.0" prefWidth="0.0" text="ID" />
-                                        <TableColumn fx:id="package_nameCol" prefWidth="117.60000610351562" styleClass="column-header" text="Name" />
-                                        <TableColumn fx:id="package_decriptionCol" prefWidth="124.79998779296875" styleClass="column-header" text="Description" />
-                                        <TableColumn fx:id="package_priceCol" prefWidth="99.20001220703125" styleClass="column-header" text="Bundle Price" />
+                                        <TableColumn fx:id="package_id" text="ID" />
+                                        <TableColumn fx:id="package_nameCol" text="Name" />
+                                        <TableColumn fx:id="package_decriptionCol" text="Description" />
+                                        <TableColumn fx:id="package_priceCol" text="Bundle Price" />
                                     </columns>
                                 </TableView>
-                                <HBox layoutX="10.0" layoutY="10.0" spacing="10" styleClass="hbox">
-                                    <children>
-                                        <FontAwesomeIcon glyphName="SEARCH" styleClass="fontawesome-icon" />
-                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Search" />
-                                        <TextField fx:id="package_searchfield" prefHeight="26.0" prefWidth="202.0" promptText="Search Package" styleClass="text-field" />
-                                        <ComboBox fx:id="package_status_filter" prefWidth="150.0" promptText="Filter by Status" styleClass="combo-box" />
-                                    </children>
-                                </HBox>
-                                <VBox layoutX="373.0" layoutY="94.0" prefHeight="477.0" prefWidth="176.0" spacing="10" styleClass="vbox">
-                                    <children>
-                                        <Button fx:id="add_package_btn" styleClass="button" text="Add Package" />
-                                        <Button fx:id="edit_package_btn" styleClass="button" text="Edit Package" />
-                                        <Button fx:id="delete_package_btn" styleClass="button" text="Delete Package" />
-                                        <Button fx:id="config_package_btn" styleClass="button" text="Configure Package Equipment" />
-                                    </children>
+                                <VBox spacing="10" styleClass="vbox">
+                                    <Button fx:id="add_package_btn" text="Add Package" />
+                                    <Button fx:id="edit_package_btn" text="Edit Package" />
+                                    <Button fx:id="delete_package_btn" text="Delete Package" />
+                                    <Button fx:id="config_package_btn" text="Configure Package Equipment" />
                                 </VBox>
-                            </children>
-                        </AnchorPane>
-                    </content>
-                </Tab>
-                <Tab text="Maintenance History">
-                    <content>
-                        <AnchorPane styleClass="AnchorPane">
-                            <children>
-                                <TableView layoutX="150.0" layoutY="67.0" prefHeight="586.0" prefWidth="454.0" styleClass="table-view">
-                                    <columns>
-                                        <TableColumn prefWidth="150.0" styleClass="column-header" text="Maintenance Date" />
-                                        <TableColumn prefWidth="300.0" styleClass="column-header" text="Details" />
-                                    </columns>
-                                </TableView>
-                            </children>
-                        </AnchorPane>
+                            </HBox>
+                        </VBox>
                     </content>
                 </Tab>
             </tabs>

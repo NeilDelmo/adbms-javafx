@@ -14,7 +14,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" prefHeight="750.0" prefWidth="850.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.ReservationController">
+<AnchorPane id="AnchorPane" prefHeight="750.0" prefWidth="850.0" styleClass="mainFxmlClass" stylesheets="@Reservation.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.ReservationController">
    <children>
       <AnchorPane layoutX="11.0" layoutY="16.0" prefHeight="324.0" prefWidth="830.0">
          <children>
