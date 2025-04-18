@@ -5,29 +5,31 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
 <VBox id="VBox" prefHeight="750.0" prefWidth="850.0" styleClass="mainFxmlClass" stylesheets="@Reservation.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.ReservationController">
     <children>
-        <GridPane hgap="10" layoutX="10" layoutY="10" vgap="10">
+        <GridPane hgap="10" layoutX="10" layoutY="10" prefHeight="134.0" prefWidth="826.0" vgap="10">
             <children>
                 <DatePicker fx:id="start_date" promptText="Start Date" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                 <DatePicker fx:id="end_date" promptText="End Date" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                 <CheckBox fx:id="delivery_checkbox" text="Delivery" GridPane.columnIndex="2" GridPane.rowIndex="0" />
                 <ComboBox fx:id="customer_cmb" promptText="Select Customers" GridPane.columnIndex="3" GridPane.rowIndex="0" />
-                <Button fx:id="check_availability_btn" text="Check Availability" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                <Button fx:id="check_availability_btn" onAction="#checkAvailability" text="Check Availability" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                 <ComboBox fx:id="status_cmb" promptText="Status" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                 <VBox spacing="10" GridPane.columnIndex="3" GridPane.rowIndex="1">
                     <children>
-                        <Button fx:id="add_item_btn" text="Add Reservation" />
+                        <Button fx:id="add_item_btn" onAction="#handleAddReservation" text="Add Reservation" />
                     </children>
                 </VBox>
             </children>
@@ -43,30 +45,35 @@
             <RowConstraints />
          </rowConstraints>
         </GridPane>
-        <TableView fx:id="equipment_table" VBox.vgrow="ALWAYS">
+        <TableView fx:id="package_table" prefHeight="107.0" prefWidth="830.0" stylesheets="@Reservation.css" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="typeCol" text="Type" />
-                <TableColumn fx:id="nameCol" text="Name" />
-                <TableColumn fx:id="priceCol" text="Price" />
-                <TableColumn fx:id="statusCol" text="Status" />
+                <TableColumn fx:id="packageNameCol" prefWidth="310.39998626708984" text="Name" />
+                <TableColumn fx:id="bundlePriceCol" prefWidth="225.59994506835938" text="Price" />
+                <TableColumn fx:id="packageStatusCol" prefWidth="280.0" text="Status" />
             </columns>
         </TableView>
-        <TableView fx:id="reservation_table" VBox.vgrow="ALWAYS">
+      <ListView fx:id="packageContentsList" prefHeight="76.0" prefWidth="830.0" />
+        <TableView fx:id="reservation_table" prefHeight="95.0" prefWidth="830.0" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="customerCol" prefWidth="193.59998512268066" text="Customer" />
                 <TableColumn fx:id="periodCol" prefWidth="204.8000030517578" text="Period" />
-                <TableColumn fx:id="StatusCol" prefWidth="183.20004272460938" text="Status" />
-                <TableColumn fx:id="deliveryCol" prefWidth="240.80006408691406" text="Delivery" />
+            <TableColumn fx:id="addressCol" prefWidth="162.39999389648438" text="Address" />
+            <TableColumn fx:id="packageCol" prefWidth="143.20001220703125" text="Package" />
+            <TableColumn fx:id="StatusCol" prefWidth="112.79998779296875" text="Status" />
             </columns>
         </TableView>
         <VBox layoutX="10" layoutY="10" spacing="10">
             <children>
                 <Text text="Payments" />
                 <TextField fx:id="amount_textfield" promptText="Amount" />
-                <ComboBox fx:id="payment_method_cmb" promptText="Payment Method" />
-                <Button fx:id="record_btn" text="Record" />
-                <Label fx:id="penalty_label" text="Label" />
-                <TextArea fx:id="delivery_txtarea" promptText="Delivery Address" />
+                <HBox spacing="10">
+                    <children>
+                        <ComboBox fx:id="payment_method_cmb" promptText="Payment Method" />
+                        <Button fx:id="record_btn" text="Record" />
+                        <Label fx:id="penalty_label" text="Label" />
+                    </children>
+                </HBox>
+                <TextArea fx:id="delivery_txtarea" prefHeight="38.0" prefWidth="809.0" promptText="Delivery Address" />
             </children>
         </VBox>
     </children>
