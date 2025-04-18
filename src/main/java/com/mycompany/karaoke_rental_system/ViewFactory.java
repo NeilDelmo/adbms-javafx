@@ -11,7 +11,7 @@ public class ViewFactory {
 
     private AnchorPane dashboardView;
     private AnchorPane customerView;
-    private AnchorPane reservationView;
+    private VBox reservationView;
     private AnchorPane equipmentView;
 
     public ViewFactory() {
@@ -39,7 +39,7 @@ public class ViewFactory {
         return customerView;
     }
     
-    public AnchorPane getReservationView(){
+    public VBox getReservationView(){
     if(reservationView == null){
         try{
             reservationView = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/Reservation.fxml")).load();

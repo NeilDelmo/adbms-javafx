@@ -18,6 +18,15 @@ package com.mycompany.karaoke_rental_system;
         this.overduePenalty = overduePenalty;
         this.status = status;
     }
+    
+    public Equipment(int equipmentId, String name, double rentalPrice, String description){
+        this.equipmentId = equipmentId;
+        this.name = name;
+        this.rentalPrice = rentalPrice;
+        this.description = description;
+        
+        
+    }
 
     public int getEquipmentId() {
         return equipmentId;

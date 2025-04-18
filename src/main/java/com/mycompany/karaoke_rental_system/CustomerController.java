@@ -242,58 +242,6 @@ public class CustomerController implements Initializable {
         alert.showAndWait();
     }
 
-    public static class Customer {
-
-        private final int customerId;
-        private final String name;
-        private final String phone;
-        private final String address;
-        private final int createdBy;
-        private final int totalBookings;
-        private final LocalDateTime lastBooking;
-        private final double totalSpent;
-
-        public Customer(int customerId, String name, String phone, String address, int createdBy, int totalBookings, LocalDateTime lastBooking, double totalSpent) {
-            this.customerId = customerId;
-            this.name = name;
-            this.phone = phone;
-            this.address = address;
-            this.createdBy = createdBy;
-            this.totalBookings = totalBookings;
-            this.lastBooking = lastBooking;
-            this.totalSpent = totalSpent;
-        }
-
-        // Getters
-        public int getCustomerId() {
-            return customerId;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getPhone() {
-            return phone;
-        }
-
-        public String getAddress() {
-            return address;
-        }
-
-        public int getTotalBookings() {
-            return totalBookings;
-        }
-
-        public LocalDateTime getLastBooking() {
-            return lastBooking;
-        }
-
-        public double getTotalSpent() {
-            return totalSpent;
-        }
-    }
-
     public static class RentalHistory {
 
         private final int reservationId;

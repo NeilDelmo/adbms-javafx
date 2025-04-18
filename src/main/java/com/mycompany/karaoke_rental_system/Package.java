@@ -16,7 +16,13 @@ public class Package {
         this.bundlePrice = bundlePrice;
         this.status = status;
     }
-
+    
+    public Package(int packageId, String name, double bundlePrice, String status){
+        this.packageId = packageId;
+        this.name = name;
+        this.bundlePrice = bundlePrice;
+        this.status = status;
+    }
     // Getters and Setters
     public int getPackageId() {
         return packageId;
