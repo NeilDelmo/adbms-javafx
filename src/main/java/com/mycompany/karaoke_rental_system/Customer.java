@@ -36,6 +36,11 @@ public class Customer {
             this.customerId = customerId;
             this.name = name;
         }
+        public Customer(int customerId,String name, String address){
+            this.customerId = customerId;
+            this.name = name;
+            this.address = address;
+        }
 
         // Getters
         public int getCustomerId() {

@@ -26,6 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.time.LocalDate;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
@@ -34,7 +35,7 @@ import javafx.scene.control.ListCell;
 public class ReservationController implements Initializable {
 
     @FXML
-    private TableColumn<?, ?> StatusCol;
+    private TableColumn<Reservation, String> statusCol;
 
     @FXML
     private Button add_item_btn;
@@ -46,16 +47,13 @@ public class ReservationController implements Initializable {
     private TableColumn<Package, Double> bundlePriceCol;
 
     @FXML
-    private Button check_availability_btn;
-
-    @FXML
-    private TableColumn<Customer, String> customerCol;
+    private TableColumn<Reservation, String> customerCol;
 
     @FXML
     private ComboBox<Customer> customer_cmb;
 
     @FXML
-    private TableColumn<Customer, String> addressCol;
+    private TableColumn<Reservation, String> addressCol;
 
     @FXML
     private CheckBox delivery_checkbox;
@@ -85,13 +83,13 @@ public class ReservationController implements Initializable {
     private Label penalty_label;
 
     @FXML
-    private TableColumn<?, ?> periodCol;
+    private TableColumn<Reservation, String> periodCol;
 
     @FXML
     private Button record_btn;
 
     @FXML
-    private TableView<?> reservation_table;
+    private TableView<Reservation> reservation_table;
 
     @FXML
     private DatePicker start_date;
@@ -100,7 +98,7 @@ public class ReservationController implements Initializable {
     private ComboBox<String> status_cmb;
 
     @FXML
-    private TableColumn<?, ?> packageCol;
+    private TableColumn<Reservation, String> packageCol;
 
     private ObservableList<Package> packageList;
     private ObservableList<Customer> customerList;
@@ -114,6 +112,8 @@ public class ReservationController implements Initializable {
         setupDateListener(); // Add this
         setupPackageSelection();
         setupListView();
+        TableColumnsForReservation();
+        loadReservations();
 
         start_date.setValue(LocalDate.now());
         end_date.setValue(LocalDate.now().plusDays(7));
@@ -137,6 +137,26 @@ public class ReservationController implements Initializable {
         packageList = FXCollections.observableArrayList();
         package_table.setItems(packageList);
     }
+    
+    private void TableColumnsForReservation() {
+    // Customer Name
+    customerCol.setCellValueFactory(cellData -> 
+        new SimpleStringProperty(cellData.getValue().getCustomer().getName()));
+    // Period (Start Date - End Date)
+    periodCol.setCellValueFactory(cellData -> {
+        Reservation res = cellData.getValue();
+        String period = res.getStartDate().toString() + " - " + res.getEndDate().toString();
+        return new SimpleStringProperty(period);
+    });
+    // Customer Address
+    addressCol.setCellValueFactory(cellData -> 
+        new SimpleStringProperty(cellData.getValue().getCustomer().getAddress()));
+    // Package Name
+    packageCol.setCellValueFactory(cellData -> 
+        new SimpleStringProperty(cellData.getValue().getPkg().getName()));
+    // Reservation Status
+    statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
+}
 
     private void setupListView() {
         packageContentsList.setCellFactory(lv -> new ListCell<Equipment>() {
@@ -397,6 +417,48 @@ public class ReservationController implements Initializable {
         showError("Database Error", "Failed to check for overlapping reservations: " + e.getMessage());
     }
     return false;
+}
+    
+    private void loadReservations() {
+    try (Connection conn = DatabaseConnection.getConnection()) {
+        String query = "SELECT * FROM current_rentals"; 
+        
+        PreparedStatement pst = conn.prepareStatement(query);
+        ResultSet rs = pst.executeQuery();
+
+        ObservableList<Reservation> reservations = FXCollections.observableArrayList();
+        while (rs.next()) {
+            // Create Customer object
+            Customer customer = new Customer(
+                rs.getInt("customer_id"),
+                rs.getString("customer_name"),
+                rs.getString("address")
+            );
+            
+            // Create Package object
+            Package pkg = new Package(
+                rs.getInt("package_id"),
+                rs.getString("package_name"),
+                rs.getDouble("price"),
+                ""  // Status will be empty here as it's not relevant in this context
+            );
+            
+            // Create Reservation object
+            Reservation reservation = new Reservation();
+            reservation.setCustomer(customer);
+            reservation.setPkg(pkg);
+            reservation.setStartDate(rs.getDate("start_datetime").toLocalDate());
+            reservation.setEndDate(rs.getDate("end_datetime").toLocalDate());
+            reservation.setStatus(rs.getString("status"));
+            
+            reservations.add(reservation);
+        }
+        
+        reservation_table.setItems(reservations);
+        
+    } catch (SQLException e) {
+        showError("Database Error", "Failed to load reservations: " + e.getMessage());
+    }
 }
     
 
