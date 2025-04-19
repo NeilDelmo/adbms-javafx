@@ -217,6 +217,10 @@ public class CustomerController implements Initializable {
             showAlert("Database Error", "Error loading rental history: " + e.getMessage());
         }
     }
+    
+    public void refreshData() {
+    loadCustomers(); // Reload customers from the database
+}
 
     private void clearFields() {
         name_txt.clear();
