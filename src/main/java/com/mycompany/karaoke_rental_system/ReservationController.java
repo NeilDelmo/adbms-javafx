@@ -97,7 +97,7 @@ public class ReservationController implements Initializable {
     private DatePicker start_date;
 
     @FXML
-    private ComboBox<?> status_cmb;
+    private ComboBox<String> status_cmb;
 
     @FXML
     private TableColumn<?, ?> packageCol;
@@ -114,11 +114,16 @@ public class ReservationController implements Initializable {
         setupDateListener(); // Add this
         setupPackageSelection();
         setupListView();
-        
+
         start_date.setValue(LocalDate.now());
-    end_date.setValue(LocalDate.now().plusDays(7));
-    
-    checkAvailability();
+        end_date.setValue(LocalDate.now().plusDays(7));
+        
+        status_cmb.getItems().addAll("All", "Rented", "Available");
+        status_cmb.getSelectionModel().selectFirst();
+        
+        status_cmb.valueProperty().addListener((obs,oldVal,newVal)->checkAvailability());
+
+        checkAvailability();
 
         delivery_txtarea.visibleProperty().bind(delivery_checkbox.selectedProperty());
         delivery_txtarea.managedProperty().bind(delivery_checkbox.selectedProperty());
@@ -132,15 +137,15 @@ public class ReservationController implements Initializable {
         packageList = FXCollections.observableArrayList();
         package_table.setItems(packageList);
     }
-    
-    private void setupListView(){
-    packageContentsList.setCellFactory(lv ->new ListCell<Equipment>(){
-        @Override
-        protected void updateItem(Equipment item,boolean empty){
-            super.updateItem(item, empty);
-            setText(empty ? null : item.getName());
-        }
-    });
+
+    private void setupListView() {
+        packageContentsList.setCellFactory(lv -> new ListCell<Equipment>() {
+            @Override
+            protected void updateItem(Equipment item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty ? null : item.getName());
+            }
+        });
     }
 
     private void setupPackageSelection() {
@@ -230,6 +235,20 @@ public class ReservationController implements Initializable {
                         rs.getString("availability_status")
                 ));
             }
+            String selectedStatus = status_cmb.getValue();
+            ObservableList<Package> filteredPackages = packageList.filtered(pkg ->{
+            if(selectedStatus == null || "All".equals(selectedStatus)){
+               return true; 
+            }
+            else if("Rented".equals(selectedStatus)){
+                return "Reserved".equals(pkg.getStatus());
+            }
+            else if("Available".equals(selectedStatus)){
+                return "Available".equals(pkg.getStatus());
+            }
+            return false;
+        });
+            package_table.setItems(filteredPackages);
 
         } catch (SQLException e) {
             showError("Availability Check Failed", e.getMessage());
