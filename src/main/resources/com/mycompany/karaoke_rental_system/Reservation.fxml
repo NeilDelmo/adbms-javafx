@@ -33,33 +33,33 @@
                     </children>
                 </VBox>
             </children>
-         <columnConstraints>
-            <ColumnConstraints />
-            <ColumnConstraints />
-            <ColumnConstraints />
-            <ColumnConstraints />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-         </rowConstraints>
+            <columnConstraints>
+                <ColumnConstraints />
+                <ColumnConstraints />
+                <ColumnConstraints />
+                <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+            </rowConstraints>
         </GridPane>
-        <TableView fx:id="package_table" prefHeight="107.0" prefWidth="830.0" stylesheets="@Reservation.css" VBox.vgrow="ALWAYS">
+        <TableView fx:id="package_table" prefHeight="200.0" prefWidth="830.0" stylesheets="@Reservation.css" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="packageNameCol" prefWidth="310.39998626708984" text="Name" />
                 <TableColumn fx:id="bundlePriceCol" prefWidth="225.59994506835938" text="Price" />
                 <TableColumn fx:id="packageStatusCol" prefWidth="280.0" text="Status" />
             </columns>
         </TableView>
-      <ListView fx:id="packageContentsList" prefHeight="76.0" prefWidth="830.0" />
-        <TableView fx:id="reservation_table" prefHeight="95.0" prefWidth="830.0" VBox.vgrow="ALWAYS">
+        <ListView fx:id="packageContentsList" prefHeight="100.0" prefWidth="830.0" />
+        <TableView fx:id="reservation_table" prefHeight="200.0" prefWidth="830.0" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="customerCol" prefWidth="193.59998512268066" text="Customer" />
                 <TableColumn fx:id="periodCol" prefWidth="204.8000030517578" text="Period" />
-            <TableColumn fx:id="addressCol" prefWidth="162.39999389648438" text="Address" />
-            <TableColumn fx:id="packageCol" prefWidth="143.20001220703125" text="Package" />
-            <TableColumn fx:id="StatusCol" prefWidth="112.79998779296875" text="Status" />
+                <TableColumn fx:id="addressCol" prefWidth="162.39999389648438" text="Address" />
+                <TableColumn fx:id="packageCol" prefWidth="143.20001220703125" text="Package" />
+                <TableColumn fx:id="StatusCol" prefWidth="112.79998779296875" text="Status" />
             </columns>
         </TableView>
         <VBox layoutX="10" layoutY="10" spacing="10">
@@ -78,3 +78,4 @@
         </VBox>
     </children>
 </VBox>
+
