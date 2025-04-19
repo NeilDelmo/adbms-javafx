@@ -81,29 +81,23 @@ public class CustomerController implements Initializable {
         setupTableSelection();
 
         reservation_btn.setOnAction(e
-                    -> rootPane.setCenter(Model.getInstance().getViewFactory().getDashboardView())
-            );
+                -> rootPane.setCenter(Model.getInstance().getViewFactory().getDashboardView())
+        );
 
-        }
+    }
 
     private void setupTableColumns() {
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-
         phoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
-
         addressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
-
         bookingsCol.setCellValueFactory(new PropertyValueFactory<>("totalBookings"));
-
         lastBookingCol.setCellValueFactory(cell -> {
             LocalDateTime date = cell.getValue().getLastBooking();
             return new SimpleStringProperty(date != null
                     ? date.format(DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm")) : "N/A");
         });
-
         spentCol.setCellValueFactory(cell
                 -> new SimpleStringProperty(String.format("₱%,.2f", cell.getValue().getTotalSpent())));
-
         customer_table.setItems(customers);
     }
 
@@ -144,15 +138,11 @@ public class CustomerController implements Initializable {
                 + "FROM customers c "
                 + "LEFT JOIN reservations r ON c.customer_id = r.customer_id "
                 + "LEFT JOIN payments p ON r.reservation_id = p.reservation_id "
-                + "WHERE c.created_by = ? " // Filter by current user
+                + "WHERE c.created_by = ? "
                 + "GROUP BY c.customer_id";
-
         try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setInt(1, Model.getInstance().getcurrentuserid()); // Implement this based on your auth system
-
+            pstmt.setInt(1, Model.getInstance().getcurrentuserid());
             ResultSet rs = pstmt.executeQuery();
-
             while (rs.next()) {
                 customers.add(new Customer(
                         rs.getInt("customer_id"),
@@ -285,6 +275,17 @@ public class CustomerController implements Initializable {
         public double getTotalValue() {
             return totalValue;
         }
+
+        @Override
+        public String toString() {
+            return String.format("%s | %s to %s | Status: %s | Total: ₱%,.2f",
+                    customerName,
+                    startDate.format(DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm")),
+                    endDate.format(DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm")),
+                    status,
+                    totalValue);
+        }
+
     }
 
 }
