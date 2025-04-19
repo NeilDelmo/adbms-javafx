@@ -56,9 +56,6 @@ public class ReservationController implements Initializable {
     private TableColumn<Reservation, String> addressCol;
 
     @FXML
-    private CheckBox delivery_checkbox;
-
-    @FXML
     private TextArea delivery_txtarea;
 
     @FXML
@@ -100,6 +97,9 @@ public class ReservationController implements Initializable {
     @FXML
     private TableColumn<Reservation, String> packageCol;
 
+    @FXML
+    private CheckBox delivery_checkbox;
+
     private ObservableList<Package> packageList;
     private ObservableList<Customer> customerList;
 
@@ -137,26 +137,26 @@ public class ReservationController implements Initializable {
         packageList = FXCollections.observableArrayList();
         package_table.setItems(packageList);
     }
-    
+
     private void TableColumnsForReservation() {
-    // Customer Name
-    customerCol.setCellValueFactory(cellData -> 
-        new SimpleStringProperty(cellData.getValue().getCustomer().getName()));
-    // Period (Start Date - End Date)
-    periodCol.setCellValueFactory(cellData -> {
-        Reservation res = cellData.getValue();
-        String period = res.getStartDate().toString() + " - " + res.getEndDate().toString();
-        return new SimpleStringProperty(period);
-    });
-    // Customer Address
-    addressCol.setCellValueFactory(cellData -> 
-        new SimpleStringProperty(cellData.getValue().getCustomer().getAddress()));
-    // Package Name
-    packageCol.setCellValueFactory(cellData -> 
-        new SimpleStringProperty(cellData.getValue().getPkg().getName()));
-    // Reservation Status
-    statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
-}
+        // Customer Name
+        customerCol.setCellValueFactory(cellData
+                -> new SimpleStringProperty(cellData.getValue().getCustomer().getName()));
+        // Period (Start Date - End Date)
+        periodCol.setCellValueFactory(cellData -> {
+            Reservation res = cellData.getValue();
+            String period = res.getStartDate().toString() + " - " + res.getEndDate().toString();
+            return new SimpleStringProperty(period);
+        });
+        // Customer Address
+        addressCol.setCellValueFactory(cellData
+                -> new SimpleStringProperty(cellData.getValue().getCustomer().getAddress()));
+        // Package Name
+        packageCol.setCellValueFactory(cellData
+                -> new SimpleStringProperty(cellData.getValue().getPkg().getName()));
+        // Reservation Status
+        statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
+    }
 
     private void setupListView() {
         packageContentsList.setCellFactory(lv -> new ListCell<Equipment>() {
@@ -340,29 +340,29 @@ public class ReservationController implements Initializable {
     }
 
     private boolean validateReservation() {
-    if (customer_cmb.getValue() == null) {
-        showError("Missing Customer", "Please select a customer");
-        return false;
-    }
-    if (selectedPackage == null) {
-        showError("Missing Package", "Please select a package");
-        return false;
-    }
-    if (!validDates()) {
-        return false;
-    }
+        if (customer_cmb.getValue() == null) {
+            showError("Missing Customer", "Please select a customer");
+            return false;
+        }
+        if (selectedPackage == null) {
+            showError("Missing Package", "Please select a package");
+            return false;
+        }
+        if (!validDates()) {
+            return false;
+        }
 
-    // Check for overlapping reservations
-    Customer selectedCustomer = customer_cmb.getValue();
-    LocalDate startDate = start_date.getValue();
-    LocalDate endDate = end_date.getValue();
-    if (checkForOverlappingReservations(selectedCustomer, startDate, endDate)) {
-        showError("Duplicate Reservation", "This customer already has a reservation within the specified date range.");
-        return false;
-    }
+        // Check for overlapping reservations
+        Customer selectedCustomer = customer_cmb.getValue();
+        LocalDate startDate = start_date.getValue();
+        LocalDate endDate = end_date.getValue();
+        if (checkForOverlappingReservations(selectedCustomer, startDate, endDate)) {
+            showError("Duplicate Reservation", "This customer already has a reservation within the specified date range.");
+            return false;
+        }
 
-    return true;
-}
+        return true;
+    }
 
     private void showError(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -377,89 +377,88 @@ public class ReservationController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
     private void resetForm() {
-    // Reset customer combo box
-    customer_cmb.getSelectionModel().clearSelection();
+        // Reset customer combo box
+        customer_cmb.getSelectionModel().clearSelection();
 
-    // Reset date pickers to default values
-    start_date.setValue(LocalDate.now());
-    end_date.setValue(LocalDate.now().plusDays(7));
+        // Reset date pickers to default values
+        start_date.setValue(LocalDate.now());
+        end_date.setValue(LocalDate.now().plusDays(7));
 
-    // Uncheck the delivery checkbox and clear the delivery text area
-    delivery_checkbox.setSelected(false);
-    delivery_txtarea.clear();
+        // Clear the selected package and package contents list
+        package_table.getSelectionModel().clearSelection();
+        packageContentsList.setItems(FXCollections.emptyObservableList());
 
-    // Clear the selected package and package contents list
-    package_table.getSelectionModel().clearSelection();
-    packageContentsList.setItems(FXCollections.emptyObservableList());
+        delivery_checkbox.setSelected(false);
+        delivery_txtarea.clear();
 
-    // Reset status combo box to "All"
-    status_cmb.getSelectionModel().selectFirst();
+        // Reset status combo box to "All"
+        status_cmb.getSelectionModel().selectFirst();
 
-    // Optionally, clear any other fields (e.g., amount_textfield)
-    amount_textfield.clear();
-}
+        // Optionally, clear any other fields (e.g., amount_textfield)
+        amount_textfield.clear();
+    }
+
     private boolean checkForOverlappingReservations(Customer customer, LocalDate startDate, LocalDate endDate) {
-    String query = "SELECT COUNT(*) AS count FROM reservations "
-                 + "WHERE customer_id = ? "
-                 + "AND (start_date <= ? AND end_date >= ?)";
-    try (Connection conn = DatabaseConnection.getConnection();
-         PreparedStatement pst = conn.prepareStatement(query)) {
-        pst.setInt(1, customer.getCustomerId());
-        pst.setDate(2, Date.valueOf(endDate));
-        pst.setDate(3, Date.valueOf(startDate));
-        ResultSet rs = pst.executeQuery();
-        if (rs.next()) {
-            int count = rs.getInt("count");
-            return count > 0; // Return true if overlapping reservations exist
+        String query = "SELECT COUNT(*) AS count FROM reservations "
+                + "WHERE customer_id = ? "
+                + "AND (start_date <= ? AND end_date >= ?)";
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pst = conn.prepareStatement(query)) {
+            pst.setInt(1, customer.getCustomerId());
+            pst.setDate(2, Date.valueOf(endDate));
+            pst.setDate(3, Date.valueOf(startDate));
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                int count = rs.getInt("count");
+                return count > 0; // Return true if overlapping reservations exist
+            }
+        } catch (SQLException e) {
+            showError("Database Error", "Failed to check for overlapping reservations: " + e.getMessage());
         }
-    } catch (SQLException e) {
-        showError("Database Error", "Failed to check for overlapping reservations: " + e.getMessage());
+        return false;
     }
-    return false;
-}
-    
-    private void loadReservations() {
-    try (Connection conn = DatabaseConnection.getConnection()) {
-        String query = "SELECT * FROM current_rentals"; 
-        
-        PreparedStatement pst = conn.prepareStatement(query);
-        ResultSet rs = pst.executeQuery();
 
-        ObservableList<Reservation> reservations = FXCollections.observableArrayList();
-        while (rs.next()) {
-            // Create Customer object
-            Customer customer = new Customer(
-                rs.getInt("customer_id"),
-                rs.getString("customer_name"),
-                rs.getString("address")
-            );
-            
-            // Create Package object
-            Package pkg = new Package(
-                rs.getInt("package_id"),
-                rs.getString("package_name"),
-                rs.getDouble("price"),
-                ""  // Status will be empty here as it's not relevant in this context
-            );
-            
-            // Create Reservation object
-            Reservation reservation = new Reservation();
-            reservation.setCustomer(customer);
-            reservation.setPkg(pkg);
-            reservation.setStartDate(rs.getDate("start_datetime").toLocalDate());
-            reservation.setEndDate(rs.getDate("end_datetime").toLocalDate());
-            reservation.setStatus(rs.getString("status"));
-            
-            reservations.add(reservation);
+    private void loadReservations() {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            String query = "SELECT * FROM current_rentals";
+
+            PreparedStatement pst = conn.prepareStatement(query);
+            ResultSet rs = pst.executeQuery();
+
+            ObservableList<Reservation> reservations = FXCollections.observableArrayList();
+            while (rs.next()) {
+                // Create Customer object
+                Customer customer = new Customer(
+                        rs.getInt("customer_id"),
+                        rs.getString("customer_name"),
+                        rs.getString("address")
+                );
+
+                // Create Package object
+                Package pkg = new Package(
+                        rs.getInt("package_id"),
+                        rs.getString("package_name"),
+                        rs.getDouble("price"),
+                        "" // Status will be empty here as it's not relevant in this context
+                );
+
+                // Create Reservation object
+                Reservation reservation = new Reservation();
+                reservation.setCustomer(customer);
+                reservation.setPkg(pkg);
+                reservation.setStartDate(rs.getDate("start_datetime").toLocalDate());
+                reservation.setEndDate(rs.getDate("end_datetime").toLocalDate());
+                reservation.setStatus(rs.getString("status"));
+
+                reservations.add(reservation);
+            }
+
+            reservation_table.setItems(reservations);
+
+        } catch (SQLException e) {
+            showError("Database Error", "Failed to load reservations: " + e.getMessage());
         }
-        
-        reservation_table.setItems(reservations);
-        
-    } catch (SQLException e) {
-        showError("Database Error", "Failed to load reservations: " + e.getMessage());
     }
-}
-    
 
 }
