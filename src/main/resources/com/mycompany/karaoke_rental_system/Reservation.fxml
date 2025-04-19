@@ -19,15 +19,14 @@
 
 <VBox id="VBox" prefHeight="750.0" prefWidth="850.0" styleClass="mainFxmlClass" stylesheets="@Reservation.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.ReservationController">
     <children>
-        <GridPane hgap="10" layoutX="10" layoutY="10" prefHeight="134.0" prefWidth="826.0" vgap="10">
+        <GridPane hgap="5" layoutX="10" layoutY="10" prefHeight="100.0" prefWidth="826.0" vgap="5">
             <children>
                 <DatePicker fx:id="start_date" promptText="Start Date" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                 <DatePicker fx:id="end_date" promptText="End Date" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                 <CheckBox fx:id="delivery_checkbox" text="Delivery" GridPane.columnIndex="2" GridPane.rowIndex="0" />
                 <ComboBox fx:id="customer_cmb" promptText="Select Customers" GridPane.columnIndex="3" GridPane.rowIndex="0" />
-                <Button fx:id="check_availability_btn" onAction="#checkAvailability" text="Check Availability" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                <ComboBox fx:id="status_cmb" promptText="Status" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                <VBox spacing="10" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                <ComboBox fx:id="status_cmb" promptText="Status" GridPane.rowIndex="1" />
+                <VBox spacing="5" GridPane.columnIndex="3" GridPane.rowIndex="1">
                     <children>
                         <Button fx:id="add_item_btn" onAction="#handleAddReservation" text="Add Reservation" />
                     </children>
@@ -42,40 +41,42 @@
             <rowConstraints>
                 <RowConstraints />
                 <RowConstraints />
-                <RowConstraints />
             </rowConstraints>
         </GridPane>
-        <TableView fx:id="package_table" prefHeight="200.0" prefWidth="830.0" stylesheets="@Reservation.css" VBox.vgrow="ALWAYS">
-            <columns>
-                <TableColumn fx:id="packageNameCol" prefWidth="310.39998626708984" text="Name" />
-                <TableColumn fx:id="bundlePriceCol" prefWidth="225.59994506835938" text="Price" />
-                <TableColumn fx:id="packageStatusCol" prefWidth="280.0" text="Status" />
-            </columns>
-        </TableView>
-        <ListView fx:id="packageContentsList" prefHeight="100.0" prefWidth="830.0" />
+        <HBox prefHeight="300.0" spacing="10" VBox.vgrow="ALWAYS">
+            <children>
+                <TableView fx:id="package_table" prefHeight="300.0" prefWidth="400.0" stylesheets="@Reservation.css" HBox.hgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="packageNameCol" prefWidth="150.0" text="Name" />
+                        <TableColumn fx:id="bundlePriceCol" prefWidth="110.0" text="Price" />
+                        <TableColumn fx:id="packageStatusCol" prefWidth="130.0" text="Status" />
+                    </columns>
+                </TableView>
+                <ListView fx:id="packageContentsList" prefHeight="300.0" prefWidth="400.0" HBox.hgrow="ALWAYS" />
+            </children>
+        </HBox>
         <TableView fx:id="reservation_table" prefHeight="200.0" prefWidth="830.0" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="customerCol" prefWidth="193.59998512268066" text="Customer" />
-                <TableColumn fx:id="periodCol" prefWidth="204.8000030517578" text="Period" />
-                <TableColumn fx:id="addressCol" prefWidth="162.39999389648438" text="Address" />
-                <TableColumn fx:id="packageCol" prefWidth="143.20001220703125" text="Package" />
-                <TableColumn fx:id="StatusCol" prefWidth="112.79998779296875" text="Status" />
+                <TableColumn fx:id="customerCol" prefWidth="175.20005226135254" text="Customer" />
+                <TableColumn fx:id="periodCol" prefWidth="179.19993591308594" text="Period" />
+                <TableColumn fx:id="addressCol" prefWidth="163.19998168945312" text="Address" />
+                <TableColumn fx:id="packageCol" prefWidth="158.39996337890625" text="Package" />
+                <TableColumn fx:id="StatusCol" prefWidth="146.39996337890625" text="Status" />
             </columns>
         </TableView>
-        <VBox layoutX="10" layoutY="10" spacing="10">
+        <VBox layoutX="10" layoutY="10" spacing="5">
             <children>
                 <Text text="Payments" />
                 <TextField fx:id="amount_textfield" promptText="Amount" />
-                <HBox spacing="10">
+                <HBox spacing="5">
                     <children>
                         <ComboBox fx:id="payment_method_cmb" promptText="Payment Method" />
                         <Button fx:id="record_btn" text="Record" />
                         <Label fx:id="penalty_label" text="Label" />
                     </children>
                 </HBox>
-                <TextArea fx:id="delivery_txtarea" prefHeight="38.0" prefWidth="809.0" promptText="Delivery Address" />
+                <TextArea fx:id="delivery_txtarea" prefHeight="30.0" prefWidth="800.0" promptText="Delivery Address" />
             </children>
         </VBox>
     </children>
 </VBox>
-

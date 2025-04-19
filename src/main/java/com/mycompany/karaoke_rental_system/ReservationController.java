@@ -25,9 +25,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.time.LocalDate;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ListCell;
 
 public class ReservationController implements Initializable {
 
@@ -53,7 +55,7 @@ public class ReservationController implements Initializable {
     private ComboBox<Customer> customer_cmb;
 
     @FXML
-    private TableColumn<?, String> addressCol;
+    private TableColumn<Customer, String> addressCol;
 
     @FXML
     private CheckBox delivery_checkbox;
@@ -110,6 +112,16 @@ public class ReservationController implements Initializable {
         TableColumnsForPackage();
         loadCustomers(); // Add this
         setupDateListener(); // Add this
+        setupPackageSelection();
+        setupListView();
+        
+        start_date.setValue(LocalDate.now());
+    end_date.setValue(LocalDate.now().plusDays(7));
+    
+    checkAvailability();
+
+        delivery_txtarea.visibleProperty().bind(delivery_checkbox.selectedProperty());
+        delivery_txtarea.managedProperty().bind(delivery_checkbox.selectedProperty());
     }
 
     private void TableColumnsForPackage() {
@@ -120,6 +132,16 @@ public class ReservationController implements Initializable {
         packageList = FXCollections.observableArrayList();
         package_table.setItems(packageList);
     }
+    
+    private void setupListView(){
+    packageContentsList.setCellFactory(lv ->new ListCell<Equipment>(){
+        @Override
+        protected void updateItem(Equipment item,boolean empty){
+            super.updateItem(item, empty);
+            setText(empty ? null : item.getName());
+        }
+    });
+    }
 
     private void setupPackageSelection() {
         package_table.getSelectionModel().selectedItemProperty().addListener(
@@ -128,50 +150,53 @@ public class ReservationController implements Initializable {
                     loadPackageContents();
                 });
     }
-     private void loadPackageContents() {
-        if (selectedPackage == null) return;
-        
+
+    private void loadPackageContents() {
+        if (selectedPackage == null) {
+            return;
+        }
+
         try (Connection conn = DatabaseConnection.getConnection()) {
             String query = "SELECT e.equipment_id, e.name, e.rental_price "
-                         + "FROM package_equipment pe "
-                         + "JOIN equipment e ON pe.equipment_id = e.equipment_id "
-                         + "WHERE pe.package_id = ?";
-            
+                    + "FROM package_equipment pe "
+                    + "JOIN equipment e ON pe.equipment_id = e.equipment_id "
+                    + "WHERE pe.package_id = ?";
+
             PreparedStatement pst = conn.prepareStatement(query);
             pst.setInt(1, selectedPackage.getPackageId());
             ResultSet rs = pst.executeQuery();
-            
+
             ObservableList<Equipment> contents = FXCollections.observableArrayList();
             while (rs.next()) {
                 contents.add(new Equipment(
-                    rs.getInt("equipment_id"),
-                    rs.getString("name"),
-                    rs.getDouble("rental_price"),
-                    "In Package"
+                        rs.getInt("equipment_id"),
+                        rs.getString("name"),
+                        rs.getDouble("rental_price"),
+                        "In Package"
                 ));
             }
             packageContentsList.setItems(contents);
-            
+
         } catch (SQLException e) {
             showError("Database Error", "Failed to load package contents: " + e.getMessage());
         }
     }
 
-     private void loadCustomers() {
+    private void loadCustomers() {
         try (Connection conn = DatabaseConnection.getConnection()) {
             String query = "SELECT customer_id, name FROM customers";
             PreparedStatement pst = conn.prepareStatement(query);
             ResultSet rs = pst.executeQuery();
-            
+
             ObservableList<Customer> customers = FXCollections.observableArrayList();
             while (rs.next()) {
                 customers.add(new Customer(
-                    rs.getInt("customer_id"),
-                    rs.getString("name")
+                        rs.getInt("customer_id"),
+                        rs.getString("name")
                 ));
             }
             customer_cmb.setItems(customers);
-            
+
         } catch (SQLException e) {
             showError("Database Error", "Failed to load customers: " + e.getMessage());
         }
@@ -181,55 +206,59 @@ public class ReservationController implements Initializable {
         start_date.valueProperty().addListener((obs, oldVal, newVal) -> checkAvailability());
         end_date.valueProperty().addListener((obs, oldVal, newVal) -> checkAvailability());
     }
-    
-      @FXML
+
+    @FXML
     private void checkAvailability() {
-        if (!validDates()) return;
-        
-        try (Connection conn = DatabaseConnection.getConnection();
-             CallableStatement stmt = conn.prepareCall("{call sp_check_package_availability(?, ?, ?)}")) {
-            
+        if (!validDates()) {
+            return;
+        }
+
+        try (Connection conn = DatabaseConnection.getConnection(); CallableStatement stmt = conn.prepareCall("{call sp_check_package_availability(?, ?, ?)}")) {
+
             stmt.setDate(1, Date.valueOf(start_date.getValue()));
             stmt.setDate(2, Date.valueOf(end_date.getValue()));
             stmt.setInt(3, Model.getInstance().getcurrentuserid());
-            
+
             ResultSet rs = stmt.executeQuery();
             packageList.clear();
-            
+
             while (rs.next()) {
                 packageList.add(new Package(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getDouble("price"),
-                    rs.getString("availability_status")
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getDouble("price"),
+                        rs.getString("availability_status")
                 ));
             }
-            
+
         } catch (SQLException e) {
             showError("Availability Check Failed", e.getMessage());
         }
     }
+
     @FXML
     private void handleAddReservation() {
-        if (!validateReservation()) return;
-        
+        if (!validateReservation()) {
+            return;
+        }
+
         try (Connection conn = DatabaseConnection.getConnection()) {
             conn.setAutoCommit(false);
-            
+
             // Create reservation
             int reservationId = createReservation(conn);
-            
+
             // Add package to reservation items
             addPackageToReservation(conn, reservationId);
-            
+
             conn.commit();
             showSuccess("Reservation Created", "Reservation ID: " + reservationId);
-            
+
         } catch (SQLException e) {
             showError("Reservation Failed", "Error creating reservation: " + e.getMessage());
         }
     }
-    
+
     private int createReservation(Connection conn) throws SQLException {
         String sql = "{call sp_create_reservation(?, ?, ?, ?, ?, ?, ?)}";
         try (CallableStatement stmt = conn.prepareCall(sql)) {
@@ -240,7 +269,7 @@ public class ReservationController implements Initializable {
             stmt.setString(5, delivery_txtarea.getText());
             stmt.setInt(6, Model.getInstance().getcurrentuserid());
             stmt.registerOutParameter(7, Types.INTEGER);
-            
+
             stmt.execute();
             return stmt.getInt(7);
         }
@@ -248,8 +277,8 @@ public class ReservationController implements Initializable {
 
     private void addPackageToReservation(Connection conn, int reservationId) throws SQLException {
         String sql = "INSERT INTO reservation_items (reservation_id, package_id, price_per_unit, added_by) "
-                   + "VALUES (?, ?, ?, ?)";
-        
+                + "VALUES (?, ?, ?, ?)";
+
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setInt(1, reservationId);
             pst.setInt(2, selectedPackage.getPackageId());
@@ -288,8 +317,8 @@ public class ReservationController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
-    
-    private void showSuccess(String title, String message){
+
+    private void showSuccess(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setContentText(message);
