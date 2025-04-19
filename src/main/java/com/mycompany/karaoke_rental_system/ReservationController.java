@@ -117,11 +117,11 @@ public class ReservationController implements Initializable {
 
         start_date.setValue(LocalDate.now());
         end_date.setValue(LocalDate.now().plusDays(7));
-        
+
         status_cmb.getItems().addAll("All", "Rented", "Available");
         status_cmb.getSelectionModel().selectFirst();
-        
-        status_cmb.valueProperty().addListener((obs,oldVal,newVal)->checkAvailability());
+
+        status_cmb.valueProperty().addListener((obs, oldVal, newVal) -> checkAvailability());
 
         checkAvailability();
 
@@ -236,18 +236,16 @@ public class ReservationController implements Initializable {
                 ));
             }
             String selectedStatus = status_cmb.getValue();
-            ObservableList<Package> filteredPackages = packageList.filtered(pkg ->{
-            if(selectedStatus == null || "All".equals(selectedStatus)){
-               return true; 
-            }
-            else if("Rented".equals(selectedStatus)){
-                return "Reserved".equals(pkg.getStatus());
-            }
-            else if("Available".equals(selectedStatus)){
-                return "Available".equals(pkg.getStatus());
-            }
-            return false;
-        });
+            ObservableList<Package> filteredPackages = packageList.filtered(pkg -> {
+                if (selectedStatus == null || "All".equals(selectedStatus)) {
+                    return true;
+                } else if ("Rented".equals(selectedStatus)) {
+                    return "Reserved".equals(pkg.getStatus());
+                } else if ("Available".equals(selectedStatus)) {
+                    return "Available".equals(pkg.getStatus());
+                }
+                return false;
+            });
             package_table.setItems(filteredPackages);
 
         } catch (SQLException e) {
@@ -272,6 +270,9 @@ public class ReservationController implements Initializable {
 
             conn.commit();
             showSuccess("Reservation Created", "Reservation ID: " + reservationId);
+            resetForm();
+            ViewFactory vf = new ViewFactory();
+            vf.clearViews();
 
         } catch (SQLException e) {
             showError("Reservation Failed", "Error creating reservation: " + e.getMessage());
@@ -319,16 +320,29 @@ public class ReservationController implements Initializable {
     }
 
     private boolean validateReservation() {
-        if (customer_cmb.getValue() == null) {
-            showError("Missing Customer", "Please select a customer");
-            return false;
-        }
-        if (selectedPackage == null) {
-            showError("Missing Package", "Please select a package");
-            return false;
-        }
-        return true;
+    if (customer_cmb.getValue() == null) {
+        showError("Missing Customer", "Please select a customer");
+        return false;
     }
+    if (selectedPackage == null) {
+        showError("Missing Package", "Please select a package");
+        return false;
+    }
+    if (!validDates()) {
+        return false;
+    }
+
+    // Check for overlapping reservations
+    Customer selectedCustomer = customer_cmb.getValue();
+    LocalDate startDate = start_date.getValue();
+    LocalDate endDate = end_date.getValue();
+    if (checkForOverlappingReservations(selectedCustomer, startDate, endDate)) {
+        showError("Duplicate Reservation", "This customer already has a reservation within the specified date range.");
+        return false;
+    }
+
+    return true;
+}
 
     private void showError(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -343,5 +357,47 @@ public class ReservationController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+    private void resetForm() {
+    // Reset customer combo box
+    customer_cmb.getSelectionModel().clearSelection();
+
+    // Reset date pickers to default values
+    start_date.setValue(LocalDate.now());
+    end_date.setValue(LocalDate.now().plusDays(7));
+
+    // Uncheck the delivery checkbox and clear the delivery text area
+    delivery_checkbox.setSelected(false);
+    delivery_txtarea.clear();
+
+    // Clear the selected package and package contents list
+    package_table.getSelectionModel().clearSelection();
+    packageContentsList.setItems(FXCollections.emptyObservableList());
+
+    // Reset status combo box to "All"
+    status_cmb.getSelectionModel().selectFirst();
+
+    // Optionally, clear any other fields (e.g., amount_textfield)
+    amount_textfield.clear();
+}
+    private boolean checkForOverlappingReservations(Customer customer, LocalDate startDate, LocalDate endDate) {
+    String query = "SELECT COUNT(*) AS count FROM reservations "
+                 + "WHERE customer_id = ? "
+                 + "AND (start_date <= ? AND end_date >= ?)";
+    try (Connection conn = DatabaseConnection.getConnection();
+         PreparedStatement pst = conn.prepareStatement(query)) {
+        pst.setInt(1, customer.getCustomerId());
+        pst.setDate(2, Date.valueOf(endDate));
+        pst.setDate(3, Date.valueOf(startDate));
+        ResultSet rs = pst.executeQuery();
+        if (rs.next()) {
+            int count = rs.getInt("count");
+            return count > 0; // Return true if overlapping reservations exist
+        }
+    } catch (SQLException e) {
+        showError("Database Error", "Failed to check for overlapping reservations: " + e.getMessage());
+    }
+    return false;
+}
+    
 
 }

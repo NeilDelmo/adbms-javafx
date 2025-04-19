@@ -29,38 +29,52 @@ public class ViewFactory {
     }
 
     public AnchorPane getCustomerView() {
-        if (customerView == null) {
+    if (customerView == null) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/Customer.fxml"));
+            customerView = loader.load();
+            CustomerController controller = loader.getController();
+            controller.refreshData(); // Refresh data when the view is loaded
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    } else {
+        // If the view is already loaded, refresh its data
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/Customer.fxml"));
+        try {
+            loader.setRoot(customerView);
+            loader.setController(loader.getController());
+            CustomerController controller = loader.getController();
+            controller.refreshData();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    return customerView;
+}
+
+    public VBox getReservationView() {
+        if (reservationView == null) {
             try {
-                customerView = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/Customer.fxml")).load();
+                reservationView = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/Reservation.fxml")).load();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
         }
-        return customerView;
+        return reservationView;
     }
-    
-    public VBox getReservationView(){
-    if(reservationView == null){
-        try{
-            reservationView = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/Reservation.fxml")).load();
-        }catch(IOException e){
-            e.printStackTrace();
+
+    public AnchorPane getEquipmentView() {
+        if (equipmentView == null) {
+            try {
+                equipmentView = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/Equipment.fxml")).load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
-        
-    }
-    return reservationView;
-    }
-    
-    public AnchorPane getEquipmentView(){
-    if(equipmentView == null){
-        try{
-            equipmentView = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/Equipment.fxml")).load();
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-        
-    }
-    return equipmentView;
+        return equipmentView;
     }
 
     public void showLoginWindow() {
@@ -90,5 +104,8 @@ public class ViewFactory {
 
     public void clearViews() {
         dashboardView = null;
+        customerView = null;
+        reservationView = null;
+        equipmentView = null;
     }
 }
