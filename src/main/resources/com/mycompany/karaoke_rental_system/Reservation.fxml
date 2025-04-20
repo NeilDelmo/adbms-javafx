@@ -71,8 +71,8 @@
                 <TextField fx:id="amount_textfield" prefWidth="150.0" promptText="Amount" />
                 <HBox spacing="5">
                     <children>
-                        <ComboBox fx:id="payment_method_cmb" prefHeight="30.0" prefWidth="150.0" promptText="Payment Method" />
-                        <Button fx:id="record_btn" prefHeight="30.0" prefWidth="80.0" text="Record" />
+                        <ComboBox fx:id="payment_method_cmb" prefHeight="55.0" prefWidth="206.0" promptText="Payment Method" />
+                        <Button fx:id="record_btn" prefHeight="42.0" prefWidth="133.0" text="Record" />
                         <Label fx:id="penalty_label" text="Label" />
                     </children>
                 </HBox>
