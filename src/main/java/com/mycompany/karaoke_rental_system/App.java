@@ -13,9 +13,6 @@ import javafx.stage.StageStyle;
  * JavaFX App
  */
 public class App extends Application {
-    private double x = 0;
-    private double y = 0;
-    private static Scene scene;
 
     @Override
     public void start(Stage stage){

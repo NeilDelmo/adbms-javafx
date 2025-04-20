@@ -41,9 +41,9 @@
             <children>
                 <TableView fx:id="package_table" prefHeight="30.0" prefWidth="300.0" stylesheets="@Reservation.css" HBox.hgrow="ALWAYS">
                     <columns>
-                        <TableColumn fx:id="packageNameCol" prefWidth="100.0" text="Name" />
-                        <TableColumn fx:id="bundlePriceCol" prefWidth="80.0" text="Price" />
-                        <TableColumn fx:id="packageStatusCol" prefWidth="100.0" text="Status" />
+                        <TableColumn fx:id="packageNameCol" prefWidth="170.3999729156494" text="Name" />
+                        <TableColumn fx:id="bundlePriceCol" prefWidth="107.20002746582031" text="Price" />
+                        <TableColumn fx:id="packageStatusCol" prefWidth="118.39996337890625" text="Status" />
                     </columns>
                 </TableView>
                 <ListView fx:id="packageContentsList" prefHeight="200.0" prefWidth="300.0" HBox.hgrow="ALWAYS" />
@@ -59,10 +59,10 @@
         <TableView fx:id="reservation_table" prefHeight="350.0" prefWidth="830.0" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="customerCol" prefWidth="150.0" text="Customer" />
-                <TableColumn fx:id="periodCol" prefWidth="150.0" text="Period" />
-                <TableColumn fx:id="addressCol" prefWidth="140.0" text="Address" />
-                <TableColumn fx:id="packageCol" prefWidth="130.0" text="Package" />
-                <TableColumn fx:id="statusCol" prefWidth="120.0" text="Status" />
+                <TableColumn fx:id="periodCol" prefWidth="155.99998474121094" text="Period" />
+                <TableColumn fx:id="addressCol" prefWidth="146.4000244140625" text="Address" />
+                <TableColumn fx:id="packageCol" prefWidth="211.19992065429688" text="Package" />
+                <TableColumn fx:id="statusCol" prefWidth="147.99993896484375" text="Status" />
             </columns>
         </TableView>
         <VBox layoutX="10" layoutY="10" prefHeight="180.0" prefWidth="830.0" spacing="5">

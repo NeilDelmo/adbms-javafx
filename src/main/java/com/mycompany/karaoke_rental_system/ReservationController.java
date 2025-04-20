@@ -35,6 +35,8 @@ import javafx.scene.control.ListCell;
 public class ReservationController implements Initializable {
 
     @FXML
+    private ComboBox <String> filter_reservation_cmb;
+    @FXML
     private TableColumn<Reservation, String> statusCol;
 
     @FXML
@@ -104,6 +106,7 @@ public class ReservationController implements Initializable {
     private ObservableList<Customer> customerList;
 
     private Package selectedPackage;
+    private ObservableList<Reservation>masterReservationList;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -124,6 +127,11 @@ public class ReservationController implements Initializable {
         status_cmb.valueProperty().addListener((obs, oldVal, newVal) -> checkAvailability());
 
         checkAvailability();
+
+        filter_reservation_cmb.getItems().addAll("All","Pending","Confirmed","Completed","Cancelled","Overdue");
+        filter_reservation_cmb.getSelectionModel().selectFirst();
+
+        filter_reservation_cmb.valueProperty().addListener((obs,oldVal,newVal)-> filterReservations(newVal));
 
         delivery_txtarea.visibleProperty().bind(delivery_checkbox.selectedProperty());
         delivery_txtarea.managedProperty().bind(delivery_checkbox.selectedProperty());
@@ -271,6 +279,20 @@ public class ReservationController implements Initializable {
         } catch (SQLException e) {
             showError("Availability Check Failed", e.getMessage());
         }
+    }
+
+    private void filterReservations(String status) {
+        ObservableList<Reservation> filteredReservations = FXCollections.observableArrayList();
+
+        // Iterate through the master list
+        for (Reservation reservation : masterReservationList) {
+            if ("All".equals(status) || reservation.getStatus().equals(status)) {
+                filteredReservations.add(reservation);
+            }
+        }
+
+        // Update the reservation table with the filtered list
+        reservation_table.setItems(filteredReservations);
     }
 
     @FXML
@@ -453,12 +475,14 @@ public class ReservationController implements Initializable {
 
                 reservations.add(reservation);
             }
-
-            reservation_table.setItems(reservations);
+            masterReservationList = reservations;
+            reservation_table.setItems(masterReservationList);
 
         } catch (SQLException e) {
             showError("Database Error", "Failed to load reservations: " + e.getMessage());
         }
     }
+
+
 
 }
