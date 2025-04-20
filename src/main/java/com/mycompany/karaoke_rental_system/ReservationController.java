@@ -7,16 +7,7 @@ import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import com.mycompany.karaoke_rental_system.data.DatabaseConnection;
 import java.sql.CallableStatement;
@@ -29,18 +20,14 @@ import java.time.LocalDate;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ListCell;
 
 public class ReservationController implements Initializable {
 
     @FXML
     private ComboBox <String> filter_reservation_cmb;
-    @FXML
-    private TableColumn<Reservation, String> statusCol;
 
     @FXML
-    private Button add_item_btn;
+    private TableColumn<Reservation, String> statusCol;
 
     @FXML
     private TextField amount_textfield;
@@ -85,9 +72,6 @@ public class ReservationController implements Initializable {
     private TableColumn<Reservation, String> periodCol;
 
     @FXML
-    private Button record_btn;
-
-    @FXML
     private TableView<Reservation> reservation_table;
 
     @FXML
@@ -103,7 +87,6 @@ public class ReservationController implements Initializable {
     private CheckBox delivery_checkbox;
 
     private ObservableList<Package> packageList;
-    private ObservableList<Customer> customerList;
 
     private Package selectedPackage;
     private ObservableList<Reservation>masterReservationList;
@@ -133,8 +116,74 @@ public class ReservationController implements Initializable {
 
         filter_reservation_cmb.valueProperty().addListener((obs,oldVal,newVal)-> filterReservations(newVal));
 
+        payment_method_cmb.getItems().addAll("Cash","E-wallet","Bank Transfer","Others");
+        payment_method_cmb.getSelectionModel().selectFirst();
+
         delivery_txtarea.visibleProperty().bind(delivery_checkbox.selectedProperty());
         delivery_txtarea.managedProperty().bind(delivery_checkbox.selectedProperty());
+        reservation_table.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                double overdueCharges = newVal.getOverdueCharges(); // Assuming Reservation has a getOverdueCharges() method
+                penalty_label.setText(String.format("Penalty: %.2f", overdueCharges));
+            } else {
+                penalty_label.setText("Penalty: 0.00");
+            }
+        });
+        reservation_table.setRowFactory(tv -> {
+            TableRow<Reservation> row = new TableRow<>();
+            row.itemProperty().addListener((obs, oldReservation, newReservation) -> {
+                if (newReservation != null) {
+                    String status = newReservation.getStatus();
+                    row.getStyleClass().removeAll("status-pending", "status-confirmed", "status-completed", "status-cancelled", "status-overdue");
+
+                    switch (status) {
+                        case "Pending":
+                            row.getStyleClass().add("status-pending");
+                            break;
+                        case "Confirmed":
+                            row.getStyleClass().add("status-confirmed");
+                            break;
+                        case "Completed":
+                            row.getStyleClass().add("status-completed");
+                            break;
+                        case "Cancelled":
+                            row.getStyleClass().add("status-cancelled");
+                            break;
+                        case "Overdue":
+                            row.getStyleClass().add("status-overdue");
+                            break;
+                        default:
+                            break;
+                    }
+                } else {
+                    row.getStyleClass().removeAll("status-pending", "status-confirmed", "status-completed", "status-cancelled", "status-overdue");
+                }
+            });
+            return row;
+        });
+        package_table.setRowFactory(tv -> {
+            TableRow<Package> row = new TableRow<>();
+            row.itemProperty().addListener((obs, oldPackage, newPackage) -> {
+                if (newPackage != null) {
+                    String status = newPackage.getStatus();
+                    row.getStyleClass().removeAll("status-available", "status-reserved");
+
+                    switch (status) {
+                        case "Available":
+                            row.getStyleClass().add("status-available");
+                            break;
+                        case "Reserved":
+                            row.getStyleClass().add("status-reserved");
+                            break;
+                        default:
+                            break;
+                    }
+                } else {
+                    row.getStyleClass().removeAll("status-available", "status-reserved");
+                }
+            });
+            return row;
+        });
     }
 
     private void TableColumnsForPackage() {
@@ -472,6 +521,7 @@ public class ReservationController implements Initializable {
                 reservation.setStartDate(rs.getDate("start_datetime").toLocalDate());
                 reservation.setEndDate(rs.getDate("end_datetime").toLocalDate());
                 reservation.setStatus(rs.getString("status"));
+                reservation.setOverdueCharges((rs.getDouble("overdue_charges")));
 
                 reservations.add(reservation);
             }
@@ -483,6 +533,41 @@ public class ReservationController implements Initializable {
         }
     }
 
+    @FXML
+    private void handleRecordPayment() {
+        Reservation selectedReservation = reservation_table.getSelectionModel().getSelectedItem();
+        if (selectedReservation == null) {
+            showError("No Reservation Selected", "Please select a reservation to record payment.");
+            return;
+        }
+
+        String paymentMethod = payment_method_cmb.getValue();
+        if (paymentMethod == null || paymentMethod.isEmpty()) {
+            showError("Invalid Payment Method", "Please select a valid payment method.");
+            return;
+        }
+
+        double amount = Double.parseDouble(amount_textfield.getText());
+        double overdueCharges = selectedReservation.getOverdueCharges();
+        double totalAmount = amount + overdueCharges;
+
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            String sql = "INSERT INTO payments (reservation_id, amount, payment_method, recorded_by, is_penalty) "
+                    + "VALUES (?, ?, ?, ?, ?)";
+            try (PreparedStatement pst = conn.prepareStatement(sql)) {
+                pst.setInt(1, selectedReservation.getReservationId()); // Assuming Reservation has a getReservationId() method
+                pst.setDouble(2, totalAmount);
+                pst.setString(3, paymentMethod);
+                pst.setInt(4, Model.getInstance().getcurrentuserid());
+                pst.setBoolean(5, overdueCharges > 0); // Mark as penalty if overdue charges exist
+                pst.executeUpdate();
+            }
+            showSuccess("Payment Recorded", "Payment of " + totalAmount + " recorded successfully.");
+            resetForm();
+        } catch (SQLException e) {
+            showError("Payment Failed", "Error recording payment: " + e.getMessage());
+        }
+    }
 
 
 }

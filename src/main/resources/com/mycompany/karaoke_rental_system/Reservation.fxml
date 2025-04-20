@@ -72,7 +72,7 @@
                 <HBox spacing="5">
                     <children>
                         <ComboBox fx:id="payment_method_cmb" prefHeight="55.0" prefWidth="206.0" promptText="Payment Method" />
-                        <Button fx:id="record_btn" prefHeight="42.0" prefWidth="133.0" text="Record" />
+                        <Button fx:id="record_btn" onAction="#handleRecordPayment" prefHeight="42.0" prefWidth="133.0" text="Record" />
                         <Label fx:id="penalty_label" text="Label" />
                     </children>
                 </HBox>

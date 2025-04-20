@@ -14,14 +14,16 @@ public class Reservation {
     private LocalDate endDate;
     private String status;
     private Package pkg;
+    private Double overdueCharges;
 
-    public Reservation(int reservationId, Customer customer, LocalDate startDate, LocalDate endDate, String status, Package pkg) {
+    public Reservation(int reservationId, Customer customer, LocalDate startDate, LocalDate endDate, String status, Package pkg, Double overdueCharges) {
         this.reservationId = reservationId;
         this.customer = customer;
         this.startDate = startDate;
         this.endDate = endDate;
         this.status = status;
         this.pkg = pkg;
+        this.overdueCharges= overdueCharges;
 
     }
     public Reservation(){}
@@ -63,4 +65,11 @@ public class Reservation {
         this.pkg = pkg;
     }
 
+    public Double getOverdueCharges() {
+        return overdueCharges;
+    }
+
+    public void setOverdueCharges(Double overdueCharges) {
+        this.overdueCharges = overdueCharges;
+    }
 }

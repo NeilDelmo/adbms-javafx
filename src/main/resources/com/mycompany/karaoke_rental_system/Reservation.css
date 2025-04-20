@@ -1,20 +1,21 @@
 /* General VBox Styling */
 VBox {
     -fx-background-color: #f9f9f9; /* Light background */
-    -fx-padding: 10px; /* Padding inside the VBox */
-    -fx-spacing: 10px; /* Space between children */
+    -fx-padding: 15px; /* Slightly increased padding for better spacing */
+    -fx-spacing: 15px; /* Increased spacing between children */
 }
 
 /* General HBox Styling */
 HBox {
-    -fx-spacing: 10px; /* Space between children */
+    -fx-spacing: 15px; /* Increased space between children */
+    -fx-alignment: center-left; /* Align items to the left */
 }
 
 /* GridPane Styling */
 GridPane {
-    -fx-hgap: 10; /* Horizontal gap between columns */
-    -fx-vgap: 10; /* Vertical gap between rows */
-    -fx-padding: 10px; /* Padding inside the GridPane */
+    -fx-hgap: 15; /* Increased horizontal gap */
+    -fx-vgap: 15; /* Increased vertical gap */
+    -fx-padding: 15px; /* Padding inside the GridPane */
 }
 
 /* DatePicker Styling */
@@ -22,18 +23,29 @@ GridPane {
     -fx-background-color: white;
     -fx-border-color: #e0e0e0;
     -fx-border-width: 1px;
-    -fx-border-radius: 5px;
-    -fx-padding: 5px;
+    -fx-border-radius: 8px; /* Rounded corners */
+    -fx-padding: 8px;
+    -fx-font-size: 14px;
 }
 
 .date-picker:hover {
-    -fx-border-color: #42a5f5;
+    -fx-border-color: #42a5f5; /* Highlight border on hover */
+}
+
+.date-picker:focused {
+    -fx-border-color: #1e88e5; /* Highlight border when focused */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.5, 0, 2); /* Subtle shadow effect */
 }
 
 /* CheckBox Styling */
 .check-box {
     -fx-text-fill: #333;
     -fx-font-size: 14px;
+    -fx-font-weight: normal;
+}
+
+.check-box:selected {
+    -fx-text-fill: #42a5f5; /* Change text color when selected */
 }
 
 /* ComboBox Styling */
@@ -41,12 +53,27 @@ GridPane {
     -fx-background-color: white;
     -fx-border-color: #e0e0e0;
     -fx-border-width: 1px;
-    -fx-border-radius: 5px;
-    -fx-padding: 5px;
+    -fx-border-radius: 8px; /* Rounded corners */
+    -fx-padding: 8px;
+    -fx-font-size: 14px;
 }
 
 .combo-box:hover {
-    -fx-border-color: #42a5f5;
+    -fx-border-color: #42a5f5; /* Highlight border on hover */
+}
+
+.combo-box:focused {
+    -fx-border-color: #1e88e5; /* Highlight border when focused */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.5, 0, 2); /* Subtle shadow effect */
+}
+
+/* Status ComboBox Styling Based on Selection */
+.combo-box:selected {
+    -fx-text-fill: #42a5f5; /* Highlight text when an option is selected */
+}
+
+.combo-box:selected .label {
+    -fx-text-fill: #42a5f5; /* Consistent text color */
 }
 
 /* Button Styling */
@@ -58,18 +85,19 @@ GridPane {
     -fx-background-radius: 8px;
     -fx-padding: 8px 16px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0.5, 1, 1);
+    -fx-transition: all 0.2s ease; /* Smooth transition for hover and press effects */
 }
 
 .button:hover {
-    -fx-background-color: #1e88e5;
-    -fx-scale-x: 1.05;
+    -fx-background-color: #1e88e5; /* Darker blue on hover */
+    -fx-scale-x: 1.05; /* Slightly enlarge button */
     -fx-scale-y: 1.05;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 8, 0.5, 2, 2);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 8, 0.5, 2, 2); /* Stronger shadow */
 }
 
 .button:pressed {
-    -fx-background-color: #0d47a1;
-    -fx-scale-x: 0.95;
+    -fx-background-color: #0d47a1; /* Darkest blue when pressed */
+    -fx-scale-x: 0.95; /* Slightly shrink button */
     -fx-scale-y: 0.95;
 }
 
@@ -89,10 +117,16 @@ GridPane {
     -fx-border-width: 0 0 1 0;
     -fx-pref-height: 45px;
     -fx-background-radius: 6px;
+    -fx-transition: all 0.2s ease; /* Smooth transitions for hover effects */
 }
 
 .list-cell:filled:selected {
-    -fx-background-color: #e3f2fd;
+    -fx-background-color: #e3f2fd; /* Light blue for selection */
+    -fx-text-fill: #1e88e5; /* Blue text for selected item */
+}
+
+.list-cell:hover {
+    -fx-background-color: #f0f8ff; /* Very light blue on hover */
 }
 
 .list-cell:empty {
@@ -116,11 +150,11 @@ GridPane {
 }
 
 .table-view .table-row-cell:hover {
-    -fx-background-color: #e3f2fd;
+    -fx-background-color: #e3f2fd; /* Light blue on hover */
 }
 
 .table-view .table-row-cell:selected {
-    -fx-background-color: #bbdefb;
+    -fx-background-color: #bbdefb; /* Medium blue for selection */
     -fx-text-fill: black;
     -fx-font-weight: bold;
 }
@@ -154,12 +188,18 @@ GridPane {
     -fx-background-color: white;
     -fx-border-color: #e0e0e0;
     -fx-border-width: 1px;
-    -fx-border-radius: 5px;
+    -fx-border-radius: 8px;
     -fx-padding: 8px;
+    -fx-font-size: 14px;
 }
 
 .text-area:hover {
-    -fx-border-color: #42a5f5;
+    -fx-border-color: #42a5f5; /* Highlight border on hover */
+}
+
+.text-area:focused {
+    -fx-border-color: #1e88e5; /* Highlight border when focused */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.5, 0, 2); /* Subtle shadow effect */
 }
 
 /* TextField Styling */
@@ -167,12 +207,18 @@ GridPane {
     -fx-background-color: white;
     -fx-border-color: #e0e0e0;
     -fx-border-width: 1px;
-    -fx-border-radius: 5px;
+    -fx-border-radius: 8px;
     -fx-padding: 8px;
+    -fx-font-size: 14px;
 }
 
 .text-field:hover {
-    -fx-border-color: #42a5f5;
+    -fx-border-color: #42a5f5; /* Highlight border on hover */
+}
+
+.text-field:focused {
+    -fx-border-color: #1e88e5; /* Highlight border when focused */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.5, 0, 2); /* Subtle shadow effect */
 }
 
 /* Label Styling */
@@ -186,4 +232,32 @@ GridPane {
     -fx-font-size: 16px;
     -fx-fill: #333;
     -fx-font-weight: bold;
+}
+/* Row Styling for Reservations */
+.table-row-cell.status-pending {
+    -fx-background-color: #ffeb3b; /* Yellow for Pending */
+}
+
+.table-row-cell.status-confirmed {
+    -fx-background-color: #4caf50; /* Green for Confirmed */
+}
+
+.table-row-cell.status-completed {
+    -fx-background-color: #2196f3; /* Blue for Completed */
+}
+
+.table-row-cell.status-cancelled {
+    -fx-background-color: #f44336; /* Red for Cancelled */
+}
+
+.table-row-cell.status-overdue {
+    -fx-background-color: #d32f2f; /* Dark Red for Overdue */
+}
+/* Row Styling for Packages */
+.table-row-cell.status-available {
+    -fx-background-color: #4caf50; /* Green for Available */
+}
+
+.table-row-cell.status-reserved {
+    -fx-background-color: #f44336; /* Red for Reserved */
 }
