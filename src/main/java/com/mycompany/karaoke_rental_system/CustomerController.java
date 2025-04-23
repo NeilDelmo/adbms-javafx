@@ -22,6 +22,7 @@ import com.mycompany.karaoke_rental_system.data.DatabaseConnection;
 import java.sql.ResultSet;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
 
 public class CustomerController implements Initializable {
@@ -81,15 +82,51 @@ public class CustomerController implements Initializable {
         setupTableSelection();
 
         reservation_btn.setOnAction(e
-                -> rootPane.setCenter(Model.getInstance().getViewFactory().getDashboardView())
+                -> rootPane.setCenter(Model.getInstance().getViewFactory().getReservationView())
         );
 
     }
 
     private void setupTableColumns() {
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        nameCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        nameCol.setOnEditCommit(event ->{
+            Customer customer = event.getRowValue();
+            String newName = event.getNewValue().trim();
+            if(!newName.isEmpty()){
+                updateCustomerField(customer.getCustomerId(),"name",newName);
+                customer.setName(newName);
+            }else{
+                showAlert("Error","Name cannot be empty");
+            }
+        });
+
         phoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        phoneCol.setCellFactory((TextFieldTableCell.forTableColumn()));
+        phoneCol.setOnEditCommit(event ->{
+            Customer customer = event.getRowValue();
+            String newPhone = event.getNewValue().trim();
+            if(!newPhone.isEmpty()){
+                updateCustomerField(customer.getCustomerId(),"phone",newPhone);
+                customer.setPhone(newPhone);
+            }else{
+                showAlert("Error","Phone cannot be empty");
+            }
+        });
+
         addressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
+        addressCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        addressCol.setOnEditCommit(event ->{
+            Customer customer = event.getRowValue();
+            String newAddress = event.getNewValue().trim();
+            if(!newAddress.isEmpty()) {
+                updateCustomerField(customer.getCustomerId(),"address",newAddress);
+                customer.setAddress(newAddress);
+            }else{
+                showAlert("Error","Address Cannot be empty");
+            }
+        });
+
         bookingsCol.setCellValueFactory(new PropertyValueFactory<>("totalBookings"));
         lastBookingCol.setCellValueFactory(cell -> {
             LocalDateTime date = cell.getValue().getLastBooking();
@@ -100,6 +137,20 @@ public class CustomerController implements Initializable {
                 -> new SimpleStringProperty(String.format("₱%,.2f", cell.getValue().getTotalSpent())));
         customer_table.setItems(customers);
     }
+
+    private void updateCustomerField(int customerId, String field, String newValue){
+        String query = String.format("UPDATE customers set %s = ? WHERE customer_id = ? ",field);
+        try(Connection conn =  DatabaseConnection.getConnection()){
+            PreparedStatement pst = conn.prepareStatement(query);
+            pst.setString(1,newValue);
+            pst.setInt(2,customerId);
+            pst.executeUpdate();
+        }catch (SQLException e){
+            showAlert("Database Error", "Error Updating Customer"+ e.getMessage());
+        }
+
+    }
+
 
     @FXML
     private void saveCustomer() {
