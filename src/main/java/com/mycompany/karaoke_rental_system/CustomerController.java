@@ -13,19 +13,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import com.mycompany.karaoke_rental_system.data.DatabaseConnection;
 import java.sql.ResultSet;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
+
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
 
 public class CustomerController implements Initializable {
+    @FXML
+    private Button edit_btn;
 
     @FXML
     private BorderPane rootPane;
@@ -81,6 +79,7 @@ public class CustomerController implements Initializable {
         setupSearch();
         setupTableSelection();
 
+        customer_table.setEditable(true);
         reservation_btn.setOnAction(e
                 -> rootPane.setCenter(Model.getInstance().getViewFactory().getReservationView())
         );
@@ -152,6 +151,26 @@ public class CustomerController implements Initializable {
     }
 
 
+    private void saveChanges(Customer customer) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            String query = "UPDATE customers SET name = ?, phone = ?, address = ? WHERE customer_id = ?";
+            PreparedStatement pst = conn.prepareStatement(query);
+            pst.setString(1, customer.getName());
+            pst.setString(2, customer.getPhone());
+            pst.setString(3, customer.getAddress());
+            pst.setInt(4, customer.getCustomerId());
+            pst.executeUpdate();
+        } catch (SQLException e) {
+            showAlert("Error", "Error Saving Changes " + e.getMessage());
+        } finally {
+            // Disable editing after saving
+            nameCol.setEditable(false);
+            phoneCol.setEditable(false);
+            addressCol.setEditable(false);
+            customer_table.refresh();
+        }
+    }
+
     @FXML
     private void saveCustomer() {
         String name = name_txt.getText().trim();
@@ -169,7 +188,7 @@ public class CustomerController implements Initializable {
             pstmt.setString(1, name);
             pstmt.setString(2, phone);
             pstmt.setString(3, address);
-            pstmt.setInt(4, 1); // Replace with actual user ID from login
+            pstmt.setInt(4, Model.getInstance().getcurrentuserid()); // Replace with actual user ID from login
 
             pstmt.executeUpdate();
             clearFields();
@@ -177,6 +196,16 @@ public class CustomerController implements Initializable {
 
         } catch (SQLException e) {
             showAlert("Database Error", "Error saving customer: " + e.getMessage());
+        }
+    }
+    @FXML
+    private void handleEditRow() {
+        Customer selectedCustomer = customer_table.getSelectionModel().getSelectedItem();
+        if (selectedCustomer != null) {
+            int rowIndex = customer_table.getSelectionModel().getSelectedIndex();
+            customer_table.edit(rowIndex, nameCol); // Start editing at the name column
+        } else {
+            showAlert("Selection Error", "Please select a row to edit.");
         }
     }
 

@@ -40,20 +40,21 @@
             <Font name="System Bold" size="17.0" />
          </font></Text>
       <ListView fx:id="rental_historylist" prefHeight="194.0" prefWidth="326.0" stylesheets="@Customer.css" AnchorPane.bottomAnchor="415.0" AnchorPane.leftAnchor="470.0" AnchorPane.rightAnchor="54.0" AnchorPane.topAnchor="100.0" />
-      <AnchorPane prefHeight="327.0" prefWidth="810.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="380.0">
+      <AnchorPane prefHeight="374.0" prefWidth="840.0" AnchorPane.bottomAnchor="-4.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="380.0">
          <children>
             <FontAwesomeIcon glyphName="SEARCH" layoutX="6.0" layoutY="34.0" size="2em" styleClass="font-awesome-icon" />
             <TableView fx:id="customer_table" prefHeight="257.0" prefWidth="780.0" styleClass="table-column" stylesheets="@Customer.css" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="60.0">
                <columns>
                   <TableColumn fx:id="nameCol" prefWidth="178.40002822875977" text="Name" />
                   <TableColumn fx:id="phoneCol" prefWidth="121.59996032714844" text="Phone Number" />
-                  <TableColumn fx:id="addressCol" prefWidth="191.99993896484375" text="Address" />
-                  <TableColumn fx:id="bookingsCol" editable="false" prefWidth="96.0" text="Booking" />
-                  <TableColumn fx:id="lastBookingCol" editable="false" prefWidth="95.2000732421875" text="Last Booking" />
-                  <TableColumn fx:id="spentCol" editable="false" prefWidth="105.5999755859375" text="Total Spent" />
+                  <TableColumn fx:id="addressCol" prefWidth="156.0" text="Address" />
+                  <TableColumn fx:id="bookingsCol" editable="false" prefWidth="100.7999267578125" text="Booking" />
+                  <TableColumn fx:id="lastBookingCol" editable="false" prefWidth="137.59991455078125" text="Last Booking" />
+                  <TableColumn fx:id="spentCol" editable="false" prefWidth="77.60003662109375" text="Total Spent" />
                </columns></TableView>
             <TextField fx:id="search_txt" layoutX="104.0" layoutY="9.0" prefHeight="26.0" prefWidth="302.0" styleClass="search-text-field" stylesheets="@Customer.css" AnchorPane.leftAnchor="40.0" />
-            <Button fx:id="reservation_btn" mnemonicParsing="false" prefHeight="31.0" prefWidth="178.0" styleClass="styled-button" stylesheets="@Customer.css" text="Add Reservation" AnchorPane.bottomAnchor="320.0" AnchorPane.leftAnchor="626.0" AnchorPane.rightAnchor="19.0" AnchorPane.topAnchor="9.0" />
+            <Button fx:id="reservation_btn" mnemonicParsing="false" prefHeight="33.0" prefWidth="194.0" styleClass="styled-button" stylesheets="@Customer.css" text="Add Reservation" AnchorPane.bottomAnchor="332.0" AnchorPane.leftAnchor="626.0" AnchorPane.rightAnchor="19.0" AnchorPane.topAnchor="9.0" />
+            <Button fx:id="edit_btn" layoutX="487.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleEditRow" prefHeight="30.0" prefWidth="119.0" styleClass="styled-button" stylesheets="@Customer.css" text="Edit" />
          </children>
       </AnchorPane>
       <Text layoutX="470.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer History of Reservation" AnchorPane.topAnchor="70.0">

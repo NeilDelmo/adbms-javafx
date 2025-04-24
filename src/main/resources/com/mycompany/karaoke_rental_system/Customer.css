@@ -171,3 +171,14 @@ AnchorPane {
     -fx-text-fill: #4169e1;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0.5, 1, 1);
 }
+.icon-button {
+    -fx-font-family: "FontAwesome";
+    -fx-font-size: 16px;
+    -fx-background-color: transparent;
+    -fx-text-fill: #007bff; /* Blue color */
+    -fx-cursor: hand;
+}
+
+.icon-button:hover {
+    -fx-text-fill: #0056b3; /* Darker blue on hover */
+}

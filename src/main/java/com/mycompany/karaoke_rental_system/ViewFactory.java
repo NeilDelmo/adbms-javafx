@@ -13,6 +13,7 @@ public class ViewFactory {
     private AnchorPane customerView;
     private VBox reservationView;
     private AnchorPane equipmentView;
+    private CustomerController customerController;
 
     public ViewFactory() {
     }
@@ -29,30 +30,21 @@ public class ViewFactory {
     }
 
     public AnchorPane getCustomerView() {
-    if (customerView == null) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/Customer.fxml"));
-            customerView = loader.load();
-            CustomerController controller = loader.getController();
-            controller.refreshData(); // Refresh data when the view is loaded
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (customerView == null) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/Customer.fxml"));
+                customerView = loader.load();
+                customerController = loader.getController(); // ✅ Save the controller
+                customerController.refreshData();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            customerController.refreshData(); // ✅ Reuse the saved controller
         }
-    } else {
-        // If the view is already loaded, refresh its data
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/Customer.fxml"));
-        try {
-            loader.setRoot(customerView);
-            loader.setController(loader.getController());
-            CustomerController controller = loader.getController();
-            controller.refreshData();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    return customerView;
-}
 
+        return customerView;
+    }
     public VBox getReservationView() {
         if (reservationView == null) {
             try {
