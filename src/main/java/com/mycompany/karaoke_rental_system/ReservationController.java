@@ -3,6 +3,7 @@ package com.mycompany.karaoke_rental_system;
 import com.mycompany.karaoke_rental_system.Model.Model;
 import java.net.URL;
 import java.sql.Connection;
+import java.time.temporal.ChronoUnit;
 import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
 
@@ -20,9 +21,11 @@ import java.time.LocalDate;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.cell.ComboBoxTableCell;
 
 public class ReservationController implements Initializable {
 
+    public Button record_btn;
     @FXML
     private ComboBox <String> filter_reservation_cmb;
 
@@ -107,6 +110,7 @@ public class ReservationController implements Initializable {
         setupDateListener(); // Add this
         setupPackageSelection();
         setupListView();
+        reservation_table.setEditable(true);
         TableColumnsForReservation();
         loadReservations();
 
@@ -132,10 +136,20 @@ public class ReservationController implements Initializable {
         delivery_txtarea.managedProperty().bind(delivery_checkbox.selectedProperty());
         reservation_table.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
-                double overdueCharges = newVal.getOverdueCharges(); // Assuming Reservation has a getOverdueCharges() method
+                // Update the penalty label
+                double overdueCharges = Math.max(newVal.getOverdueCharges(), calculateRealTimeOverdueCharges(newVal));
                 penalty_label.setText(String.format("Penalty: %.2f", overdueCharges));
+
+                // Check if the reservation is fully paid and enable/disable the payment section
+                if (isReservationFullyPaid(newVal)) {
+                    disablePaymentSection();
+                } else {
+                    enablePaymentSection();
+                }
             } else {
+                // Clear the penalty label and disable the payment section if no reservation is selected
                 penalty_label.setText("Penalty: 0.00");
+                disablePaymentSection();
             }
         });
         reservation_table.setRowFactory(tv -> {
@@ -222,6 +236,51 @@ public class ReservationController implements Initializable {
                 -> new SimpleStringProperty(cellData.getValue().getPkg().getName()));
         // Reservation Status
         statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
+        ObservableList<String> statusOptions = FXCollections.observableArrayList("Pending","Confirmed", "Completed", "Cancelled", "Overdue");
+        statusCol.setCellFactory(ComboBoxTableCell.forTableColumn(statusOptions));
+        statusCol.setOnEditCommit(event -> {
+            Reservation reservation = event.getRowValue();
+            String newStatus = event.getNewValue();
+
+            // Update the reservation status in the database
+            updateReservationStatus(reservation.getReservationId(), newStatus);
+
+            // Update the reservation object
+            reservation.setStatus(newStatus);
+
+            // Trigger any related actions (e.g., updating equipment status)
+            if ("Completed".equals(newStatus)) {
+                updateEquipmentStatus(reservation);
+            }
+        });
+    }
+    private void updateReservationStatus(int reservationId, String newStatus) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            String sql = "UPDATE reservations SET status = ? WHERE reservation_id = ?";
+            try (PreparedStatement pst = conn.prepareStatement(sql)) {
+                pst.setString(1, newStatus);
+                pst.setInt(2, reservationId);
+                pst.executeUpdate();
+            }
+        } catch (SQLException e) {
+            showError("Database Error", "Failed to update reservation status: " + e.getMessage());
+        }
+    }
+    private void updateEquipmentStatus(Reservation reservation) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            String sql = "UPDATE equipment e " +
+                    "LEFT JOIN reservation_items ri ON e.equipment_id = ri.equipment_id " +
+                    "LEFT JOIN package_equipment pe ON ri.package_id = pe.package_id " +
+                    "SET e.status = 'Available' " +
+                    "WHERE ri.reservation_id = ?";
+            try (PreparedStatement pst = conn.prepareStatement(sql)) {
+                pst.setInt(1, reservation.getReservationId());
+                pst.executeUpdate();
+                checkAvailability();
+            }
+        } catch (SQLException e) {
+            showError("Database Error", "Failed to update equipment status: " + e.getMessage());
+        }
     }
 
     private void setupListView() {
@@ -525,12 +584,18 @@ public class ReservationController implements Initializable {
 
                 // Create Reservation object
                 Reservation reservation = new Reservation();
+                reservation.setReservationId(rs.getInt("reservation_id"));
                 reservation.setCustomer(customer);
                 reservation.setPkg(pkg);
                 reservation.setStartDate(rs.getDate("start_datetime").toLocalDate());
                 reservation.setEndDate(rs.getDate("end_datetime").toLocalDate());
                 reservation.setStatus(rs.getString("status"));
                 reservation.setOverdueCharges((rs.getDouble("overdue_charges")));
+
+                reservation.setReservationId(rs.getInt("reservation_id"));
+                System.out.println("Loaded Reservation ID: " + rs.getInt("reservation_id"));
+                System.out.println("Customer Name: " + rs.getString("customer_name"));
+                System.out.println("Package Name: " + rs.getString("package_name"));
 
                 reservations.add(reservation);
             }
@@ -550,7 +615,17 @@ public class ReservationController implements Initializable {
             return;
         }
 
+        // Check if the reservation is already fully paid
+        if (isReservationFullyPaid(selectedReservation)) {
+            disablePaymentSection();
+            showError("Payment Error", "This reservation has already been fully paid.");
+            return;
+        }
+
+        int reservationId = selectedReservation.getReservationId();
+        System.out.println("Selected Reservation ID: " + reservationId);
         String paymentMethod = payment_method_cmb.getValue();
+
         if (paymentMethod == null || paymentMethod.isEmpty()) {
             showError("Invalid Payment Method", "Please select a valid payment method.");
             return;
@@ -558,25 +633,98 @@ public class ReservationController implements Initializable {
 
         double amount = Double.parseDouble(amount_textfield.getText());
         double overdueCharges = selectedReservation.getOverdueCharges();
-        double totalAmount = amount + overdueCharges;
+        double totalAmountDue = calculateTotalAmountDue(selectedReservation);
+
+        if (amount < totalAmountDue) {
+            // Prompt for missing payment
+            double remainingBalance = totalAmountDue - amount;
+            showError("Insufficient Payment", "The entered amount is insufficient. Remaining balance: " + remainingBalance);
+            return;
+        }
 
         try (Connection conn = DatabaseConnection.getConnection()) {
             String sql = "INSERT INTO payments (reservation_id, amount, payment_method, recorded_by, is_penalty) "
                     + "VALUES (?, ?, ?, ?, ?)";
             try (PreparedStatement pst = conn.prepareStatement(sql)) {
-                pst.setInt(1, selectedReservation.getReservationId()); // Assuming Reservation has a getReservationId() method
-                pst.setDouble(2, totalAmount);
+                pst.setInt(1, reservationId);
+                pst.setDouble(2, amount);
                 pst.setString(3, paymentMethod);
                 pst.setInt(4, Model.getInstance().getcurrentuserid());
                 pst.setBoolean(5, overdueCharges > 0); // Mark as penalty if overdue charges exist
                 pst.executeUpdate();
             }
-            showSuccess("Payment Recorded", "Payment of " + totalAmount + " recorded successfully.");
+            showSuccess("Payment Recorded", "Payment of " + amount + " recorded successfully.");
             resetForm();
         } catch (SQLException e) {
             showError("Payment Failed", "Error recording payment: " + e.getMessage());
         }
     }
+    private boolean isReservationFullyPaid(Reservation reservation) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            String query = "SELECT SUM(amount) AS total_paid FROM payments WHERE reservation_id = ?";
+            try (PreparedStatement pst = conn.prepareStatement(query)) {
+                pst.setInt(1, reservation.getReservationId());
+                ResultSet rs = pst.executeQuery();
+                if (rs.next()) {
+                    double totalPaid = rs.getDouble("total_paid");
+                    double totalDue = calculateTotalAmountDue(reservation);
+                    return totalPaid >= totalDue; // Fully paid if total paid >= total due
+                }
+            }
+        } catch (SQLException e) {
+            showError("Database Error", "Failed to check payment status: " + e.getMessage());
+        }
+        return false;
+    }
+    private double calculateTotalAmountDue(Reservation reservation) {
+        double baseAmount = reservation.getPkg().getBundlePrice(); // Base price of the package
+        double overdueCharges = reservation.getOverdueCharges();
+        return baseAmount + overdueCharges;
+    }
+    private void disablePaymentSection() {
+        amount_textfield.setDisable(true);
+        payment_method_cmb.setDisable(true);
+        // Assuming there's a "Record Payment" button with fx:id "record_payment_btn"
+        record_btn.setDisable(true);
+    }
+    private void enablePaymentSection() {
+        amount_textfield.setDisable(false);
+        payment_method_cmb.setDisable(false);
+        record_btn.setDisable(false);
+    }
+    private double calculateRealTimeOverdueCharges(Reservation reservation) {
+        LocalDate endDate = reservation.getEndDate();
+        LocalDate today = LocalDate.now();
 
+        // Check if the reservation is overdue
+        if (today.isAfter(endDate) && !reservation.getStatus().equals("Completed")) {
+            long daysOverdue = ChronoUnit.DAYS.between(endDate, today);
+
+            // Get the package associated with the reservation
+            Package pkg = reservation.getPkg();
+
+            // Calculate the total penalty for all equipment in the package
+            double totalPenalty = 0.0;
+            try (Connection conn = DatabaseConnection.getConnection()) {
+                String query = "SELECT SUM(e.overdue_penalty) AS total_penalty " +
+                        "FROM package_equipment pe " +
+                        "JOIN equipment e ON pe.equipment_id = e.equipment_id " +
+                        "WHERE pe.package_id = ?";
+                PreparedStatement pst = conn.prepareStatement(query);
+                pst.setInt(1, pkg.getPackageId());
+                ResultSet rs = pst.executeQuery();
+                if (rs.next()) {
+                    totalPenalty = rs.getDouble("total_penalty");
+                }
+            } catch (SQLException e) {
+                showError("Database Error", "Failed to calculate overdue charges: " + e.getMessage());
+            }
+
+            // Return the total penalty multiplied by the number of overdue days
+            return totalPenalty * daysOverdue;
+        }
+
+        return 0.0; // No penalty if not overdue
+    }
 
 }
