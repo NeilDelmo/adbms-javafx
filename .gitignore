@@ -5,3 +5,6 @@
 *.log
 X
 
+.idea/
+*iml
+out/
