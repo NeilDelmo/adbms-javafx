@@ -4,13 +4,14 @@
  */
 package com.mycompany.karaoke_rental_system;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  *
  * @author Neil
  */
-public class Customer {
+public class Customer implements Serializable {
 
         private int customerId;
         private String name;

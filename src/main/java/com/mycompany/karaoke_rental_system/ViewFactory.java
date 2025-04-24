@@ -14,6 +14,15 @@ public class ViewFactory {
     private VBox reservationView;
     private AnchorPane equipmentView;
     private CustomerController customerController;
+    private ReservationController reservationController;
+    private Customer selectedCustomer;
+
+    public void setSelectedCustomer(Customer selectedCustomer){
+        this.selectedCustomer = selectedCustomer;
+    }
+    private Customer getSelectedCustomer(){
+        return selectedCustomer;
+    }
 
     public ViewFactory() {
     }
@@ -48,12 +57,18 @@ public class ViewFactory {
     public VBox getReservationView() {
         if (reservationView == null) {
             try {
-                reservationView = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/Reservation.fxml")).load();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/Reservation.fxml"));
+                reservationView = loader.load();
+                reservationController = loader.getController();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
+
+        if (selectedCustomer != null && reservationController != null) {
+            reservationController.setSelectedCustomer(selectedCustomer);
+        }
+
         return reservationView;
     }
 

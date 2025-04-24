@@ -17,8 +17,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import com.mycompany.karaoke_rental_system.data.DatabaseConnection;
 import java.sql.ResultSet;
-
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 
 public class CustomerController implements Initializable {
@@ -26,7 +26,7 @@ public class CustomerController implements Initializable {
     private Button edit_btn;
 
     @FXML
-    private BorderPane rootPane;
+    private AnchorPane rootPane;
 
     @FXML
     private TextField address_txt;
@@ -80,9 +80,16 @@ public class CustomerController implements Initializable {
         setupTableSelection();
 
         customer_table.setEditable(true);
-        reservation_btn.setOnAction(e
-                -> rootPane.setCenter(Model.getInstance().getViewFactory().getReservationView())
-        );
+        reservation_btn.setOnAction(e -> {
+            Customer selectedCustomer = customer_table.getSelectionModel().getSelectedItem();
+            if (selectedCustomer != null) {
+                Model.getInstance().getViewFactory().setSelectedCustomer(selectedCustomer);
+                BorderPane parent = (BorderPane) rootPane.getParent();
+                parent.setCenter(Model.getInstance().getViewFactory().getReservationView());
+            } else {
+                showAlert("Selection Error", "Please select a customer to proceed.");
+            }
+        });
 
     }
 

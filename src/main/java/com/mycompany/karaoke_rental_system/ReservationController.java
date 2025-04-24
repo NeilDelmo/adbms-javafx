@@ -91,6 +91,15 @@ public class ReservationController implements Initializable {
     private Package selectedPackage;
     private ObservableList<Reservation>masterReservationList;
 
+    private Customer selectedCustomer;
+
+    public void setSelectedCustomer(Customer customer){
+        this.selectedCustomer = customer;
+        if(customer != null && customer_cmb != null){
+            customer_cmb.getSelectionModel().select(customer);
+        }
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         TableColumnsForPackage();
