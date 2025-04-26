@@ -16,6 +16,7 @@ public class ViewFactory {
     private CustomerController customerController;
     private ReservationController reservationController;
     private Customer selectedCustomer;
+    private VBox paymentView;
 
     public void setSelectedCustomer(Customer selectedCustomer){
         this.selectedCustomer = selectedCustomer;
@@ -82,6 +83,18 @@ public class ViewFactory {
 
         }
         return equipmentView;
+    }
+
+    public VBox getPaymentView(){
+        if(paymentView == null){
+            try{
+                paymentView = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/Payment.fxml")).load();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+
+        return  paymentView;
     }
 
     public void showLoginWindow() {

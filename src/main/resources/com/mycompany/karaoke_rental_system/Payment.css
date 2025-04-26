@@ -1,0 +1,143 @@
+/* Root Container Styling */
+.root {
+    -fx-background-color: #f8f9fa; /* Light background for the entire app */
+    -fx-padding: 20px; /* Add padding around the root container */
+}
+
+/* VBox and HBox Styling */
+.vbox, .hbox {
+    -fx-spacing: 16px; /* Add spacing between components */
+    -fx-padding: 16px; /* Add padding inside containers */
+}
+
+/* GridPane Styling */
+.grid-pane {
+    -fx-hgap: 16px; /* Horizontal gap between columns */
+    -fx-vgap: 16px; /* Vertical gap between rows */
+    -fx-padding: 16px; /* Padding inside the GridPane */
+}
+
+/* ComboBox Styling */
+.combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 4px;
+    -fx-padding: 8px;
+}
+
+.combo-box:hover {
+    -fx-border-color: #adb5bd;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.combo-box .arrow {
+    -fx-background-color: #6c757d;
+}
+
+/* TextField Styling */
+.text-field {
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 4px;
+    -fx-padding: 8px;
+}
+
+.text-field:hover {
+    -fx-border-color: #adb5bd;
+}
+
+/* Button Styling */
+.button {
+    -fx-background-color: #0d6efd; /* Blue background */
+    -fx-text-fill: white; /* White text */
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 25px; /* Rounded corners */
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #0b5ed7; /* Darker blue on hover */
+}
+
+/* Label Styling */
+.label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #343a40;
+    -fx-padding: 8px 0; /* Add vertical padding for labels */
+}
+
+/* ProgressBar Styling */
+.progress-bar {
+    -fx-accent: #4CAF50; /* Green progress bar */
+    -fx-background-color: #e0e0e0; /* Light gray background */
+    -fx-border-radius: 5px;
+}
+
+/* TableView Base Styling */
+.table-view {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #e5e5e5;
+    -fx-padding: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 4, 0, 0, 2);
+}
+
+/* Table Header Styling */
+.table-view .column-header-background {
+    -fx-background-color: white;
+    -fx-background-radius: 8px 8px 0 0;
+    -fx-padding: 0 0 8px 0;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #6c757d;
+    -fx-padding: 16px 10px 8px 10px;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #6c757d;
+    -fx-alignment: center-left;
+}
+
+/* Table Cell Styling */
+.table-view .table-cell {
+    -fx-padding: 16px 10px;
+    -fx-border-color: transparent;
+    -fx-font-size: 13px;
+    -fx-alignment: center-left;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #f5f5f5 transparent;
+    -fx-padding: 0;
+}
+
+.table-view .table-row-cell:odd {
+    -fx-background-color: white; /* No alternating row color in the reference */
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #f8f9fa;
+    -fx-text-fill: #212529;
+}
+
+/* PieChart Styling */
+.pie-chart {
+    -fx-padding: 10px;
+}
+
+.pie-chart .chart-legend-item {
+    -fx-font-size: 12px;
+    -fx-text-fill: #333333;
+}

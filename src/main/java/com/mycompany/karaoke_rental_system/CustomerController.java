@@ -2,9 +2,7 @@ package com.mycompany.karaoke_rental_system;
 
 import com.mycompany.karaoke_rental_system.Model.Model;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
@@ -16,7 +14,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import com.mycompany.karaoke_rental_system.data.DatabaseConnection;
-import java.sql.ResultSet;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -144,18 +141,29 @@ public class CustomerController implements Initializable {
         customer_table.setItems(customers);
     }
 
-    private void updateCustomerField(int customerId, String field, String newValue){
-        String query = String.format("UPDATE customers set %s = ? WHERE customer_id = ? ",field);
-        try(Connection conn =  DatabaseConnection.getConnection()){
-            PreparedStatement pst = conn.prepareStatement(query);
-            pst.setString(1,newValue);
-            pst.setInt(2,customerId);
-            pst.executeUpdate();
-        }catch (SQLException e){
-            showAlert("Database Error", "Error Updating Customer"+ e.getMessage());
-        }
+    private void updateCustomerField(int customerId, String field, String newValue) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             CallableStatement cstmt = conn.prepareCall("{call sp_update_customer(?, ?, ?, ?, ?)}")) {
 
+            Customer customer = CustomerDAO.getCustomerById(customerId);
+            if (customer == null) {
+                showAlert("Error", "Customer not found.");
+                return;
+            }
+
+            cstmt.setInt(1, customerId);
+            cstmt.setString(2, field.equals("name") ? newValue : customer.getName());
+            cstmt.setString(3, field.equals("phone") ? newValue : customer.getPhone());
+            cstmt.setString(4, field.equals("address") ? newValue : customer.getAddress());
+            cstmt.setInt(5, Model.getInstance().getcurrentuserid());
+
+            cstmt.execute();
+
+        } catch (SQLException e) {
+            showAlert("Database Error", "Error updating customer: " + e.getMessage());
+        }
     }
+
 
 
     private void saveChanges(Customer customer) {
@@ -189,17 +197,22 @@ public class CustomerController implements Initializable {
             return;
         }
 
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(
-                "INSERT INTO customers (name, phone, address, created_by) VALUES (?, ?, ?, ?)")) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             CallableStatement cstmt = conn.prepareCall("{call sp_insert_customer(?, ?, ?, ?, ?)}")) {
 
-            pstmt.setString(1, name);
-            pstmt.setString(2, phone);
-            pstmt.setString(3, address);
-            pstmt.setInt(4, Model.getInstance().getcurrentuserid()); // Replace with actual user ID from login
+            cstmt.setString(1, name);
+            cstmt.setString(2, phone);
+            cstmt.setString(3, address);
+            cstmt.setInt(4, Model.getInstance().getcurrentuserid());
+            cstmt.registerOutParameter(5, Types.INTEGER);
 
-            pstmt.executeUpdate();
+            cstmt.execute();
+
+            int newCustomerId = cstmt.getInt(5);
+            System.out.println("New customer ID: " + newCustomerId);
+
             clearFields();
-            loadCustomers(); // Refresh the table
+            loadCustomers();
 
         } catch (SQLException e) {
             showAlert("Database Error", "Error saving customer: " + e.getMessage());

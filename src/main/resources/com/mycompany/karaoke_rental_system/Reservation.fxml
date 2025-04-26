@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Text?>
 
 <VBox id="VBox" prefHeight="750.0" prefWidth="850.0" styleClass="mainFxmlClass" stylesheets="@Reservation.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.ReservationController">
     <children>
@@ -49,7 +44,6 @@
         </HBox>
         <HBox alignment="CENTER" spacing="10">
             <ComboBox fx:id="filter_reservation_cmb" prefHeight="55.0" prefWidth="213.0" promptText="Filter Reservations" />
-            <CheckBox fx:id="delivery_checkbox" text="Delivery" />
             <Button fx:id="add_item_btn" onAction="#handleAddReservation" prefHeight="42.0" prefWidth="173.0" text="Add Reservation" />
         </HBox>
         <TableView fx:id="reservation_table" prefHeight="350.0" prefWidth="830.0" VBox.vgrow="ALWAYS">
@@ -61,19 +55,5 @@
                 <TableColumn fx:id="statusCol" prefWidth="147.99993896484375" text="Status" />
             </columns>
         </TableView>
-        <VBox layoutX="10" layoutY="10" prefHeight="180.0" prefWidth="830.0" spacing="5">
-            <children>
-                <Text text="Payments" />
-                <TextField fx:id="amount_textfield" prefWidth="150.0" promptText="Amount" />
-                <HBox spacing="5">
-                    <children>
-                        <ComboBox fx:id="payment_method_cmb" prefHeight="55.0" prefWidth="206.0" promptText="Payment Method" />
-                        <Button fx:id="record_btn" onAction="#handleRecordPayment" prefHeight="42.0" prefWidth="133.0" text="Record" />
-                        <Label fx:id="penalty_label" />
-                    </children>
-                </HBox>
-                <TextArea fx:id="delivery_txtarea" prefHeight="40.0" prefWidth="600.0" promptText="Delivery Address" />
-            </children>
-        </VBox>
     </children>
 </VBox>
