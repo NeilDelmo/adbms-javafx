@@ -1,263 +1,153 @@
-/* General VBox Styling */
-VBox {
-    -fx-background-color: #f9f9f9; /* Light background */
-    -fx-padding: 15px; /* Slightly increased padding for better spacing */
-    -fx-spacing: 15px; /* Increased spacing between children */
+/* Root Container Styling */
+.root {
+    -fx-background-color: #f8f9fa; /* Light background for the entire app */
+    -fx-padding: 20px; /* Add padding around the root container */
 }
 
-/* General HBox Styling */
-HBox {
-    -fx-spacing: 15px; /* Increased space between children */
-    -fx-alignment: center-left; /* Align items to the left */
+/* VBox Styling */
+.vbox {
+    -fx-spacing: 16px; /* Add spacing between components */
+    -fx-padding: 16px; /* Add padding inside the VBox */
+    -fx-background-color: white; /* White background for the main VBox */
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 4, 0, 0, 2);
 }
 
 /* GridPane Styling */
-GridPane {
-    -fx-hgap: 15; /* Increased horizontal gap */
-    -fx-vgap: 15; /* Increased vertical gap */
-    -fx-padding: 15px; /* Padding inside the GridPane */
+.grid-pane {
+    -fx-hgap: 16px; /* Horizontal gap between columns */
+    -fx-vgap: 16px; /* Vertical gap between rows */
+    -fx-padding: 16px; /* Padding inside the GridPane */
+    -fx-background-color: white; /* White background for the GridPane */
+    -fx-border-radius: 8px;
+    -fx-border-color: #e5e5e5;
 }
 
 /* DatePicker Styling */
 .date-picker {
     -fx-background-color: white;
-    -fx-border-color: #e0e0e0;
-    -fx-border-width: 1px;
-    -fx-border-radius: 8px; /* Rounded corners */
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 4px;
     -fx-padding: 8px;
-    -fx-font-size: 14px;
 }
 
 .date-picker:hover {
-    -fx-border-color: #42a5f5; /* Highlight border on hover */
+    -fx-border-color: #adb5bd;
 }
 
 .date-picker:focused {
-    -fx-border-color: #1e88e5; /* Highlight border when focused */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.5, 0, 2); /* Subtle shadow effect */
-}
-
-/* CheckBox Styling */
-.check-box {
-    -fx-text-fill: #333;
-    -fx-font-size: 14px;
-    -fx-font-weight: normal;
-}
-
-.check-box:selected {
-    -fx-text-fill: #42a5f5; /* Change text color when selected */
+    -fx-border-color: #0d6efd; /* Blue border when focused */
 }
 
 /* ComboBox Styling */
 .combo-box {
     -fx-background-color: white;
-    -fx-border-color: #e0e0e0;
-    -fx-border-width: 1px;
-    -fx-border-radius: 8px; /* Rounded corners */
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 4px;
     -fx-padding: 8px;
-    -fx-font-size: 14px;
 }
 
 .combo-box:hover {
-    -fx-border-color: #42a5f5; /* Highlight border on hover */
+    -fx-border-color: #adb5bd;
 }
 
-.combo-box:focused {
-    -fx-border-color: #1e88e5; /* Highlight border when focused */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.5, 0, 2); /* Subtle shadow effect */
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
 }
 
-/* Status ComboBox Styling Based on Selection */
-.combo-box:selected {
-    -fx-text-fill: #42a5f5; /* Highlight text when an option is selected */
-}
-
-.combo-box:selected .label {
-    -fx-text-fill: #42a5f5; /* Consistent text color */
+.combo-box .arrow {
+    -fx-background-color: #6c757d;
 }
 
 /* Button Styling */
 .button {
-    -fx-background-color: #42a5f5;
-    -fx-text-fill: white;
+    -fx-background-color: #0d6efd; /* Blue background */
+    -fx-text-fill: white; /* White text */
     -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 8px;
-    -fx-padding: 8px 16px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0.5, 1, 1);
-    -fx-transition: all 0.2s ease; /* Smooth transition for hover and press effects */
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 25px; /* Rounded corners */
+    -fx-cursor: hand;
 }
 
 .button:hover {
-    -fx-background-color: #1e88e5; /* Darker blue on hover */
-    -fx-scale-x: 1.05; /* Slightly enlarge button */
-    -fx-scale-y: 1.05;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 8, 0.5, 2, 2); /* Stronger shadow */
+    -fx-background-color: #0b5ed7; /* Darker blue on hover */
 }
 
-.button:pressed {
-    -fx-background-color: #0d47a1; /* Darkest blue when pressed */
-    -fx-scale-x: 0.95; /* Slightly shrink button */
-    -fx-scale-y: 0.95;
+/* HBox Styling */
+.hbox {
+    -fx-spacing: 16px; /* Add spacing between components */
+    -fx-padding: 16px; /* Add padding inside the HBox */
+}
+
+/* TableView Base Styling */
+.table-view {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #e5e5e5;
+    -fx-padding: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 4, 0, 0, 2);
+}
+
+/* Table Header Styling */
+.table-view .column-header-background {
+    -fx-background-color: white;
+    -fx-background-radius: 8px 8px 0 0;
+    -fx-padding: 0 0 8px 0;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #6c757d;
+    -fx-padding: 16px 10px 8px 10px;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #6c757d;
+    -fx-alignment: center-left;
+}
+
+/* Table Cell Styling */
+.table-view .table-cell {
+    -fx-padding: 16px 10px;
+    -fx-border-color: transparent;
+    -fx-font-size: 13px;
+    -fx-alignment: center-left;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #f5f5f5 transparent;
+    -fx-padding: 0;
+}
+
+.table-view .table-row-cell:odd {
+    -fx-background-color: white; /* No alternating row color in the reference */
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #f8f9fa;
+    -fx-text-fill: #212529;
 }
 
 /* ListView Styling */
 .list-view {
     -fx-background-color: white;
-    -fx-background-radius: 8px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 8, 0.5, 2, 2);
+    -fx-border-color: #e5e5e5;
     -fx-border-radius: 8px;
-    -fx-padding: 8px;
+    -fx-padding: 16px;
 }
 
-.list-cell {
-    -fx-padding: 8px 12px;
-    -fx-background-color: white;
-    -fx-border-color: #e0e0e0;
-    -fx-border-width: 0 0 1 0;
-    -fx-pref-height: 45px;
-    -fx-background-radius: 6px;
-    -fx-transition: all 0.2s ease; /* Smooth transitions for hover effects */
-}
-
-.list-cell:filled:selected {
-    -fx-background-color: #e3f2fd; /* Light blue for selection */
-    -fx-text-fill: #1e88e5; /* Blue text for selected item */
-}
-
-.list-cell:hover {
-    -fx-background-color: #f0f8ff; /* Very light blue on hover */
-}
-
-.list-cell:empty {
-    -fx-padding: 0;
-    -fx-border-width: 0;
-}
-
-/* TableView Styling */
-.table-view {
-    -fx-background-color: white;
-    -fx-background-radius: 8px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 8, 0.5, 2, 2);
-    -fx-border-radius: 8px;
-    -fx-padding: 8px;
-}
-
-.table-view .table-row-cell {
-    -fx-background-color: white;
-    -fx-padding: 4px 8px;
-    -fx-transition: all 0.2s ease;
-}
-
-.table-view .table-row-cell:hover {
-    -fx-background-color: #e3f2fd; /* Light blue on hover */
-}
-
-.table-view .table-row-cell:selected {
-    -fx-background-color: #bbdefb; /* Medium blue for selection */
-    -fx-text-fill: black;
-    -fx-font-weight: bold;
-}
-
-.table-view .table-cell {
-    -fx-padding: 8px 12px;
-    -fx-background-color: white;
-    -fx-border-color: #e0e0e0;
-    -fx-border-width: 0 0 1 0;
-    -fx-pref-height: 45px;
-    -fx-transition: all 0.2s ease;
-    -fx-text-fill: #333;
-}
-
-.table-view .table-cell:hover {
-    -fx-background-color: #e3f2fd;
-    -fx-border-color: #42a5f5;
-    -fx-border-width: 1px;
-}
-
-.table-view .table-cell:selected {
-    -fx-background-color: #42a5f5;
-    -fx-text-fill: white;
-    -fx-border-color: #1e88e5;
-    -fx-border-width: 1px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0.5, 1, 1);
-}
-
-/* TextArea Styling */
-.text-area {
-    -fx-background-color: white;
-    -fx-border-color: #e0e0e0;
-    -fx-border-width: 1px;
-    -fx-border-radius: 8px;
-    -fx-padding: 8px;
+.list-view .list-cell {
+    -fx-padding: 16px;
     -fx-font-size: 14px;
+    -fx-text-fill: #343a40;
 }
 
-.text-area:hover {
-    -fx-border-color: #42a5f5; /* Highlight border on hover */
-}
-
-.text-area:focused {
-    -fx-border-color: #1e88e5; /* Highlight border when focused */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.5, 0, 2); /* Subtle shadow effect */
-}
-
-/* TextField Styling */
-.text-field {
-    -fx-background-color: white;
-    -fx-border-color: #e0e0e0;
-    -fx-border-width: 1px;
-    -fx-border-radius: 8px;
-    -fx-padding: 8px;
-    -fx-font-size: 14px;
-}
-
-.text-field:hover {
-    -fx-border-color: #42a5f5; /* Highlight border on hover */
-}
-
-.text-field:focused {
-    -fx-border-color: #1e88e5; /* Highlight border when focused */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.5, 0, 2); /* Subtle shadow effect */
-}
-
-/* Label Styling */
-.label {
-    -fx-font-size: 14px;
-    -fx-text-fill: #333;
-}
-
-/* Text Styling */
-.text {
-    -fx-font-size: 16px;
-    -fx-fill: #333;
-    -fx-font-weight: bold;
-}
-/* Row Styling for Reservations */
-.table-row-cell.status-pending {
-    -fx-background-color: #ffeb3b; /* Yellow for Pending */
-}
-
-.table-row-cell.status-confirmed {
-    -fx-background-color: #4caf50; /* Green for Confirmed */
-}
-
-.table-row-cell.status-completed {
-    -fx-background-color: #2196f3; /* Blue for Completed */
-}
-
-.table-row-cell.status-cancelled {
-    -fx-background-color: #f44336; /* Red for Cancelled */
-}
-
-.table-row-cell.status-overdue {
-    -fx-background-color: #d32f2f; /* Dark Red for Overdue */
-}
-/* Row Styling for Packages */
-.table-row-cell.status-available {
-    -fx-background-color: #4caf50; /* Green for Available */
-}
-
-.table-row-cell.status-reserved {
-    -fx-background-color: #f44336; /* Red for Reserved */
+.list-view .list-cell:selected {
+    -fx-background-color: #f8f9fa;
+    -fx-text-fill: #212529;
 }
