@@ -162,7 +162,10 @@ public class EquipmentController implements Initializable {
                         resultSet.getString("description"),
                         resultSet.getDouble("rental_price"),
                         resultSet.getDouble("overdue_penalty"),
-                        resultSet.getString("status")
+                        resultSet.getString("status"),
+                        resultSet.getInt("created_by"),
+                        resultSet.getTimestamp("created_at"),
+                        resultSet.getInt("updated_by")
                 );
                 equipmentList.add(equipment);
             }
@@ -255,7 +258,10 @@ public class EquipmentController implements Initializable {
                         resultSet.getString("name"),
                         resultSet.getString("description"),
                         resultSet.getDouble("bundle_price"),
-                        resultSet.getString("status")
+                        resultSet.getString("status"),
+                        resultSet.getInt("created_by"),
+                        resultSet.getTimestamp("created_at"),
+                        resultSet.getInt("updated_by")
                 );
                 packageList.add(pkg);
             }

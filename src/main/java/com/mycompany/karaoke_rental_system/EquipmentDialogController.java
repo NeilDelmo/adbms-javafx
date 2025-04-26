@@ -106,7 +106,7 @@ public class EquipmentDialogController implements Initializable {
         if (equipment == null) {
             query = "INSERT INTO equipment (name, description, rental_price, overdue_penalty, status, created_by) VALUES (?, ?, ?, ?, ?, ?)";
         } else {
-            query = "UPDATE equipment SET name = ?, description = ?, rental_price = ?, overdue_penalty = ?, status = ? WHERE equipment_id = ?";
+            query = "UPDATE equipment SET name = ?, description = ?, rental_price = ?, overdue_penalty = ?, status = ?, updated_by = ? WHERE equipment_id = ?";
         }
 
         try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
@@ -126,7 +126,8 @@ public class EquipmentDialogController implements Initializable {
                 statement.setDouble(3, rentalPrice);
                 statement.setDouble(4, overduePenalty);
                 statement.setString(5, status);
-                statement.setInt(6, equipment.getEquipmentId());
+                statement.setInt(6,currentUserId);
+                statement.setInt(7, equipment.getEquipmentId());
             }
 
             int affectedRows = statement.executeUpdate();

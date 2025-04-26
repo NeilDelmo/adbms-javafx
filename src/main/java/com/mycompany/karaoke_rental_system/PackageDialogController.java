@@ -87,7 +87,10 @@ private void loadEquipmentData() {
                 resultSet.getString("description"),
                 resultSet.getDouble("rental_price"),
                 resultSet.getDouble("overdue_penalty"),
-                resultSet.getString("status")
+                resultSet.getString("status"),
+                    resultSet.getInt("created_by"),
+                    resultSet.getTimestamp("created_at"),
+                    resultSet.getInt("updated_by")
             );
             equipmentList.add(equipment);
         }
@@ -115,7 +118,35 @@ private void loadEquipmentData() {
     private void handleSave() {
         String name = nameField.getText();
         String description = descriptionField.getText();
-        double bundlePrice = Double.parseDouble(bundlePriceField.getText());
+        String bundlePriceText = bundlePriceField.getText();
+        if (name.isEmpty() || description.isEmpty()) {
+            showAlert("Input Error", "Name and Description are required fields.");
+            return;
+        }
+        double bundlePrice;
+        try {
+            bundlePrice = Double.parseDouble(bundlePriceText);
+            if (bundlePrice <= 0) {
+                showAlert("Input Error", "Bundle Price must be a positive number.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            showAlert("Input Error", "Please enter a valid number for Bundle Price.");
+            return;
+        }
+
+        // Validate selected equipment
+        if (selectedEquipment.isEmpty()) {
+            showAlert("Input Error", "At least one equipment item must be selected.");
+            return;
+        }
+
+        // Validate user ID
+        int currentUserId = Model.getInstance().getcurrentuserid();
+        if (currentUserId <= 0) {
+            showAlert("Authentication Error", "No valid user session. Please login again.");
+            return;
+        }
 
         if (isEditMode) {
             updatePackage(name, description, bundlePrice);
@@ -201,7 +232,10 @@ private void loadEquipmentData() {
                     resultSet.getString("description"), // Include description
                     resultSet.getDouble("rental_price"),
                     resultSet.getDouble("overdue_penalty"), // Include overdue penalty
-                    resultSet.getString("status") // Include status
+                    resultSet.getString("status"), // Include status
+                        resultSet.getInt("created_by"),
+                        resultSet.getTimestamp("created_at"),
+                        resultSet.getInt("updated_by")
                 );
                 selectedEquipment.add(equipment);
             }
@@ -213,12 +247,13 @@ private void loadEquipmentData() {
 
     private void updatePackage(String name, String description, double bundlePrice) {
         Connection conn = DatabaseConnection.getConnection();
-        String updatePackageQuery = "UPDATE packages SET name = ?, description = ?, bundle_price = ? WHERE package_id = ?";
+        String updatePackageQuery = "UPDATE packages SET name = ?, description = ?, bundle_price = ?, updated_by = ? WHERE package_id = ?";
         try (PreparedStatement statement = conn.prepareStatement(updatePackageQuery)) {
             statement.setString(1, name);
             statement.setString(2, description);
             statement.setDouble(3, bundlePrice);
-            statement.setInt(4, packageData.getPackageId());
+            statement.setInt(4,Model.getInstance().getcurrentuserid());
+            statement.setInt(5, packageData.getPackageId());
 
             statement.executeUpdate();
 
@@ -239,5 +274,12 @@ private void loadEquipmentData() {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    private void showAlert(String title, String message) {
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
