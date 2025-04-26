@@ -34,9 +34,6 @@ public class StaffMenuController implements Initializable {
 
     @FXML
     private Button reservation_btn;
-    
-    @FXML
-    private Button actlog_btn;
 
     public Button getcustomer_btn() {
         return customer_btn;
@@ -65,8 +62,24 @@ public class StaffMenuController implements Initializable {
     public Button getadduser_btn() {
         return add_user_btn;
     }
-    public Button getactlog_btn(){
-        return actlog_btn;
+
+    private void setButtonSelected(Button selectedButton) {
+        // Remove selected class from all buttons
+        home_btn.getStyleClass().remove("selected");
+        customer_btn.getStyleClass().remove("selected");
+        reservation_btn.getStyleClass().remove("selected");
+        equipment_btn.getStyleClass().remove("selected");
+        payment_btn.getStyleClass().remove("selected");
+        add_user_btn.getStyleClass().remove("selected");
+        logout_btn.getStyleClass().remove("selected");
+
+        // Add selected class to the clicked button
+        selectedButton.getStyleClass().add("selected");
+    }
+    @FXML
+    private void handleButtonAction(javafx.event.ActionEvent event) {
+        Button clickedButton = (Button) event.getSource();
+        setButtonSelected(clickedButton);
     }
 
     @Override
@@ -74,7 +87,6 @@ public class StaffMenuController implements Initializable {
          boolean isAdmin = Model.getInstance().getRole().equalsIgnoreCase("Admin");        
         // Hide buttons completely
         add_user_btn.setVisible(isAdmin);
-        actlog_btn.setVisible(isAdmin);
     }
 
 }
