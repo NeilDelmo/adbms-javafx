@@ -1,14 +1,11 @@
 package com.mycompany.karaoke_rental_system;
 
 import com.mycompany.karaoke_rental_system.Model.Model;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,6 +15,9 @@ import com.mycompany.karaoke_rental_system.data.DatabaseConnection;
 
 public class PackageDialogController {
 
+    public TableColumn<Equipment, Integer> idCoL;
+    public TableColumn<Equipment, String> nameCol;
+    public TableColumn<Equipment, Double> priceCol;
     @FXML
     private TextField nameField;
     @FXML
@@ -28,14 +28,6 @@ public class PackageDialogController {
     private TableView<Equipment> equipmentTable;
     @FXML
     private ListView<Equipment> selectedEquipmentList;
-    @FXML
-    private Button addButton;
-    @FXML
-    private Button removeButton;
-    @FXML
-    private Button saveButton;
-    @FXML
-    private Button cancelButton;
 
     private ObservableList<Equipment> equipmentList;
     private ObservableList<Equipment> selectedEquipment;
@@ -49,6 +41,10 @@ public class PackageDialogController {
         equipmentList = FXCollections.observableArrayList();
         selectedEquipment = FXCollections.observableArrayList();
 
+        idCoL.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getEquipmentId()).asObject());
+        nameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
+        priceCol.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getRentalPrice()).asObject());
+
         // Initialize the table columns
         equipmentTable.setItems(equipmentList);
         selectedEquipmentList.setItems(selectedEquipment);
@@ -57,52 +53,53 @@ public class PackageDialogController {
         loadEquipmentData();
     }
 
-private void loadEquipmentData() {
-    Connection conn = DatabaseConnection.getConnection();
-    String query;
-    if (isEditMode) {
-        // Exclude equipment already in other packages, except those in the current package
-        query = "SELECT e.equipment_id, e.name, e.description, e.rental_price, e.overdue_penalty, e.status " +
-                "FROM equipment e " +
-                "WHERE e.equipment_id NOT IN (" +
-                "   SELECT pe.equipment_id FROM package_equipment pe WHERE pe.package_id != ?" +
-                ")";
-    } else {
-        // Exclude equipment already in any package
-        query = "SELECT e.equipment_id, e.name, e.description, e.rental_price, e.overdue_penalty, e.status " +
-                "FROM equipment e " +
-                "WHERE e.equipment_id NOT IN (SELECT equipment_id FROM package_equipment)";
-    }
-
-    try (PreparedStatement statement = conn.prepareStatement(query)) {
+    private void loadEquipmentData() {
+        Connection conn = DatabaseConnection.getConnection();
+        String query;
         if (isEditMode) {
-            statement.setInt(1, packageData.getPackageId());
+            query = "SELECT e.equipment_id, e.name, e.description, e.rental_price, e.overdue_penalty, e.status, " +
+                    "e.created_by, e.created_at, e.updated_by " + // Include missing columns
+                    "FROM equipment e " +
+                    "WHERE e.equipment_id NOT IN (" +
+                    "   SELECT pe.equipment_id FROM package_equipment pe WHERE pe.package_id != ?" +
+                    ")";
+        } else {
+            query = "SELECT e.equipment_id, e.name, e.description, e.rental_price, e.overdue_penalty, e.status, " +
+                    "e.created_by, e.created_at, e.updated_by " + // Include missing columns
+                    "FROM equipment e " +
+                    "WHERE e.equipment_id NOT IN (SELECT equipment_id FROM package_equipment)";
         }
-
-        ResultSet resultSet = statement.executeQuery();
-        while (resultSet.next()) {
-            Equipment equipment = new Equipment(
-                resultSet.getInt("equipment_id"),
-                resultSet.getString("name"),
-                resultSet.getString("description"),
-                resultSet.getDouble("rental_price"),
-                resultSet.getDouble("overdue_penalty"),
-                resultSet.getString("status"),
-                    resultSet.getInt("created_by"),
-                    resultSet.getTimestamp("created_at"),
-                    resultSet.getInt("updated_by")
-            );
-            equipmentList.add(equipment);
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+            if (isEditMode) {
+                statement.setInt(1, packageData.getPackageId());
+            }
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Equipment equipment = new Equipment(
+                        resultSet.getInt("equipment_id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("description"),
+                        resultSet.getDouble("rental_price"),
+                        resultSet.getDouble("overdue_penalty"),
+                        resultSet.getString("status"),
+                        resultSet.getInt("created_by"), // Now available in the result set
+                        resultSet.getTimestamp("created_at"), // Now available in the result set
+                        resultSet.getInt("updated_by") // Now available in the result set
+                );
+                equipmentList.add(equipment);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
     }
-}
+
     @FXML
     private void handleAddEquipment() {
         Equipment selectedEquipmentItem = equipmentTable.getSelectionModel().getSelectedItem();
         if (selectedEquipmentItem != null) {
             selectedEquipment.add(selectedEquipmentItem);
+            equipmentList.remove(selectedEquipmentItem);
+            updateBundlePrice();
         }
     }
 
@@ -111,6 +108,8 @@ private void loadEquipmentData() {
         Equipment selectedEquipmentItem = selectedEquipmentList.getSelectionModel().getSelectedItem();
         if (selectedEquipmentItem != null) {
             selectedEquipment.remove(selectedEquipmentItem);
+            equipmentList.add(selectedEquipmentItem);
+            updateBundlePrice();
         }
     }
 
@@ -119,10 +118,12 @@ private void loadEquipmentData() {
         String name = nameField.getText();
         String description = descriptionField.getText();
         String bundlePriceText = bundlePriceField.getText();
+
         if (name.isEmpty() || description.isEmpty()) {
             showAlert("Input Error", "Name and Description are required fields.");
             return;
         }
+
         double bundlePrice;
         try {
             bundlePrice = Double.parseDouble(bundlePriceText);
@@ -153,7 +154,6 @@ private void loadEquipmentData() {
         } else {
             savePackage(name, description, bundlePrice);
         }
-
         dialogStage.close();
     }
 
@@ -217,33 +217,34 @@ private void loadEquipmentData() {
         }
     }
 
-   private void loadPackageEquipment(int packageId) {
-    Connection conn = DatabaseConnection.getConnection();
-    String query = "SELECT e.equipment_id, e.name, e.description, e.rental_price, e.overdue_penalty, e.status " +
-                   "FROM package_equipment pe JOIN equipment e ON pe.equipment_id = e.equipment_id " +
-                   "WHERE pe.package_id = ?";
-    try (PreparedStatement statement = conn.prepareStatement(query)) {
-        statement.setInt(1, packageId);
-        try (ResultSet resultSet = statement.executeQuery()) {
-            while (resultSet.next()) {
-                Equipment equipment = new Equipment(
-                    resultSet.getInt("equipment_id"),
-                    resultSet.getString("name"),
-                    resultSet.getString("description"), // Include description
-                    resultSet.getDouble("rental_price"),
-                    resultSet.getDouble("overdue_penalty"), // Include overdue penalty
-                    resultSet.getString("status"), // Include status
-                        resultSet.getInt("created_by"),
-                        resultSet.getTimestamp("created_at"),
-                        resultSet.getInt("updated_by")
-                );
-                selectedEquipment.add(equipment);
+    private void loadPackageEquipment(int packageId) {
+        Connection conn = DatabaseConnection.getConnection();
+        String query = "SELECT e.equipment_id, e.name, e.description, e.rental_price, e.overdue_penalty, e.status, " +
+                "e.created_by, e.created_at, e.updated_by " + // Include missing columns
+                "FROM package_equipment pe JOIN equipment e ON pe.equipment_id = e.equipment_id " +
+                "WHERE pe.package_id = ?";
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setInt(1, packageId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Equipment equipment = new Equipment(
+                            resultSet.getInt("equipment_id"),
+                            resultSet.getString("name"),
+                            resultSet.getString("description"),
+                            resultSet.getDouble("rental_price"),
+                            resultSet.getDouble("overdue_penalty"),
+                            resultSet.getString("status"),
+                            resultSet.getInt("created_by"), // Now available in the result set
+                            resultSet.getTimestamp("created_at"), // Now available in the result set
+                            resultSet.getInt("updated_by") // Now available in the result set
+                    );
+                    selectedEquipment.add(equipment);
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
     }
-}
 
     private void updatePackage(String name, String description, double bundlePrice) {
         Connection conn = DatabaseConnection.getConnection();
@@ -274,6 +275,12 @@ private void loadEquipmentData() {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    private void updateBundlePrice() {
+        double total = selectedEquipment.stream()
+                .mapToDouble(Equipment::getRentalPrice)
+                .sum();
+        bundlePriceField.setText(String.format("%.2f", total)); // Update the text field
     }
     private void showAlert(String title, String message) {
         javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);

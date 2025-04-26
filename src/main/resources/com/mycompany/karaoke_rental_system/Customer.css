@@ -56,7 +56,6 @@
 }
 
 .search-text-field {
-    -fx-background-color: white;
     -fx-border-color: #ced4da;
     -fx-border-radius: 25px; /* Rounded corners for search fields */
     -fx-padding: 8px 16px;

@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 public class ViewFactory {
 
     private AnchorPane dashboardView;
-    private AnchorPane customerView;
+    private VBox customerView;
     private VBox reservationView;
     private AnchorPane equipmentView;
     private CustomerController customerController;
@@ -39,7 +39,7 @@ public class ViewFactory {
         return dashboardView;
     }
 
-    public AnchorPane getCustomerView() {
+    public VBox getCustomerView() {
         if (customerView == null) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/Customer.fxml"));

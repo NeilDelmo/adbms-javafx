@@ -13,48 +13,39 @@
          <children>
             <VBox layoutX="31.0" layoutY="72.0" prefHeight="670.0" prefWidth="206.0" stylesheets="@sidebar.css" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="72.0">
                <children>
-                  <Button fx:id="home_btn" mnemonicParsing="false" styleClass="Button" stylesheets="@sidebar.css" text="Home">
+                  <Button fx:id="home_btn" mnemonicParsing="false" onAction="#handleButtonAction" styleClass="Button" stylesheets="@sidebar.css" text="Home">
                      <graphic>
                         <FontAwesomeIcon glyphName="HOME" size="2em" />
                      </graphic>
                   </Button>
-                  <Button fx:id="customer_btn" mnemonicParsing="false" styleClass="Button" stylesheets="@sidebar.css" text="Customers">
+                  <Button fx:id="customer_btn" mnemonicParsing="false" onAction="#handleButtonAction" styleClass="Button" stylesheets="@sidebar.css" text="Customers">
                      <graphic>
                         <FontAwesomeIcon glyphName="USERS" size="2em" />
                      </graphic>
                   </Button>
-                  <Button fx:id="reservation_btn" mnemonicParsing="false" styleClass="Button" stylesheets="@sidebar.css" text="Reservations">
+                  <Button fx:id="reservation_btn" mnemonicParsing="false" onAction="#handleButtonAction" styleClass="Button" stylesheets="@sidebar.css" text="Reservations">
                      <graphic>
                         <FontAwesomeIcon glyphName="CALENDAR" size="2em" />
                      </graphic>
                   </Button>
-                  <Button fx:id="equipment_btn" mnemonicParsing="false" styleClass="Button" stylesheets="@sidebar.css" text="Equipments">
+                  <Button fx:id="equipment_btn" mnemonicParsing="false" onAction="#handleButtonAction" styleClass="Button" stylesheets="@sidebar.css" text="Equipments">
                      <graphic>
                         <FontAwesomeIcon glyphName="MICROPHONE" size="2em" />
                      </graphic>
                   </Button>
-                  <Button fx:id="payment_btn" mnemonicParsing="false" styleClass="Button" stylesheets="@sidebar.css" text="Payments">
+                  <Button fx:id="payment_btn" mnemonicParsing="false" onAction="#handleButtonAction" styleClass="Button" stylesheets="@sidebar.css" text="Payments">
                      <graphic>
                         <FontAwesomeIcon glyphName="MONEY" size="2em" />
                      </graphic>
                   </Button>
                   <Line endX="80.0" fill="#f7e7e7" startX="-100.0" styleClass="separator-line" />
-                  <Button fx:id="add_user_btn" mnemonicParsing="false" stylesheets="@sidebar.css" text="Add Users">
+                  <Button fx:id="add_user_btn" mnemonicParsing="false" onAction="#handleButtonAction" stylesheets="@sidebar.css" text="Add Users">
                      <graphic>
                         <FontAwesomeIcon glyphName="USER" size="2em" />
                      </graphic>
                      <styleClass>
                         <String fx:value="Button" />
                         <String fx:value="admin-button" />
-                     </styleClass>
-                  </Button>
-                  <Button fx:id="actlog_btn" layoutX="33.0" layoutY="353.0" mnemonicParsing="false" stylesheets="@sidebar.css" text="Activity Log">
-                     <graphic>
-                        <FontAwesomeIcon glyphName="BOOK" size="2em" />
-                     </graphic>
-                     <styleClass>
-                        <String fx:value="admin-button" />
-                        <String fx:value="Button" />
                      </styleClass>
                   </Button>
                   <Line endX="80.0" layoutX="123.0" layoutY="288.0" startX="-100.0" styleClass="separator-line" />

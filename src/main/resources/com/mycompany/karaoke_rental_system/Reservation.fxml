@@ -13,47 +13,43 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox id="VBox" prefHeight="750.0" prefWidth="850.0" styleClass="mainFxmlClass" stylesheets="@Reservation.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.ReservationController">
-    <children>
-        <GridPane hgap="5" layoutX="10" layoutY="10" prefHeight="47.0" prefWidth="830.0" vgap="5">
-            <children>
-                <DatePicker fx:id="start_date" prefHeight="30.0" prefWidth="120.0" promptText="Start Date" GridPane.rowIndex="1" />
-                <DatePicker fx:id="end_date" prefHeight="30.0" prefWidth="120.0" promptText="End Date" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                <ComboBox fx:id="status_cmb" prefHeight="55.0" prefWidth="122.0" promptText="Status" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                <ComboBox fx:id="customer_cmb" prefHeight="55.0" prefWidth="256.0" promptText="Select Customers" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-            </children>
-            <columnConstraints>
-                <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="120.0" />
-                <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="120.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="200.0" />
+    <GridPane hgap="5" prefHeight="45.0" prefWidth="814.0" vgap="5">
+        <DatePicker fx:id="start_date" prefHeight="30.0" prefWidth="120.0" promptText="Start Date" GridPane.rowIndex="1" />
+        <DatePicker fx:id="end_date" prefHeight="30.0" prefWidth="120.0" promptText="End Date" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <ComboBox fx:id="customer_cmb" prefHeight="30.0" prefWidth="256.0" promptText="Select Customers" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+        <ComboBox fx:id="status_cmb" prefHeight="30.0" prefWidth="122.0" promptText="Status" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+        <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="120.0" />
+            <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="120.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="200.0" />
-            </columnConstraints>
-            <rowConstraints>
-                <RowConstraints />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="200.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
-            </rowConstraints>
-        </GridPane>
-        <HBox prefHeight="254.0" prefWidth="810.0" spacing="10" VBox.vgrow="ALWAYS">
-            <TableView fx:id="package_table" prefHeight="30.0" prefWidth="300.0" stylesheets="@Reservation.css" HBox.hgrow="ALWAYS">
-                <columns>
-                    <TableColumn fx:id="packageNameCol" prefWidth="170.3999729156494" text="Name" />
-                    <TableColumn fx:id="bundlePriceCol" prefWidth="107.20002746582031" text="Price" />
-                    <TableColumn fx:id="packageStatusCol" prefWidth="118.39996337890625" text="Status" />
-                </columns>
-            </TableView>
-            <ListView fx:id="packageContentsList" prefHeight="200.0" prefWidth="300.0" HBox.hgrow="ALWAYS" />
-        </HBox>
-        <HBox alignment="CENTER" spacing="10">
-            <ComboBox fx:id="filter_reservation_cmb" prefHeight="31.0" prefWidth="201.0" promptText="Filter Reservations" />
-            <Button fx:id="add_item_btn" onAction="#handleAddReservation" prefHeight="42.0" prefWidth="173.0" text="Add Reservation" />
-        </HBox>
-        <TableView fx:id="reservation_table" prefHeight="350.0" prefWidth="830.0" VBox.vgrow="ALWAYS">
+        </rowConstraints>
+    </GridPane>
+    <HBox prefHeight="254.0" spacing="10" VBox.vgrow="ALWAYS">
+        <TableView fx:id="package_table" prefHeight="254.0" stylesheets="@Reservation.css" HBox.hgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="customerCol" prefWidth="150.0" text="Customer" />
-                <TableColumn fx:id="periodCol" prefWidth="155.99998474121094" text="Period" />
-                <TableColumn fx:id="addressCol" prefWidth="146.4000244140625" text="Address" />
-                <TableColumn fx:id="packageCol" prefWidth="211.19992065429688" text="Package" />
-                <TableColumn fx:id="statusCol" prefWidth="147.99993896484375" text="Status" />
+                <TableColumn fx:id="packageNameCol" prefWidth="132.00000381469727" text="Name" />
+                <TableColumn fx:id="bundlePriceCol" prefWidth="111.19999694824219" text="Price" />
+                <TableColumn fx:id="packageStatusCol" prefWidth="158.39999999999998" text="Status" />
             </columns>
         </TableView>
-    </children>
+        <ListView fx:id="packageContentsList" prefHeight="257.0" prefWidth="396.0" HBox.hgrow="ALWAYS" />
+    </HBox>
+    <HBox alignment="CENTER" prefHeight="52.0" prefWidth="828.0" spacing="10">
+        <ComboBox fx:id="filter_reservation_cmb" prefHeight="31.0" prefWidth="201.0" promptText="Filter Reservations" />
+        <Button fx:id="add_item_btn" onAction="#handleAddReservation" prefHeight="31.0" text="Add Reservation" />
+    </HBox>
+    <TableView fx:id="reservation_table" prefHeight="350.0" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="customerCol" prefWidth="152.00000381469727" text="Customer" />
+            <TableColumn fx:id="periodCol" prefWidth="163.1999969482422" text="Period" />
+            <TableColumn fx:id="addressCol" prefWidth="224.0" text="Address" />
+            <TableColumn fx:id="packageCol" prefWidth="144.7999267578125" text="Package" />
+            <TableColumn fx:id="statusCol" prefWidth="127.2000732421875" text="Status" />
+        </columns>
+    </TableView>
 </VBox>

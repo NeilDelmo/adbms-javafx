@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox stylesheets="@equipmentdialog.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.EquipmentDialogController">
+<VBox prefHeight="350.0" prefWidth="700.0" stylesheets="@equipmentdialog.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.EquipmentDialogController">
     <children>
         <TextField fx:id="nameField" prefHeight="42.0" prefWidth="660.0" promptText="Equipment Name" styleClass="TextField" stylesheets="@equipmentdialog.css" />
         <TextArea fx:id="descriptionField" prefHeight="100.0" promptText="Description" styleClass="TextArea" stylesheets="@equipmentdialog.css" />

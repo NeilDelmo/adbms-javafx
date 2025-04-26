@@ -17,13 +17,14 @@ import com.mycompany.karaoke_rental_system.data.DatabaseConnection;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 
 public class CustomerController implements Initializable {
     @FXML
     private Button edit_btn;
 
     @FXML
-    private AnchorPane rootPane;
+    private VBox rootPane;
 
     @FXML
     private TextField address_txt;
