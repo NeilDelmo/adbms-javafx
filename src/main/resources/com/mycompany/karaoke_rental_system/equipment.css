@@ -1,143 +1,164 @@
-/* Root Styling */
+/* Root Container Styling */
 .root {
-    -fx-font-family: "Arial", sans-serif;
-    -fx-background-color: linear-gradient(to bottom, #f9f9f9, #e6f7ff);
+    -fx-background-color: #f8f9fa; /* Light background for the entire app */
+    -fx-padding: 20px; /* Add padding around the root container */
 }
 
 /* AnchorPane Styling */
-.AnchorPane {
-    -fx-padding: 10px;
+.anchor-pane {
+    -fx-background-color: #ffffff; /* White background for the main pane */
+    -fx-border-color: #e5e5e5;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 4, 0, 0, 2);
 }
 
-/* TabPane and Tab Styling */
+/* TabPane Styling */
 .tab-pane {
-    -fx-tab-min-width: 120px;
+    -fx-background-color: #ffffff; /* White background for TabPane */
+    -fx-border-radius: 8px;
+    -fx-padding: 16px;
 }
 
 .tab-pane .tab-header-area {
-    -fx-background-color: linear-gradient(to bottom, #ffffff, #e6f7ff);
-    -fx-border-color: transparent;
+    -fx-background-color: #f8f9fa; /* Light background for tab headers */
+    -fx-border-color: #e5e5e5;
+    -fx-border-radius: 8px 8px 0 0;
 }
 
 .tab-pane .tab {
     -fx-background-color: transparent;
-    -fx-text-fill: #333333;
     -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #343a40;
+    -fx-padding: 12px 16px;
 }
 
 .tab-pane .tab:selected {
     -fx-background-color: #ffffff;
-    -fx-text-fill: #1e90ff;
-    -fx-underline: true;
+    -fx-text-fill: #0d6efd; /* Blue text for selected tab */
+    -fx-border-color: #e5e5e5;
+    -fx-border-radius: 8px 8px 0 0;
 }
 
-/* TableView Styling */
-.table-view {
-    -fx-background-color: #fafafa; /* Slightly off-white background */
-    -fx-border-color: #cccccc;
-    -fx-border-width: 1px;
-    -fx-border-radius: 5px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0.3, 0, 2); /* Add shadow */
-    -fx-selection-bar: #1e90ff; /* Color for the selection bar */
-    -fx-selection-bar-non-focused: #1e90ff; /* Color for the selection bar when not focused */
+/* VBox and HBox Styling */
+.vbox, .hbox {
+    -fx-spacing: 16px; /* Add spacing between components */
+    -fx-padding: 16px; /* Add padding inside containers */
 }
 
-.table-view .column-header {
-    -fx-background-color: linear-gradient(to bottom, #1e90ff, #00bfff);
-    -fx-text-fill: white;
+/* FontAwesome Icon Styling */
+.fontawesome-icon {
+    -fx-font-size: 18px;
+    -fx-text-fill: #6c757d;
+}
+
+/* Text Styling */
+.text {
+    -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-alignment: CENTER;
-    -fx-padding: 8px; /* Add padding to headers */
+    -fx-text-fill: #6c757d;
 }
 
-.table-view .column-header:hover {
-    -fx-background-color: #007acc;
+/* TextField Styling */
+.text-field {
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 4px;
+    -fx-padding: 8px;
 }
 
-.table-view .cell {
-    -fx-padding: 8px; /* Add padding to cells */
-    -fx-alignment: CENTER_LEFT;
-    -fx-background-color: #ffffff; /* White background for cells */
-    -fx-border-color: #e0e0e0; /* Light border for cells */
-    -fx-border-width: 0 0 1px 0; /* Bottom border for cells */
-    -fx-text-fill: #333333; /* Dark text color for visibility */
+.text-field:hover {
+    -fx-border-color: #adb5bd;
 }
 
-/* Style for selected row */
-.table-view:focused .table-row-cell:selected {
-    -fx-background-color: #d1e7ff; /* Light blue background for selected row */
-    -fx-text-fill: #333333; /* Dark text color for visibility */
+.text-field:focused {
+    -fx-border-color: #0d6efd; /* Blue border when focused */
 }
 
-.table-view .table-row-cell:hover {
-    -fx-background-color: #f0f8ff; /* Light blue background for hovered row */
+/* ComboBox Styling */
+.combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 4px;
+    -fx-padding: 8px;
+}
+
+.combo-box:hover {
+    -fx-border-color: #adb5bd;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.combo-box .arrow {
+    -fx-background-color: #6c757d;
 }
 
 /* Button Styling */
 .button {
-    -fx-background-color: linear-gradient(to right, #1e90ff, #00bfff);
-    -fx-text-fill: white;
+    -fx-background-color: #0d6efd; /* Blue background */
+    -fx-text-fill: white; /* White text */
     -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-pref-width: 200px;
-    -fx-pref-height: 60px;
-    -fx-border-radius: 30px;
-    -fx-background-radius: 30px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.5, 0, 1);
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 25px; /* Rounded corners */
     -fx-cursor: hand;
-    -fx-padding: 10px 20px 10px 20px;
-
 }
 
-.button:pressed {
-    -fx-background-color: #1c86ee;
-    -fx-scale-x: 0.95;
-    -fx-scale-y: 0.95;
-    -fx-effect: innershadow(gaussian, #007acc, 10, 0, 0, 0);
+.button:hover {
+    -fx-background-color: #0b5ed7; /* Darker blue on hover */
 }
 
-/* TextField and ComboBox Styling */
-.text-field, .combo-box {
-    -fx-background-color: #f0f8ff;
-    -fx-background-radius: 5px;
-    -fx-border-color: #b0c4de;
-    -fx-border-radius: 5px;
-    -fx-border-width: 1.5px;
-    -fx-padding: 8px;
-    -fx-prompt-text-fill: gray;
-    -fx-text-fill: #333333;
-}
-
-.text-field:focused, .combo-box:focused {
-    -fx-border-color: #1e90ff;
+/* TableView Base Styling */
+.table-view {
     -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #e5e5e5;
+    -fx-padding: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 4, 0, 0, 2);
 }
 
-/* FontAwesomeIcon Styling */
-.fontawesome-icon {
-    -fx-fill: #1e90ff;
-    -fx-padding: 0 10px 0 0;
+/* Table Header Styling */
+.table-view .column-header-background {
+    -fx-background-color: white;
+    -fx-background-radius: 8px 8px 0 0;
+    -fx-padding: 0 0 8px 0;
 }
 
-/* HBox and VBox Styling */
-.hbox, .vbox {
-    -fx-spacing: 20px; /* Increased spacing between elements */
-    -fx-alignment: CENTER;
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #6c757d;
+    -fx-padding: 16px 10px 8px 10px;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
 }
 
-/* Specific Button Styling */
-.button[text="Delete Equipment"], .button[text="Delete Package"] {
-    -fx-background-color: #ff4d4d;
+.table-view .column-header .label {
+    -fx-text-fill: #6c757d;
+    -fx-alignment: center-left;
 }
 
-.button[text="Delete Equipment"]:hover, .button[text="Delete Package"]:hover {
-    -fx-background-color: #ff3333;
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
+/* Table Cell Styling */
+.table-view .table-cell {
+    -fx-padding: 16px 10px;
+    -fx-border-color: transparent;
+    -fx-font-size: 13px;
+    -fx-alignment: center-left;
 }
 
-.button[text="Delete Equipment"]:pressed, .button[text="Delete Package"]:pressed {
-    -fx-background-color: #cc0000;
-    -fx-scale-x: 0.95;
-    -fx-scale-y: 0.95;
+.table-view .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #f5f5f5 transparent;
+    -fx-padding: 0;
+}
+
+.table-view .table-row-cell:odd {
+    -fx-background-color: white; /* No alternating row color in the reference */
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #f8f9fa;
+    -fx-text-fill: #212529;
 }

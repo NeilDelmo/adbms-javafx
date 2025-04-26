@@ -2,6 +2,7 @@
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
 <?import java.net.URL?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Tab?>
@@ -30,22 +31,27 @@
                                 <TextField fx:id="search_txtfield" prefHeight="26.0" promptText="Search for Equipment" styleClass="text-field" HBox.hgrow="ALWAYS" />
                                 <ComboBox fx:id="status_filter_cmb" promptText="Filter by Status" styleClass="combo-box" />
                             </HBox>
-                            <HBox spacing="10" styleClass="hbox" VBox.vgrow="ALWAYS">
-                                <TableView fx:id="equipment_table" styleClass="table-view" HBox.hgrow="ALWAYS">
-                                    <columns>
-                                        <TableColumn text="ID" />
-                                        <TableColumn fx:id="nameCol" text="Name" />
-                                        <TableColumn fx:id="descriptionCol" prefWidth="108.79998779296875" text="Description" />
-                                        <TableColumn fx:id="priceCol" prefWidth="94.4000244140625" text="Rental Price" />
-                                        <TableColumn fx:id="statusCol" prefWidth="93.5999755859375" text="Status" />
-                                        <TableColumn fx:id="penaltyCol" prefWidth="172.79995727539062" text="Overdue Penalty" />
-                                    </columns>
-                                </TableView>
-                                <VBox spacing="10" styleClass="vbox">
+                     <HBox prefHeight="41.0" prefWidth="839.0" spacing="80.0">
+                        <children>
                                     <Button fx:id="add_equipment_btn" text="Add Equipment" />
                                     <Button fx:id="edit_equipment_btn" text="Edit Equipment" />
                                     <Button fx:id="delete_equipment_btn" text="Delete Equipment" />
-                                </VBox>
+                        </children>
+                        <VBox.margin>
+                           <Insets />
+                        </VBox.margin>
+                     </HBox>
+                            <HBox spacing="10" styleClass="hbox" VBox.vgrow="ALWAYS">
+                                <TableView fx:id="equipment_table" prefHeight="452.0" prefWidth="773.0" styleClass="table-view" HBox.hgrow="ALWAYS">
+                                    <columns>
+                                        <TableColumn prefWidth="79.99999856948853" text="ID" />
+                                        <TableColumn fx:id="nameCol" prefWidth="148.0" text="Name" />
+                                        <TableColumn fx:id="descriptionCol" prefWidth="171.99993896484375" text="Description" />
+                                        <TableColumn fx:id="priceCol" prefWidth="142.39993286132812" text="Rental Price" />
+                                        <TableColumn fx:id="statusCol" prefWidth="76.800048828125" text="Status" />
+                                        <TableColumn fx:id="penaltyCol" prefWidth="239.199951171875" text="Overdue Penalty" />
+                                    </columns>
+                                </TableView>
                             </HBox>
                         </VBox>
                     </content>
@@ -59,21 +65,21 @@
                                 <TextField fx:id="package_searchfield" prefHeight="26.0" promptText="Search Package" styleClass="text-field" HBox.hgrow="ALWAYS" />
                                 <ComboBox fx:id="package_status_filter" promptText="Filter by Status" styleClass="combo-box" />
                             </HBox>
-                            <HBox spacing="10" styleClass="hbox" VBox.vgrow="ALWAYS">
-                                <TableView fx:id="package_table" styleClass="table-view" HBox.hgrow="ALWAYS">
-                                    <columns>
-                                        <TableColumn fx:id="package_id" text="ID" />
-                                        <TableColumn fx:id="package_nameCol" prefWidth="148.8000259399414" text="Name" />
-                                        <TableColumn fx:id="package_decriptionCol" prefWidth="255.19998168945312" text="Description" />
-                                        <TableColumn fx:id="package_priceCol" prefWidth="145.59994506835938" text="Bundle Price" />
-                                    </columns>
-                                </TableView>
-                                <VBox spacing="10" styleClass="vbox">
+                     <HBox prefHeight="34.0" prefWidth="846.0" spacing="80.0">
+                        <children>
                                     <Button fx:id="add_package_btn" text="Add Package" />
                                     <Button fx:id="edit_package_btn" text="Edit Package" />
                                     <Button fx:id="delete_package_btn" text="Delete Package" />
-                                </VBox>
-                            </HBox>
+                        </children>
+                     </HBox>
+                             <TableView fx:id="package_table" prefHeight="597.0" prefWidth="850.0" styleClass="table-view">
+                                 <columns>
+                                     <TableColumn fx:id="package_id" text="ID" />
+                                     <TableColumn fx:id="package_nameCol" prefWidth="208.0" text="Name" />
+                                     <TableColumn fx:id="package_decriptionCol" prefWidth="349.5999450683594" text="Description" />
+                                     <TableColumn fx:id="package_priceCol" prefWidth="211.20001220703125" text="Bundle Price" />
+                                 </columns>
+                             </TableView>
                         </VBox>
                     </content>
                 </Tab>
