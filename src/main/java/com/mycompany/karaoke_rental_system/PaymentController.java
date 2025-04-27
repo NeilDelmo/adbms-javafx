@@ -54,6 +54,7 @@ public class PaymentController implements Initializable {
         setupSummaryTable();
         setupHistoryTable();
         loadUnpaidReservations();
+        loadPaymentMethodData();
 
         // Add listener to reservation combo
         reservationCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
@@ -200,6 +201,29 @@ public class PaymentController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
             return "Error";
+        }
+    }
+
+    private void loadPaymentMethodData(){
+        try(Connection conn = DatabaseConnection.getConnection()){
+            String query = "SELECT payment_method, SUM(amount) AS total_amount " +
+                    "FROM payments GROUP BY payment_method";
+            PreparedStatement pst = conn.prepareStatement(query);
+            ResultSet rs = pst.executeQuery();
+
+            ObservableList<PieChart.Data> piechart = FXCollections.observableArrayList();
+            while (rs.next()){
+                String method = rs.getString("payment_method");
+                Double totalAmount  = rs.getDouble("total_amount");
+                piechart.add(new PieChart.Data(method + ": ₱" + String.format("%.2f",totalAmount),totalAmount));
+
+            }
+            methodPiechart.setData(piechart);
+            methodPiechart.setTitle("Payment Method Distribution");
+            methodPiechart.setLabelsVisible(true);
+            methodPiechart.setLegendVisible(true);
+        }catch (SQLException e){
+            e.getMessage();
         }
     }
 

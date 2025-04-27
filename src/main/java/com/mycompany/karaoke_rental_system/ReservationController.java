@@ -341,21 +341,40 @@ public class ReservationController implements Initializable {
             vf.clearViews();
 
         } catch (SQLException e) {
+            e.printStackTrace();
             showError("Reservation Failed", "Error creating reservation: " + e.getMessage());
         }
     }
 
     private int createReservation(Connection conn) throws SQLException {
-        String sql = "{call sp_create_reservation(?, ?, ?, ?, ?, ?)}";
+        String sql = "{call sp_create_reservation(?, ?, ?, ?, ?)}";
         try (CallableStatement stmt = conn.prepareCall(sql)) {
+            // Bind parameters
             stmt.setInt(1, customer_cmb.getValue().getCustomerId());
             stmt.setTimestamp(2, java.sql.Timestamp.valueOf(start_date.getValue().atStartOfDay()));
             stmt.setTimestamp(3, java.sql.Timestamp.valueOf(end_date.getValue().atStartOfDay()));
-            stmt.setInt(4, Model.getInstance().getcurrentuserid());
+
+            // Retrieve and validate currentUserId
+            int currentUserId = Model.getInstance().getcurrentuserid();
+            System.out.println("Retrieved currentUserId: " + currentUserId); // Debug output
+            if (currentUserId == 0 || currentUserId < 0) {
+                throw new SQLException("Invalid user ID: " + currentUserId);
+            }
+
+            // Bind currentUserId to the stored procedure
+            stmt.setInt(4, currentUserId);
+            System.out.println("Bound currentUserId to CallableStatement: " + currentUserId); // Debug output
+
+            // Register OUT parameter
             stmt.registerOutParameter(5, Types.INTEGER);
 
+            // Execute the stored procedure
             stmt.execute();
-            return stmt.getInt(5);
+
+            // Retrieve the generated reservation ID
+            int reservationId = stmt.getInt(5);
+            System.out.println("Created Reservation ID: " + reservationId); // Debug output
+            return reservationId;
         }
     }
 
@@ -367,7 +386,15 @@ public class ReservationController implements Initializable {
             pst.setInt(1, reservationId);
             pst.setInt(2, selectedPackage.getPackageId());
             pst.setDouble(3, selectedPackage.getBundlePrice());
-            pst.setInt(4, Model.getInstance().getcurrentuserid());
+
+            // Retrieve and validate currentUserId
+            int currentUserId = Model.getInstance().getcurrentuserid();
+            System.out.println("Current User ID (for added_by): " + currentUserId);
+            if (currentUserId <= 0) {
+                throw new SQLException("Invalid user ID for added_by: " + currentUserId);
+            }
+            pst.setInt(4, currentUserId);
+
             pst.executeUpdate();
         }
     }
@@ -388,23 +415,26 @@ public class ReservationController implements Initializable {
             showError("Missing Customer", "Please select a customer");
             return false;
         }
+        System.out.println("Customer ID: " + customer_cmb.getValue().getCustomerId());
+
         if (selectedPackage == null) {
             showError("Missing Package", "Please select a package");
             return false;
         }
+        System.out.println("Selected Package ID: " + selectedPackage.getPackageId());
+
         if (!validDates()) {
             return false;
         }
 
-        // Check for overlapping reservations
         Customer selectedCustomer = customer_cmb.getValue();
         LocalDate startDate = start_date.getValue();
         LocalDate endDate = end_date.getValue();
+
         if (checkForOverlappingReservations(selectedCustomer, startDate, endDate)) {
             showError("Duplicate Reservation", "This customer already has a reservation within the specified date range.");
             return false;
         }
-
         return true;
     }
 
@@ -441,7 +471,7 @@ public class ReservationController implements Initializable {
     private boolean checkForOverlappingReservations(Customer customer, LocalDate startDate, LocalDate endDate) {
         String query = "SELECT COUNT(*) AS count FROM reservations "
                 + "WHERE customer_id = ? "
-                + "AND (start_date <= ? AND end_date >= ?)";
+                + "AND (start_datetime <= ? AND end_datetime >= ?)";
         try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pst = conn.prepareStatement(query)) {
             pst.setInt(1, customer.getCustomerId());
             pst.setDate(2, Date.valueOf(endDate));
