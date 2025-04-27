@@ -1,6 +1,6 @@
 /* Main sidebar styles */
 .root {
-    -fx-background-color: #6a5acd; /* Slate blue background */
+    -fx-background-color: #ffffff; /* White background */
     -fx-font-family: "Segoe UI", sans-serif;
     -fx-padding: 0;
 }
@@ -14,7 +14,7 @@
 /* Button styling */
 .Button {
     -fx-background-color: transparent;
-    -fx-text-fill: #e6e6fa; /* Lavender text */
+    -fx-text-fill: #333333; /* Dark gray text for contrast */
     -fx-font-size: 14px;
     -fx-padding: 15px 20px;
     -fx-alignment: center-left;
@@ -25,42 +25,42 @@
 }
 
 .Button:hover {
-    -fx-background-color: rgba(255, 255, 255, 0.15); /* Semi-transparent white */
-    -fx-text-fill: #ffffff;
+    -fx-background-color: rgba(0, 0, 0, 0.1); /* Semi-transparent black for hover effect */
+    -fx-text-fill: #000000; /* Black text on hover */
 }
 
 .Button:pressed {
-    -fx-background-color: rgba(255, 255, 255, 0.25);
+    -fx-background-color: rgba(0, 0, 0, 0.2); /* Slightly darker hover effect */
 }
 
 /* Selected button styling */
 .Button.selected {
-    -fx-background-color: #9370db; /* Medium purple for selected state */
-    -fx-text-fill: #ffffff;
+    -fx-background-color: #f0f0f0; /* Light gray for selected state */
+    -fx-text-fill: #000000; /* Black text for contrast */
     -fx-font-weight: bold;
 }
 
 /* Admin-specific button styling */
 .admin-button {
-    -fx-text-fill: #d8bfd8; /* Thistle color for admin buttons */
+    -fx-text-fill: #666666; /* Medium gray color for admin buttons */
 }
 
 /* Separator line */
 .separator-line {
-    -fx-stroke: #7b68ee; /* Medium slate blue */
+    -fx-stroke: #cccccc; /* Light gray separator line */
     -fx-opacity: 0.7;
     -fx-stroke-width: 1px;
 }
 
 /* FontAwesome icon styling */
 .FontAwesomeIcon {
-    -fx-fill: #e6e6fa;
+    -fx-fill: #333333; /* Dark gray icons */
 }
 
 .Button:hover .FontAwesomeIcon {
-    -fx-fill: #ffffff;
+    -fx-fill: #000000; /* Black icons on hover */
 }
 
 .Button.selected .FontAwesomeIcon {
-    -fx-fill: #ffffff;
+    -fx-fill: #000000; /* Black icons for selected state */
 }
