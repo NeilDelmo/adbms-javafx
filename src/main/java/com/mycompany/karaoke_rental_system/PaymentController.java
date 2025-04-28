@@ -112,6 +112,14 @@ public class PaymentController implements Initializable {
 
         paymentHistoryTable.setItems(paymentHistories);
     }
+
+
+    public void setReservation(Reservation reservation){
+        ReservationWrapper reservationWrapper = new ReservationWrapper(reservation);
+        unpaidReservations.add(reservationWrapper);
+        reservationCombo.getSelectionModel().select(reservationWrapper);
+        updatePaymentInfo(reservation);
+    }
     public static class ReservationWrapper {
         private final Reservation reservation;
 
@@ -125,11 +133,14 @@ public class PaymentController implements Initializable {
 
         @Override
         public String toString() {
+            String customerName = (reservation.customerProperty().get() != null)
+                    ? reservation.customerProperty().get().getName()
+                    : "Unknown Customer";
             return String.format("%s (%s - %s) - ₱%.2f",
-                    reservation.getCustomer().getName(),
-                    reservation.getStartDate().format(DateTimeFormatter.ofPattern("MMM dd")),
-                    reservation.getEndDate().format(DateTimeFormatter.ofPattern("MMM dd")),
-                    reservation.getTotalAmount() - reservation.getPaidAmount());
+                    customerName,
+                    reservation.startDateProperty().get().format(DateTimeFormatter.ofPattern("MMM dd")),
+                    reservation.endDateProperty().get().format(DateTimeFormatter.ofPattern("MMM dd")),
+                    reservation.totalAmountProperty().get() - reservation.paidAmountProperty().get());
         }
     }
     private void loadUnpaidReservations() {
@@ -138,14 +149,25 @@ public class PaymentController implements Initializable {
                     "FROM reservations r " +
                     "JOIN customers c ON r.customer_id = c.customer_id " +
                     "WHERE r.payment_status != 'Paid'";
-
             PreparedStatement pst = conn.prepareStatement(query);
             ResultSet rs = pst.executeQuery();
-
             unpaidReservations.clear();
             while (rs.next()) {
                 Reservation reservation = new Reservation();
-                // Set reservation properties from result set
+                reservation.reservationIdProperty().set(rs.getInt("reservation_id"));
+                reservation.customerIdProperty().set(rs.getInt("customer_id"));
+                reservation.startDateProperty().set(rs.getDate("start_date").toLocalDate());
+                reservation.endDateProperty().set(rs.getDate("end_date").toLocalDate());
+                reservation.totalAmountProperty().set(rs.getDouble("total_amount"));
+                reservation.paidAmountProperty().set(rs.getDouble("paid_amount"));
+                reservation.paymentStatusProperty().set(rs.getString("payment_status"));
+
+                // Create and set the Customer object
+                Customer customer = new Customer();
+                customer.setName(rs.getString("customer_name"));
+                reservation.customerProperty().set(customer);
+
+                // Add the wrapped reservation to the list
                 unpaidReservations.add(new ReservationWrapper(reservation));
             }
             reservationCombo.setItems(unpaidReservations);
