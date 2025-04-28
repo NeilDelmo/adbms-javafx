@@ -2,17 +2,17 @@ package com.mycompany.karaoke_rental_system;
 import javafx.beans.property.*;
 
 public class PaymentHistory {
-    private final StringProperty date;
-    private final DoubleProperty amount;
-    private final StringProperty method;
-    private final StringProperty recordedBy;
+    private final StringProperty date = new SimpleStringProperty();
+    private final DoubleProperty amount = new SimpleDoubleProperty();
+    private final StringProperty method = new SimpleStringProperty();
+    private final StringProperty recordedBy = new SimpleStringProperty();
 
     public PaymentHistory(String date, double amount,
                           String method, String recordedBy) {
-        this.date = new SimpleStringProperty(date);
-        this.amount = new SimpleDoubleProperty(amount);
-        this.method = new SimpleStringProperty(method);
-        this.recordedBy = new SimpleStringProperty(recordedBy);
+        this.date.set(date);
+        this.amount.set(amount);
+        this.method.set(method);
+        this.recordedBy.set(recordedBy);
     }
 
     // Property getters
