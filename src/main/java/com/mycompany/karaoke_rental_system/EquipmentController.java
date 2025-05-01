@@ -30,9 +30,6 @@ public class EquipmentController implements Initializable {
     private Button add_equipment_btn;
 
     @FXML
-    private Button delete_equipment_btn;
-
-    @FXML
     private TableColumn<Equipment, String> descriptionCol;
 
     @FXML
@@ -129,7 +126,6 @@ public class EquipmentController implements Initializable {
                 openEquipmentDialog(selectedEquipment);
             }
         });
-        delete_equipment_btn.setOnAction(e -> deleteSelectedEquipment());
 
         // Initialize the status filter combo box
         status_filter_cmb.getItems().addAll("Available", "Rented", "Maintenance");
@@ -186,23 +182,6 @@ public class EquipmentController implements Initializable {
             loadEquipmentData();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void deleteSelectedEquipment() {
-        Equipment selectedEquipment = equipment_table.getSelectionModel().getSelectedItem();
-        if (selectedEquipment != null) {
-            String deleteQuery = "DELETE FROM equipment WHERE equipment_id = ?";
-            try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement statement = connection.prepareStatement(deleteQuery)) {
-
-                statement.setInt(1, selectedEquipment.getEquipmentId());
-                statement.executeUpdate();
-
-                // Remove from the observable list
-                equipmentList.remove(selectedEquipment);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
