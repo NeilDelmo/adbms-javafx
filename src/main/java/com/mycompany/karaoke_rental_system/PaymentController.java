@@ -1,5 +1,6 @@
 package com.mycompany.karaoke_rental_system;
 
+import com.mycompany.karaoke_rental_system.Model.Model;
 import com.mycompany.karaoke_rental_system.data.DatabaseConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -244,6 +245,78 @@ public class PaymentController implements Initializable {
         }catch (SQLException e){
             e.getMessage();
         }
+    }
+    @FXML
+    private void submitPayment() {
+        ReservationWrapper selected = reservationCombo.getValue();
+        if (selected == null) {
+            showAlert("No Selection", "Please select a reservation first.");
+            return;
+        }
+
+        String paymentMethod = methodCombo.getValue();
+        if (paymentMethod == null || paymentMethod.isEmpty()) {
+            showAlert("Invalid Method", "Please select a payment method.");
+            return;
+        }
+
+        String amountText = amountField.getText().trim();
+        if (amountText.isEmpty()) {
+            showAlert("Invalid Amount", "Please enter an amount.");
+            return;
+        }
+
+        try {
+            double amount = Double.parseDouble(amountText);
+            if (amount <= 0) {
+                showAlert("Invalid Amount", "Amount must be greater than zero.");
+                return;
+            }
+
+            // Save payment to database
+            int reservationId = selected.getReservation().getReservationId();
+            savePaymentToDatabase(reservationId, amount, paymentMethod);
+
+            // Update local reservation model
+            selected.getReservation().setPaidAmount(selected.getReservation().getPaidAmount() + amount);
+
+            // Update UI
+            updatePaymentInfo(selected.getReservation());
+            amountField.clear();
+            methodCombo.getSelectionModel().selectFirst();
+
+            showAlert("Success", "Payment recorded successfully.");
+
+        } catch (NumberFormatException e) {
+            showAlert("Invalid Input", "Please enter a valid numeric amount.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Database Error", "Failed to record payment: " + e.getMessage());
+        }
+    }
+    private void savePaymentToDatabase(int reservationId, double amount, String paymentMethod) throws SQLException {
+        int currentUserId = Model.getInstance().getcurrentuserid(); // Assuming this returns the current user ID
+
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            // Insert into payments table
+            String insertSQL = "INSERT INTO payments (reservation_id, amount, payment_method, recorded_by) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
+                pstmt.setInt(1, reservationId);
+                pstmt.setDouble(2, amount);
+                pstmt.setString(3, paymentMethod);
+                pstmt.setInt(4, currentUserId);
+                pstmt.executeUpdate();
+            }
+        }
+    }
+
+    private void showAlert(String invalidInput, String s) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(invalidInput);
+        alert.setHeaderText(null);
+        alert.setContentText(s);
+        alert.showAndWait();
+
     }
 
 }

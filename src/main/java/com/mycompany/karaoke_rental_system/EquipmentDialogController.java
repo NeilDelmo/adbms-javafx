@@ -163,7 +163,7 @@ public class EquipmentDialogController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        statusComboBox.getItems().addAll("Available", "Rented", "Maintenance");
+        statusComboBox.getItems().addAll("Available", "Rented");
     }
 
 }

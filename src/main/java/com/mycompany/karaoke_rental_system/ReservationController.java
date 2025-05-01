@@ -379,23 +379,17 @@ public class ReservationController implements Initializable {
     }
 
     private void addPackageToReservation(Connection conn, int reservationId) throws SQLException {
-        String sql = "INSERT INTO reservation_items (reservation_id, package_id, price_per_unit, added_by) "
-                + "VALUES (?, ?, ?, ?)";
+        int currentUserId = Model.getInstance().getcurrentuserid();
 
-        try (PreparedStatement pst = conn.prepareStatement(sql)) {
-            pst.setInt(1, reservationId);
-            pst.setInt(2, selectedPackage.getPackageId());
-            pst.setDouble(3, selectedPackage.getBundlePrice());
+        String sql = "{CALL sp_add_reservation_item(?, ?, ?, ?)}";
 
-            // Retrieve and validate currentUserId
-            int currentUserId = Model.getInstance().getcurrentuserid();
-            System.out.println("Current User ID (for added_by): " + currentUserId);
-            if (currentUserId <= 0) {
-                throw new SQLException("Invalid user ID for added_by: " + currentUserId);
-            }
-            pst.setInt(4, currentUserId);
+        try (CallableStatement cstmt = conn.prepareCall(sql)) {
+            cstmt.setInt(1, reservationId);
+            cstmt.setNull(2, Types.INTEGER); // No equipment_id
+            cstmt.setInt(3, selectedPackage.getPackageId()); // Only package_id
+            cstmt.setInt(4, currentUserId);
 
-            pst.executeUpdate();
+            cstmt.execute();
         }
     }
 
