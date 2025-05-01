@@ -121,5 +121,8 @@ public class Customer{
         this.totalSpent.set(totalSpent);
     }
 
-
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

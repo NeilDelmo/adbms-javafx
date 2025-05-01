@@ -2,6 +2,7 @@ package com.mycompany.karaoke_rental_system;
 
 import com.mycompany.karaoke_rental_system.Model.Model;
 import com.mycompany.karaoke_rental_system.data.DatabaseConnection;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
@@ -10,11 +11,9 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class PaymentController implements Initializable {
@@ -57,12 +56,6 @@ public class PaymentController implements Initializable {
         loadUnpaidReservations();
         loadPaymentMethodData();
 
-        // Add listener to reservation combo
-        reservationCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                updatePaymentInfo(newVal.getReservation());
-            }
-        });
     }
     private void setupPaymentMethodCombo() {
         methodCombo.getItems().addAll("Cash", "GCash", "Bank Transfer", "Other");
@@ -99,10 +92,12 @@ public class PaymentController implements Initializable {
         reservationIdCol.setCellValueFactory(cellData -> cellData.getValue().reservationIdProperty().asObject());
         totalAmountCol.setCellValueFactory(cellData -> cellData.getValue().totalAmountProperty().asObject());
         amountPaidCol.setCellValueFactory(cellData -> cellData.getValue().amountPaidProperty().asObject());
-        balanceCol.setCellValueFactory(cellData -> cellData.getValue().balanceProperty().asObject());
+        balanceCol.setCellValueFactory(cellData ->
+                new SimpleDoubleProperty(cellData.getValue().getBalance()).asObject()
+        );
         statusCol.setCellValueFactory(cellData -> cellData.getValue().statusProperty());
 
-        paymentSummaryTable.setItems(paymentSummaries);
+        paymentSummaryTable.setItems(paymentSummaries); // Already initialized as ObservableList
     }
 
     private void setupHistoryTable() {
@@ -150,6 +145,8 @@ public class PaymentController implements Initializable {
             PreparedStatement pst = conn.prepareStatement(query);
             ResultSet rs = pst.executeQuery();
             unpaidReservations.clear();
+            paymentSummaries.clear();
+
             while (rs.next()) {
                 Reservation reservation = new Reservation();
                 reservation.reservationIdProperty().set(rs.getInt("reservation_id"));
@@ -160,15 +157,26 @@ public class PaymentController implements Initializable {
                 reservation.paidAmountProperty().set(rs.getDouble("paid_amount"));
                 reservation.paymentStatusProperty().set(rs.getString("payment_status"));
 
-                // Create and set the Customer object
+                // Set customer
                 Customer customer = new Customer();
                 customer.setName(rs.getString("customer_name"));
                 reservation.customerProperty().set(customer);
 
-                // Add the wrapped reservation to the list
+                // Add to combo box model
                 unpaidReservations.add(new ReservationWrapper(reservation));
+
+                // Add to summary table model
+                paymentSummaries.add(new PaymentSummary(
+                        reservation.getReservationId(),
+                        reservation.getTotalAmount(),
+                        reservation.getPaidAmount(),
+                        reservation.getPaymentStatus()
+                ));
             }
+
             reservationCombo.setItems(unpaidReservations);
+            paymentSummaryTable.setItems(paymentSummaries);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -273,19 +281,55 @@ public class PaymentController implements Initializable {
                 return;
             }
 
+            // Get reservation and calculate balance
+            Reservation reservation = selected.getReservation();
+            double totalDue = reservation.getTotalAmount();
+            double currentPaid = reservation.getPaidAmount();
+            double balance = totalDue - currentPaid;
+
+            // Handle overpayment
+            if (balance > 0 && amount > balance) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Overpayment Detected");
+                alert.setHeaderText("Payment exceeds remaining balance");
+                alert.setContentText("Proceed with payment of ₱" + String.format("%.2f", amount) +
+                        " when only ₱" + String.format("%.2f", balance) + " is due?");
+
+                ButtonType buttonTypeYes = new ButtonType("Proceed");
+                ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+                alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeCancel);
+                Optional<ButtonType> result = alert.showAndWait();
+
+                if (result.isEmpty() || result.get() != buttonTypeYes) {
+                    return; // Cancel payment
+                }
+            }
+            // Prevent zero division in progress bar
+            else if (totalDue <= 0) {
+                showAlert("Invalid Reservation", "This reservation has no valid amount to pay.");
+                return;
+            }
+
             // Save payment to database
-            int reservationId = selected.getReservation().getReservationId();
+            int reservationId = reservation.getReservationId();
             savePaymentToDatabase(reservationId, amount, paymentMethod);
 
             // Update local reservation model
-            selected.getReservation().setPaidAmount(selected.getReservation().getPaidAmount() + amount);
+            reservation.setPaidAmount(currentPaid + amount);
 
             // Update UI
-            updatePaymentInfo(selected.getReservation());
+            updatePaymentInfo(reservation);
             amountField.clear();
             methodCombo.getSelectionModel().selectFirst();
 
-            showAlert("Success", "Payment recorded successfully.");
+            // Success message
+            Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+            successAlert.setTitle("Payment Successful");
+            successAlert.setHeaderText(null);
+            successAlert.setContentText("Payment of ₱" + String.format("%.2f", amount) +
+                    " recorded successfully.");
+            successAlert.showAndWait();
 
         } catch (NumberFormatException e) {
             showAlert("Invalid Input", "Please enter a valid numeric amount.");
@@ -295,17 +339,24 @@ public class PaymentController implements Initializable {
         }
     }
     private void savePaymentToDatabase(int reservationId, double amount, String paymentMethod) throws SQLException {
-        int currentUserId = Model.getInstance().getcurrentuserid(); // Assuming this returns the current user ID
-
+        int currentUserId = Model.getInstance().getcurrentuserid();
         try (Connection conn = DatabaseConnection.getConnection()) {
-            // Insert into payments table
-            String insertSQL = "INSERT INTO payments (reservation_id, amount, payment_method, recorded_by) VALUES (?, ?, ?, ?)";
-            try (PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
-                pstmt.setInt(1, reservationId);
-                pstmt.setDouble(2, amount);
-                pstmt.setString(3, paymentMethod);
-                pstmt.setInt(4, currentUserId);
-                pstmt.executeUpdate();
+            try (CallableStatement cstmt = conn.prepareCall("{CALL sp_record_payment(?, ?, ?, ?, ?)}")) {
+                cstmt.setInt(1, reservationId);
+                cstmt.setDouble(2, amount);
+                cstmt.setString(3, paymentMethod);
+                cstmt.setInt(4, currentUserId);
+
+                // Register the OUT parameter last
+                cstmt.registerOutParameter(5, Types.DECIMAL);
+
+                cstmt.execute();
+
+                // Get overpaid amount if needed
+                double overpaid = cstmt.getDouble(5);
+                if (overpaid > 0) {
+                    showAlert("Overpayment", "This payment exceeds the total due by ₱" + String.format("%.2f", overpaid));
+                }
             }
         }
     }
