@@ -54,11 +54,11 @@ public class RentalHistory {
         @Override
         public String toString() {
             return String.format("%s | %s to %s | Status: %s | Total: ₱%,.2f",
-                    customerName,
+                    customerName.get(),
                     startDate.get().format(DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm")),
                     endDate.get().format(DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm")),
-                    status,
-                    totalValue);
+                    status.get(),
+                    totalValue.get());
         }
 
     }

@@ -1,35 +1,36 @@
 /* Root Container Styling */
 .root {
-    -fx-background-color: #f8f9fa; /* Light background for the entire app */
-    -fx-padding: 20px; /* Add padding around the root container */
+    -fx-background-color: #f0f2f5; /* Softer background */
+    -fx-padding: 20px;
 }
 
-/* AnchorPane Styling */
-.anchor-pane {
-    -fx-background-color: white; /* White background for AnchorPane */
-    -fx-border-radius: 8px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 4, 0, 0, 2);
-}
-
-.anchor-pane-customer-info {
-    -fx-background-color: white; /* White background for customer info pane */
-    -fx-border-color: #e5e5e5;
-    -fx-border-radius: 8px;
+/* Base Card Style */
+.card {
+    -fx-border-radius: 12px;
     -fx-padding: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 6, 0, 0, 2);
 }
 
-/* GridPane Styling */
-.grid-pane {
-    -fx-hgap: 16px; /* Horizontal gap between columns */
-    -fx-vgap: 16px; /* Vertical gap between rows */
-    -fx-padding: 16px; /* Padding inside the GridPane */
-    -fx-background-color: transparent; /* Transparent background for GridPane */
+/* Customer Info Panel - Bolder Blue Theme */
+.vbox-customer-info {
+    -fx-background-color: #d9ecff; /* Light blue */
+    -fx-border-radius: 12px;
+    -fx-padding: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 6, 0, 0, 2);
+}
+
+/* History StackPane - Bolder Green Theme */
+.stack-pane-history {
+    -fx-background-color: #e6f7e6; /* Light green */
+    -fx-border-radius: 12px;
+    -fx-padding: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 6, 0, 0, 2);
 }
 
 /* FontAwesome Icon Styling */
 .font-awesome-icon {
-    -fx-font-size: 24px; /* Match the size="2em" in FXML */
-    -fx-text-fill: #6c757d;
+    -fx-font-size: 24px;
+    -fx-text-fill: #555;
 }
 
 /* Text Styling */
@@ -42,116 +43,158 @@
 /* TextField Styling */
 .text-field {
     -fx-background-color: white;
-    -fx-border-color: #ced4da;
-    -fx-border-radius: 4px;
+    -fx-border-color: #c0c0c0;
+    -fx-border-radius: 6px;
     -fx-padding: 8px;
+    -fx-text-fill: #202124;
 }
 
 .text-field:hover {
-    -fx-border-color: #adb5bd;
+    -fx-border-color: #a0a0a0;
 }
 
 .text-field:focused {
-    -fx-border-color: #0d6efd; /* Blue border when focused */
+    -fx-border-color: #1A73E8;
+    -fx-border-width: 1.5px;
 }
 
+/* Search Field */
 .search-text-field {
-    -fx-border-color: #ced4da;
-    -fx-border-radius: 25px; /* Rounded corners for search fields */
+    -fx-border-color: #c0c0c0;
+    -fx-border-radius: 20px;
     -fx-padding: 8px 16px;
 }
 
 .search-text-field:hover {
-    -fx-border-color: #adb5bd;
+    -fx-border-color: #a0a0a0;
 }
 
 .search-text-field:focused {
-    -fx-border-color: #0d6efd; /* Blue border when focused */
+    -fx-border-color: #1A73E8;
+    -fx-border-width: 1.5px;
 }
 
 /* Button Styling */
 .styled-button {
-    -fx-background-color: #0d6efd; /* Blue background */
-    -fx-text-fill: white; /* White text */
+    -fx-background-color: #1A73E8;
+    -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-padding: 10px 20px;
-    -fx-background-radius: 25px; /* Rounded corners */
+    -fx-background-radius: 8px;
     -fx-cursor: hand;
 }
 
 .styled-button:hover {
-    -fx-background-color: #0b5ed7; /* Darker blue on hover */
+    -fx-background-color: #155FB2;
+}
+
+.styled-button-alt {
+    -fx-background-color: #34A853;
+}
+
+.styled-button-alt:hover {
+    -fx-background-color: #2A8C45;
+}
+
+.styled-button-danger {
+    -fx-background-color: #D93025;
+}
+
+.styled-button-danger:hover {
+    -fx-background-color: #B52820;
 }
 
 /* ListView Styling */
 .list-view {
-    -fx-background-color: white;
-    -fx-border-color: #e5e5e5;
-    -fx-border-radius: 8px;
-    -fx-padding: 16px;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
 }
 
 .list-view .list-cell {
-    -fx-padding: 16px;
-    -fx-font-size: 14px;
-    -fx-text-fill: #343a40;
+    -fx-padding: 12px 16px;
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 8px;
+    -fx-margin: 2px 0;
+    -fx-text-fill: #202124;
 }
 
 .list-view .list-cell:selected {
-    -fx-background-color: #f8f9fa;
-    -fx-text-fill: #212529;
+    -fx-background-color: #e8f0fe;
+}
+
+/* Info Label (for empty list or instructions) */
+.info-label {
+    -fx-text-fill: #5f6368;
+    -fx-font-style: italic;
+    -fx-padding: 12px 20px;
+    -fx-background-color: #cce0ff; /* Soft blue to match customer panel */
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 4, 0, 0, 1);
 }
 
 /* TableView Base Styling */
+/* TableView Base Styling */
 .table-view {
-    -fx-background-color: white;
-    -fx-background-radius: 8px;
-    -fx-border-radius: 8px;
-    -fx-border-color: #e5e5e5;
+    -fx-background-color: transparent;
     -fx-padding: 0;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 4, 0, 0, 2);
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 6, 0, 0, 2);
 }
 
 /* Table Header Styling */
 .table-view .column-header-background {
-    -fx-background-color: white;
-    -fx-background-radius: 8px 8px 0 0;
-    -fx-padding: 0 0 8px 0;
+    -fx-background-color: #f0f2f5; /* Light gray header background */
+    -fx-background-radius: 8px 8px 0 0; /* Rounded top corners */
+    -fx-padding: 12px 16px;
 }
 
 .table-view .column-header {
     -fx-background-color: transparent;
     -fx-font-size: 13px;
     -fx-font-weight: bold;
-    -fx-text-fill: #6c757d;
-    -fx-padding: 16px 10px 8px 10px;
-    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-text-fill: #5f6368; /* Darker gray text */
+    -fx-padding: 10px 16px;
+    -fx-border-color: transparent transparent #e0e0e0 transparent; /* Subtle bottom border */
 }
 
 .table-view .column-header .label {
-    -fx-text-fill: #6c757d;
+    -fx-text-fill: #5f6368;
     -fx-alignment: center-left;
 }
 
 /* Table Cell Styling */
 .table-view .table-cell {
-    -fx-padding: 16px 10px;
-    -fx-border-color: transparent;
+    -fx-padding: 12px 16px; /* More padding for better spacing */
+    -fx-border-color: transparent; /* Remove cell borders */
     -fx-font-size: 13px;
     -fx-alignment: center-left;
+    -fx-text-fill: #202124; /* Dark text for better visibility */
 }
 
+/* Alternating Row Colors */
 .table-view .table-row-cell {
     -fx-background-color: white;
-    -fx-border-color: transparent transparent #f5f5f5 transparent;
     -fx-padding: 0;
+    -fx-border-color: transparent transparent #f0f2f5 transparent; /* Subtle horizontal line */
 }
 
 .table-view .table-row-cell:odd {
-    -fx-background-color: white; /* No alternating row color in the reference */
+    -fx-background-color: #f8fafc; /* Light blueish-gray for odd rows */
 }
 
 .table-view .table-row-cell:selected {
-    -fx-background-color: #f8f9fa;
-    -fx-text-fill: #212529;
+    -fx-background-color: #d9ecff; /* Soft blue for selected rows */
+    -fx-text-fill: #202124; /* Dark text remains visible */
+}
+
+/* Hover Effect */
+.table-view .table-row-cell:hover {
+    -fx-background-color: #e8f0fe; /* Slightly darker hover effect */
+}
+.header-text {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
 }

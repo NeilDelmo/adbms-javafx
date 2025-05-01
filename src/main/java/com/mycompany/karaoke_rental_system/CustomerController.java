@@ -20,6 +20,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
 public class CustomerController implements Initializable {
+    public Label noHistoryLabel;
     @FXML
     private Button edit_btn;
 
@@ -76,6 +77,12 @@ public class CustomerController implements Initializable {
         loadCustomers();
         setupSearch();
         setupTableSelection();
+        rental_historylist.setVisible(false);
+        noHistoryLabel.setVisible(true);
+
+        rental_historylist.setVisible(false);
+        noHistoryLabel.setVisible(true);
+        noHistoryLabel.setText("Select a customer to view history.");
 
         customer_table.setEditable(true);
         reservation_btn.setOnAction(e -> {
@@ -281,6 +288,11 @@ public class CustomerController implements Initializable {
             if (newVal != null) {
                 loadRentalHistory(newVal.getCustomerId());
             }
+            else{
+                rental_historylist.setVisible(false);
+                noHistoryLabel.setText("Select a customer to view history.");
+                noHistoryLabel.setVisible(true);
+            }
         });
     }
 
@@ -313,6 +325,15 @@ public class CustomerController implements Initializable {
                 ));
             }
             rental_historylist.setItems(rental_history);
+
+            if (rental_history.isEmpty()) {
+                rental_historylist.setVisible(false);
+                noHistoryLabel.setText("This customer has no rental history.");
+                noHistoryLabel.setVisible(true);
+            } else {
+                rental_historylist.setVisible(true);
+                noHistoryLabel.setVisible(false);
+            }
 
         } catch (SQLException e) {
             showAlert("Database Error", "Error loading rental history: " + e.getMessage());

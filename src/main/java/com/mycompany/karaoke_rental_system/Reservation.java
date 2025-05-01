@@ -20,7 +20,7 @@ public class Reservation {
     private final DoubleProperty overdueCharges = new SimpleDoubleProperty();
     private final DoubleProperty totalAmount = new SimpleDoubleProperty();      // Added for payment system
     private final DoubleProperty paidAmount = new SimpleDoubleProperty();
-    private StringProperty paymentStatus = new SimpleStringProperty("Unpaid");
+    private final StringProperty paymentStatus = new SimpleStringProperty("Unpaid");
 
     public Reservation(int reservationId,int customerId, Customer customer, LocalDate startDate,
                        LocalDate endDate, String status, Package pkg,

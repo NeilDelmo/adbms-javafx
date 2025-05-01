@@ -145,10 +145,7 @@ public class PaymentController implements Initializable {
     }
     private void loadUnpaidReservations() {
         try (Connection conn = DatabaseConnection.getConnection()) {
-            String query = "SELECT r.*, c.name AS customer_name " +
-                    "FROM reservations r " +
-                    "JOIN customers c ON r.customer_id = c.customer_id " +
-                    "WHERE r.payment_status != 'Paid'";
+            String query = "SELECT * FROM reservation_summary WHERE payment_status != 'Paid'";
             PreparedStatement pst = conn.prepareStatement(query);
             ResultSet rs = pst.executeQuery();
             unpaidReservations.clear();
@@ -156,8 +153,8 @@ public class PaymentController implements Initializable {
                 Reservation reservation = new Reservation();
                 reservation.reservationIdProperty().set(rs.getInt("reservation_id"));
                 reservation.customerIdProperty().set(rs.getInt("customer_id"));
-                reservation.startDateProperty().set(rs.getDate("start_date").toLocalDate());
-                reservation.endDateProperty().set(rs.getDate("end_date").toLocalDate());
+                reservation.startDateProperty().set(rs.getDate("start_datetime").toLocalDate());
+                reservation.endDateProperty().set(rs.getDate("end_datetime").toLocalDate());
                 reservation.totalAmountProperty().set(rs.getDouble("total_amount"));
                 reservation.paidAmountProperty().set(rs.getDouble("paid_amount"));
                 reservation.paymentStatusProperty().set(rs.getString("payment_status"));
