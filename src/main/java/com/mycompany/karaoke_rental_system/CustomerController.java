@@ -246,10 +246,9 @@ public class CustomerController implements Initializable {
                 + "FROM customers c "
                 + "LEFT JOIN reservations r ON c.customer_id = r.customer_id "
                 + "LEFT JOIN payments p ON r.reservation_id = p.reservation_id "
-                + "WHERE c.created_by = ? "
                 + "GROUP BY c.customer_id";
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setInt(1, Model.getInstance().getcurrentuserid());
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 customers.add(new Customer(
@@ -260,7 +259,7 @@ public class CustomerController implements Initializable {
                         rs.getInt("created_by"),
                         rs.getInt("total_bookings"),
                         rs.getTimestamp("last_booking") != null
-                        ? rs.getTimestamp("last_booking").toLocalDateTime() : null,
+                                ? rs.getTimestamp("last_booking").toLocalDateTime() : null,
                         rs.getDouble("total_spent")
                 ));
             }
@@ -268,6 +267,7 @@ public class CustomerController implements Initializable {
             showAlert("Database Error", "Error loading customers: " + e.getMessage());
         }
     }
+
 
     private void setupSearch() {
         search_txt.textProperty().addListener((obs, oldVal, newVal) -> {
