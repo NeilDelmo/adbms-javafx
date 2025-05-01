@@ -149,6 +149,11 @@ public class ReservationController implements Initializable {
             Reservation reservation = event.getRowValue();
             String newStatus = event.getNewValue();
 
+            if (reservation == null || newStatus == null || newStatus.isEmpty()) {
+                showError("Invalid Selection", "Unable to update reservation.");
+                return;
+            }
+
             // Update the reservation status in the database
             updateReservationStatus(reservation.getReservationId(), newStatus);
 
@@ -162,30 +167,53 @@ public class ReservationController implements Initializable {
         });
     }
     private void updateReservationStatus(int reservationId, String newStatus) {
+        int currentUser = Model.getInstance().getcurrentuserid();
+        if (currentUser <= 0) currentUser = 1;
+
         try (Connection conn = DatabaseConnection.getConnection()) {
-            String sql = "UPDATE reservations SET status = ? WHERE reservation_id = ?";
+            String sql = "UPDATE reservations SET status = ?, updated_by = ? WHERE reservation_id = ?";
             try (PreparedStatement pst = conn.prepareStatement(sql)) {
                 pst.setString(1, newStatus);
-                pst.setInt(2, reservationId);
+                pst.setInt(2, currentUser);
+                pst.setInt(3, reservationId);
                 pst.executeUpdate();
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             showError("Database Error", "Failed to update reservation status: " + e.getMessage());
         }
     }
+    private void updateEquipmentStatus(int equipmentId, String newStatus) throws SQLException {
+        int currentUser = Model.getInstance().getcurrentuserid();
+        if (currentUser <= 0) currentUser = 1;
+
+        String query = "UPDATE equipment SET status = ?, updated_by = ? WHERE equipment_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, newStatus);
+            pstmt.setInt(2, currentUser);
+            pstmt.setInt(3, equipmentId);
+            pstmt.executeUpdate();
+        }
+    }
     private void updateEquipmentStatus(Reservation reservation) {
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            String sql = "UPDATE equipment e " +
-                    "LEFT JOIN reservation_items ri ON e.equipment_id = ri.equipment_id " +
-                    "LEFT JOIN package_equipment pe ON ri.package_id = pe.package_id " +
-                    "SET e.status = 'Available' " +
-                    "WHERE ri.reservation_id = ?";
-            try (PreparedStatement pst = conn.prepareStatement(sql)) {
-                pst.setInt(1, reservation.getReservationId());
-                pst.executeUpdate();
-                checkAvailability();
+        try {
+            int reservationId = reservation.getReservationId();
+
+            // Query to get associated equipment IDs from reservation_items
+            String query = "SELECT equipment_id FROM reservation_items WHERE reservation_id = ?";
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement(query)) {
+                pstmt.setInt(1, reservationId);
+                ResultSet rs = pstmt.executeQuery();
+
+                while (rs.next()) {
+                    int equipmentId = rs.getInt("equipment_id");
+                    updateEquipmentStatus(equipmentId, "Available"); // Call the existing method
+                }
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             showError("Database Error", "Failed to update equipment status: " + e.getMessage());
         }
     }
