@@ -69,9 +69,6 @@ public class EquipmentController implements Initializable {
     private TableColumn<Package, String> package_decriptionCol;
 
     @FXML
-    private TableColumn<Package, Integer> package_id;
-
-    @FXML
     private TableColumn<Package, String> package_nameCol;
 
     @FXML
@@ -106,7 +103,6 @@ public class EquipmentController implements Initializable {
         equipment_table.setItems(equipmentList);
         loadEquipmentData(); // Load data after initializing the list
 
-        package_id.setCellValueFactory(new PropertyValueFactory<>("packageId"));
         package_nameCol.setCellValueFactory((new PropertyValueFactory<>("name")));
         package_decriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         package_priceCol.setCellValueFactory(new PropertyValueFactory<>("bundlePrice"));
