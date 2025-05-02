@@ -2,6 +2,7 @@ package com.mycompany.karaoke_rental_system;
 
 import com.mycompany.karaoke_rental_system.Model.Model;
 import com.mycompany.karaoke_rental_system.data.DatabaseConnection;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -70,6 +71,13 @@ public class PaymentController implements Initializable {
                 if (empty || item == null) {
                     setText(null);
                 } else {
+                    // Bind to Reservation properties
+                    item.getReservation().paidAmountProperty().addListener((obs, oldVal, newVal) -> {
+                        setText(item.toString());
+                    });
+                    item.getReservation().totalAmountProperty().addListener((obs, oldVal, newVal) -> {
+                        setText(item.toString());
+                    });
                     setText(item.toString());
                 }
             }
@@ -92,12 +100,14 @@ public class PaymentController implements Initializable {
         reservationIdCol.setCellValueFactory(cellData -> cellData.getValue().reservationIdProperty().asObject());
         totalAmountCol.setCellValueFactory(cellData -> cellData.getValue().totalAmountProperty().asObject());
         amountPaidCol.setCellValueFactory(cellData -> cellData.getValue().amountPaidProperty().asObject());
+
+        // Use the bound balanceProperty
+        // ✅ Correct binding
         balanceCol.setCellValueFactory(cellData ->
-                new SimpleDoubleProperty(cellData.getValue().getBalance()).asObject()
+                cellData.getValue().balanceProperty().asObject()
         );
         statusCol.setCellValueFactory(cellData -> cellData.getValue().statusProperty());
-
-        paymentSummaryTable.setItems(paymentSummaries); // Already initialized as ObservableList
+        paymentSummaryTable.setItems(paymentSummaries);
     }
 
     private void setupHistoryTable() {
@@ -110,34 +120,23 @@ public class PaymentController implements Initializable {
     }
 
 
-    public void setReservation(Reservation reservation){
+    public void setReservation(Reservation reservation) {
         ReservationWrapper reservationWrapper = new ReservationWrapper(reservation);
         unpaidReservations.add(reservationWrapper);
         reservationCombo.getSelectionModel().select(reservationWrapper);
-        updatePaymentInfo(reservation);
-    }
-    public static class ReservationWrapper {
-        private final Reservation reservation;
 
-        public ReservationWrapper(Reservation reservation) {
-            this.reservation = reservation;
-        }
+        // Bind balance label
+        balanceLabel.textProperty().bind(Bindings.createStringBinding(
+                () -> String.format("Balance: ₱%.2f",
+                        reservation.getTotalAmount() - reservation.getPaidAmount()),
+                reservation.paidAmountProperty()
+        ));
 
-        public Reservation getReservation() {
-            return reservation;
-        }
-
-        @Override
-        public String toString() {
-            String customerName = (reservation.customerProperty().get() != null)
-                    ? reservation.customerProperty().get().getName()
-                    : "Unknown Customer";
-            return String.format("%s (%s - %s) - ₱%.2f",
-                    customerName,
-                    reservation.startDateProperty().get().format(DateTimeFormatter.ofPattern("MMM dd")),
-                    reservation.endDateProperty().get().format(DateTimeFormatter.ofPattern("MMM dd")),
-                    reservation.totalAmountProperty().get() - reservation.paidAmountProperty().get());
-        }
+        // Bind progress bar
+        paymentProgress.progressProperty().bind(Bindings.divide(
+                reservation.paidAmountProperty(),
+                reservation.totalAmountProperty()
+        ));
     }
     private void loadUnpaidReservations() {
         try (Connection conn = DatabaseConnection.getConnection()) {
@@ -166,12 +165,7 @@ public class PaymentController implements Initializable {
                 unpaidReservations.add(new ReservationWrapper(reservation));
 
                 // Add to summary table model
-                paymentSummaries.add(new PaymentSummary(
-                        reservation.getReservationId(),
-                        reservation.getTotalAmount(),
-                        reservation.getPaidAmount(),
-                        reservation.getPaymentStatus()
-                ));
+                paymentSummaries.add(new PaymentSummary(reservation));
             }
 
             reservationCombo.setItems(unpaidReservations);
@@ -184,13 +178,13 @@ public class PaymentController implements Initializable {
 
     private void updatePaymentInfo(Reservation reservation) {
         // Update summary table
-        paymentSummaries.clear();
-        paymentSummaries.add(new PaymentSummary(
-                reservation.getReservationId(),
-                reservation.getTotalAmount(),
-                reservation.getPaidAmount(),
-                reservation.getPaymentStatus()
-        ));
+        for (PaymentSummary summary : paymentSummaries) {
+            if (summary.getReservationId() == reservation.getReservationId()) {
+                summary.setAmountPaid(reservation.getPaidAmount());
+                summary.setStatus(reservation.getPaymentStatus());
+                break;
+            }
+        }
 
         // Update history table
         paymentHistories.clear();
@@ -211,12 +205,6 @@ public class PaymentController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        // Update UI elements
-        balanceLabel.setText(String.format("Balance: ₱%.2f",
-                reservation.getTotalAmount() - reservation.getPaidAmount()));
-        paymentProgress.setProgress(
-                reservation.getPaidAmount() / reservation.getTotalAmount());
     }
     // In PaymentController.java
     private String getUsernameById(int userId) {
@@ -324,6 +312,7 @@ public class PaymentController implements Initializable {
             methodCombo.getSelectionModel().selectFirst();
 
             // Success message
+            loadPaymentMethodData();
             Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
             successAlert.setTitle("Payment Successful");
             successAlert.setHeaderText(null);
