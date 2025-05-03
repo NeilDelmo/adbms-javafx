@@ -41,9 +41,9 @@
     </HBox>
     <HBox alignment="CENTER" prefHeight="52.0" prefWidth="828.0" spacing="10">
         <ComboBox fx:id="filter_reservation_cmb" prefHeight="31.0" prefWidth="201.0" promptText="Filter Reservations" />
-        <Button fx:id="add_reservation_btn" onAction="#handleAddReservation" prefHeight="31.0" text="Add Reservation" />
-      <Button mnemonicParsing="false" onAction="#handleCancelReservation" text="Cancel" />
-      <Button mnemonicParsing="false" onAction="#handleConfirmReservation" text="Confirm" />
+        <Button fx:id="add_reservation_btn" onAction="#handleAddReservation" prefHeight="31.0" styleClass="styled-button" text="Add Reservation" />
+      <Button mnemonicParsing="false" onAction="#handleCancelReservation" styleClass="styled-button" text="Cancel" />
+      <Button mnemonicParsing="false" onAction="#handleConfirmReservation" styleClass="styled-button" text="Confirm" />
     </HBox>
     <TableView fx:id="reservation_table" prefHeight="350.0" VBox.vgrow="ALWAYS">
         <columns>

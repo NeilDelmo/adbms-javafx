@@ -170,6 +170,8 @@ public class ReservationController implements Initializable {
             if ("Completed".equals(newStatus)) {
                 updateEquipmentStatus(reservation);
             }
+            loadReservations();       // Refresh reservation table
+            checkAvailability();
         });
     }
 
@@ -385,6 +387,7 @@ public class ReservationController implements Initializable {
             resetForm();
             ViewFactory vf = new ViewFactory();
             vf.clearViews();
+            loadReservations();
 
         } catch (SQLException e) {
             e.printStackTrace();

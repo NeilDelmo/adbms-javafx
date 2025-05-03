@@ -63,25 +63,63 @@
 /* TableView Styling */
 .table-view {
     -fx-background-color: transparent;
+    -fx-padding: 0;
     -fx-border-color: transparent;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 6, 0, 0, 2);
 }
 
-.table-view .column-header {
-    -fx-background-color: #f0f2f5;
-    -fx-font-size: 13px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #5f6368;
-    -fx-padding: 10px 16px;
-    -fx-border-color: transparent transparent #e0e0e0 transparent;
+/* Table Header Styling */
+.table-view .column-header-background {
+    -fx-background-color: #f0f2f5; /* Light gray header background */
+    -fx-background-radius: 8px 8px 0 0; /* Rounded top corners */
+    -fx-padding: 12px 16px;
 }
 
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #5f6368; /* Darker gray text */
+    -fx-padding: 10px 16px;
+    -fx-border-color: transparent transparent #e0e0e0 transparent; /* Subtle bottom border */
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #5f6368;
+    -fx-alignment: center-left;
+}
+
+/* Table Cell Styling */
+.table-view .table-cell {
+    -fx-padding: 12px 16px; /* More padding for better spacing */
+    -fx-border-color: transparent; /* Remove cell borders */
+    -fx-font-size: 13px;
+    -fx-alignment: center-left;
+    -fx-text-fill: #202124; /* Dark text for better visibility */
+}
+
+/* Alternating Row Colors */
 .table-view .table-row-cell {
     -fx-background-color: white;
     -fx-padding: 0;
-    -fx-border-color: transparent transparent #f0f2f5 transparent;
+    -fx-border-color: transparent transparent #f0f2f5 transparent; /* Subtle horizontal line */
 }
 
 .table-view .table-row-cell:odd {
-    -fx-background-color: #f8fafc;
+    -fx-background-color: #f8fafc; /* Light blueish-gray for odd rows */
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #d9ecff; /* Soft blue for selected rows */
+    -fx-text-fill: #202124; /* Dark text remains visible */
+}
+
+/* Hover Effect */
+.table-view .table-row-cell:hover {
+    -fx-background-color: #e8f0fe; /* Slightly darker hover effect */
+}
+
+.header-text {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
 }

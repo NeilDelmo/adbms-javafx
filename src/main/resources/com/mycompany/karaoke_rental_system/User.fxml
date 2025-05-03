@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<BorderPane prefHeight="750.0" prefWidth="850.0" styleClass="root" stylesheets="@User.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.UserController">
+<BorderPane prefHeight="750.0" prefWidth="850.0" styleClass="root" stylesheets="@User.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.UserController">
    <top>
       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Management " textAlignment="CENTER" wrappingWidth="440.8499755859375" BorderPane.alignment="CENTER">
          <font>
@@ -29,6 +39,10 @@
                   <TableColumn fx:id="actionCol" prefWidth="177.59994506835938" text="Action" />
                   <TableColumn fx:id="detailsCol" prefWidth="334.4000244140625" text="Details" />
               </columns>
+               <styleClass>
+                  <String fx:value="column-header" />
+                  <String fx:value="table-view" />
+               </styleClass>
             </TableView>
          </children>
       </AnchorPane>
@@ -54,6 +68,10 @@
             <TableColumn fx:id="createdByCol" prefWidth="89.59994506835938" text="Created By" />
             <TableColumn fx:id="createdAtCol" prefWidth="116.0" text="Created At" />
         </columns>
+         <styleClass>
+            <String fx:value="table-view" />
+            <String fx:value="column-header" />
+         </styleClass>
       </TableView>
    </center>
 </BorderPane>

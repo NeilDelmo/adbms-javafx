@@ -42,7 +42,7 @@
                                 <ComboBox fx:id="status_filter_cmb" promptText="Filter by Status" styleClass="text-field" />
                             </HBox>
                             <HBox spacing="10" styleClass="hbox" VBox.vgrow="ALWAYS">
-                                <TableView fx:id="equipment_table" prefHeight="458.0" prefWidth="754.0" styleClass="table-view" HBox.hgrow="ALWAYS">
+                                <TableView fx:id="equipment_table" prefHeight="458.0" prefWidth="754.0" styleClass="column-header" HBox.hgrow="ALWAYS">
                                     <columns>
                                         <TableColumn fx:id="nameCol" prefWidth="148.0" text="Name" />
                                         <TableColumn fx:id="descriptionCol" prefWidth="171.99993896484375" text="Description" />
