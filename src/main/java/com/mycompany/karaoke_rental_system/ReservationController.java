@@ -425,7 +425,7 @@ public class ReservationController implements Initializable {
         if (start_date.getValue() == null || end_date.getValue() == null) {
             return false;
         }
-        if (end_date.getValue().isBefore(start_date.getValue())) {
+        if (!end_date.getValue().isAfter(start_date.getValue())) {
             showError("Invalid Dates", "End date must be after start date");
             return false;
         }

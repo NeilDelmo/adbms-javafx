@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import de.jensd.fx.glyphs.fontawesome.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<VBox id="VBox" fx:id="rootPane" prefHeight="750.0" prefWidth="850.0" styleClass="VBox" stylesheets="@Customer.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.CustomerController">
+<VBox id="VBox" fx:id="rootPane" prefHeight="750.0" prefWidth="880.0" styleClass="VBox" stylesheets="@Customer.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.CustomerController">
    <GridPane prefHeight="30.0" prefWidth="776.0">
      <columnConstraints>
        <ColumnConstraints hgrow="SOMETIMES" maxWidth="399.4000244140625" minWidth="10.0" prefWidth="338.60003662109375" />
@@ -15,7 +26,7 @@
        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
      </rowConstraints>
       <children>
-          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="column-header" text="                     Customer Information" wrappingWidth="288.48321533203125">
+          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="column-header" text="                     Customer Information" wrappingWidth="305.2832336425781">
               <font>
                   <Font name="System Bold" size="17.0" />
               </font>
@@ -27,7 +38,7 @@
           </Text>
       </children>
    </GridPane>
-    <HBox alignment="CENTER" prefHeight="190.0" prefWidth="806.0" spacing="20.0" styleClass="card hbox-customer-info" stylesheets="@Customer.css" VBox.vgrow="ALWAYS">
+    <HBox alignment="CENTER" prefHeight="196.0" prefWidth="901.0" spacing="50.0" styleClass="card hbox-customer-info" stylesheets="@Customer.css" VBox.vgrow="ALWAYS">
         <VBox spacing="10.0" styleClass="vbox-customer-info" stylesheets="@Customer.css">
             <TextField fx:id="name_txt" promptText="Name" />
             <TextField fx:id="phone_txt" promptText="Contact Number" />
@@ -42,20 +53,20 @@
       </StackPane>
     </HBox>
     <VBox spacing="10.0" VBox.vgrow="ALWAYS">
-        <HBox alignment="CENTER_LEFT" prefHeight="68.0" prefWidth="810.0" spacing="60.0">
+        <HBox alignment="CENTER_LEFT" prefHeight="68.0" spacing="60.0" VBox.vgrow="ALWAYS">
             <FontAwesomeIcon glyphName="SEARCH" size="2em" styleClass="font-awesome-icon" />
             <TextField fx:id="search_txt" prefHeight="32.0" prefWidth="200.0" styleClass="text-field" stylesheets="@Customer.css" />
             <Button fx:id="reservation_btn" mnemonicParsing="false" styleClass="styled-button" stylesheets="@Customer.css" text="Add Reservation" />
             <Button fx:id="edit_btn" mnemonicParsing="false" onAction="#handleEditRow" prefHeight="41.0" prefWidth="158.0" styleClass="styled-button" stylesheets="@Customer.css" text="Edit" />
         </HBox>
-        <TableView fx:id="customer_table" prefHeight="399.0" styleClass="table-column" stylesheets="@Customer.css" VBox.vgrow="ALWAYS">
+        <TableView fx:id="customer_table" prefWidth="850.0" styleClass="table-column" stylesheets="@Customer.css" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="nameCol" text="Name" />
-                <TableColumn fx:id="phoneCol" prefWidth="162.3999481201172" text="Phone Number" />
-                <TableColumn fx:id="addressCol" prefWidth="112.800048828125" text="Address" />
-                <TableColumn fx:id="bookingsCol" editable="false" prefWidth="141.5999755859375" text="Booking" />
-                <TableColumn fx:id="lastBookingCol" editable="false" prefWidth="166.39996337890625" text="Last Booking" />
-                <TableColumn fx:id="spentCol" editable="false" prefWidth="148.0" text="Total Spent" />
+                <TableColumn fx:id="nameCol" prefWidth="135.20001220703125" text="Name" />
+                <TableColumn fx:id="phoneCol" prefWidth="148.0" text="Phone Number" />
+                <TableColumn fx:id="addressCol" prefWidth="125.60003662109375" text="Address" />
+                <TableColumn fx:id="bookingsCol" editable="false" prefWidth="133.5999755859375" text="Booking" />
+                <TableColumn fx:id="lastBookingCol" editable="false" prefWidth="160.79998779296875" text="Last Booking" />
+                <TableColumn fx:id="spentCol" editable="false" prefWidth="140.5999755859375" text="Total Spent" />
             </columns>
         </TableView>
     </VBox>

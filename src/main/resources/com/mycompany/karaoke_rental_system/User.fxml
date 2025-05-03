@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="750.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.UserController">
+   <top>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Management " textAlignment="CENTER" wrappingWidth="440.8499755859375" BorderPane.alignment="CENTER">
+         <font>
+            <Font size="48.0" />
+         </font>
+      </Text>
+   </top>
+   <right>
+      <VBox prefHeight="401.0" prefWidth="210.0" BorderPane.alignment="CENTER">
+         <children>
+            <ListView fx:id="rankingList" prefHeight="200.0" prefWidth="200.0" />
+         </children>
+      </VBox>
+   </right>
+   <bottom>
+      <AnchorPane prefHeight="285.0" prefWidth="850.0" BorderPane.alignment="CENTER">
+         <children>
+            <TableView fx:id="activityLogTable" layoutY="2.0" prefHeight="288.0" prefWidth="850.0">
+              <columns>
+                <TableColumn fx:id="timestampCol" prefWidth="175.99997556209564" text="TimeStamp" />
+                <TableColumn fx:id="usernameLogCol" prefWidth="166.39996337890625" text="User" />
+                  <TableColumn fx:id="actionCol" prefWidth="177.59994506835938" text="Action" />
+                  <TableColumn fx:id="detailsCol" prefWidth="334.4000244140625" text="Details" />
+              </columns>
+            </TableView>
+         </children>
+      </AnchorPane>
+   </bottom>
+   <left>
+      <VBox prefHeight="401.0" prefWidth="140.0" BorderPane.alignment="CENTER">
+         <children>
+            <TextField fx:id="usernameTextField" promptText="Username" />
+            <PasswordField fx:id="passwordTextField" prefHeight="26.0" prefWidth="144.0" promptText="Password" />
+            <PasswordField fx:id="confirmPasswordTextField" promptText="Confirm Password" />
+            <ComboBox fx:id="roleComboBox" prefHeight="26.0" prefWidth="121.0" promptText="Role" />
+            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#saveUser" prefHeight="26.0" prefWidth="63.0" text="Save" />
+         </children>
+      </VBox>
+   </left>
+   <center>
+      <TableView fx:id="usersTable" prefHeight="401.0" prefWidth="398.0" BorderPane.alignment="CENTER">
+        <columns>
+          <TableColumn fx:id="idCol" prefWidth="37.59994351863861" text="ID" />
+          <TableColumn fx:id="usernameCol" prefWidth="84.79998779296875" text="Username" />
+            <TableColumn fx:id="roleCol" prefWidth="72.79999542236328" text="Role" />
+            <TableColumn fx:id="lastLoginCol" prefWidth="97.5999755859375" text="Last Login" />
+            <TableColumn fx:id="createdByCol" prefWidth="89.59994506835938" text="Created By" />
+            <TableColumn fx:id="createdAtCol" prefWidth="116.0" text="Created At" />
+        </columns>
+      </TableView>
+   </center>
+</BorderPane>

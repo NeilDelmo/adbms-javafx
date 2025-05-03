@@ -5,6 +5,9 @@ import java.net.URL;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -101,14 +104,41 @@ public class CustomerController implements Initializable {
     private void setupTableColumns() {
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         nameCol.setCellFactory(TextFieldTableCell.forTableColumn());
-        nameCol.setOnEditCommit(event ->{
+        nameCol.setOnEditCommit(event -> {
             Customer customer = event.getRowValue();
             String newName = event.getNewValue().trim();
-            if(!newName.isEmpty()){
-                updateCustomerField(customer.getCustomerId(),"name",newName);
-                customer.setName(newName);
-            }else{
-                showAlert("Error","Name cannot be empty");
+
+            if (!newName.isEmpty()) {
+                try {
+                    List<String> similarNames = getSimilarNamesInDatabase(newName, customer.getCustomerId());
+                    if (!similarNames.isEmpty()) {
+                        StringBuilder message = new StringBuilder("Similar names found:\n");
+                        for (String similarName : similarNames) {
+                            message.append(similarName).append("\n");
+                        }
+                        message.append("Proceed with changing the name to '").append(newName).append("'?");
+
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                        alert.setTitle("Confirm Name Change");
+                        alert.setHeaderText("Similar names detected.");
+                        alert.setContentText(message.toString());
+
+                        Optional<ButtonType> result = alert.showAndWait();
+                        if (!result.isPresent() || result.get() != ButtonType.YES) {
+                            // Revert to old value
+                            customer.setName(event.getOldValue());
+                            customer_table.refresh();
+                            return;
+                        }
+                    }
+
+                    updateCustomerField(customer.getCustomerId(), "name", newName);
+                    customer.setName(newName);
+                } catch (SQLException e) {
+                    showAlert("Database Error", "Error checking similar names: " + e.getMessage());
+                }
+            } else {
+                showAlert("Error", "Name cannot be empty");
             }
         });
 
@@ -205,23 +235,38 @@ public class CustomerController implements Initializable {
             return;
         }
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             CallableStatement cstmt = conn.prepareCall("{call sp_insert_customer(?, ?, ?, ?, ?)}")) {
+        try {
+            List<String> similarNames = getSimilarNamesInDatabase(name, null);
+            if (!similarNames.isEmpty()) {
+                StringBuilder message = new StringBuilder("The following similar names were found:\n");
+                for (String similarName : similarNames) {
+                    message.append(similarName).append("\n");
+                }
+                message.append("Proceed with adding '").append(name).append("'?");
 
-            cstmt.setString(1, name);
-            cstmt.setString(2, phone);
-            cstmt.setString(3, address);
-            cstmt.setInt(4, Model.getInstance().getcurrentuserid());
-            cstmt.registerOutParameter(5, Types.INTEGER);
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Similar Names Found");
+                alert.setHeaderText("Similar customer names detected.");
+                alert.setContentText(message.toString());
 
-            cstmt.execute();
+                Optional<ButtonType> result = alert.showAndWait();
+                if (!result.isPresent() || result.get() != ButtonType.YES) {
+                    return;
+                }
+            }
 
-            int newCustomerId = cstmt.getInt(5);
-            System.out.println("New customer ID: " + newCustomerId);
-
-            clearFields();
-            loadCustomers();
-
+            try (Connection conn = DatabaseConnection.getConnection();
+                 CallableStatement cstmt = conn.prepareCall("{call sp_insert_customer(?, ?, ?, ?, ?)}")) {
+                cstmt.setString(1, name);
+                cstmt.setString(2, phone);
+                cstmt.setString(3, address);
+                cstmt.setInt(4, Model.getInstance().getcurrentuserid());
+                cstmt.registerOutParameter(5, Types.INTEGER);
+                cstmt.execute();
+                int newCustomerId = cstmt.getInt(5);
+                clearFields();
+                loadCustomers();
+            }
         } catch (SQLException e) {
             showAlert("Database Error", "Error saving customer: " + e.getMessage());
         }
@@ -343,6 +388,27 @@ public class CustomerController implements Initializable {
     public void refreshData() {
     loadCustomers(); // Reload customers from the database
 }
+    private List<String> getSimilarNamesInDatabase(String nameToCheck, Integer excludeCustomerId) throws SQLException {
+        List<String> similarNames = new ArrayList<>();
+        String query;
+        if (excludeCustomerId == null) {
+            query = "SELECT name FROM customers WHERE name ILIKE ?";
+        } else {
+            query = "SELECT name FROM customers WHERE name ILIKE ? AND customer_id != ?";
+        }
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, "%" + nameToCheck + "%");
+            if (excludeCustomerId != null) {
+                pstmt.setInt(2, excludeCustomerId);
+            }
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                similarNames.add(rs.getString("name"));
+            }
+        }
+        return similarNames;
+    }
 
     private void clearFields() {
         name_txt.clear();

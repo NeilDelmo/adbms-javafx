@@ -4,6 +4,8 @@ import java.io.IOException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -17,6 +19,7 @@ public class ViewFactory {
     private ReservationController reservationController;
     private Customer selectedCustomer;
     private VBox paymentView;
+    private BorderPane managementView;
 
     public void setSelectedCustomer(Customer selectedCustomer){
         this.selectedCustomer = selectedCustomer;
@@ -95,6 +98,17 @@ public class ViewFactory {
         }
 
         return  paymentView;
+    }
+
+    public BorderPane getManagementView() {
+        if (managementView == null) {
+            try {
+                managementView = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/User.fxml")).load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return managementView;
     }
 
     public void showLoginWindow() {
