@@ -1,6 +1,7 @@
 /* Root Container Styling */
+/* Root Container Styling */
 .root {
-    -fx-background-color: #f0f2f5; /* Softer background */
+    -fx-background-color: #e9ecef; /* Rich dark background */
     -fx-padding: 20px;
 }
 
@@ -8,24 +9,33 @@
 .card {
     -fx-border-radius: 12px;
     -fx-padding: 16px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 6, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0, 0, 3);
+ -fx-background-color: white
 }
 
-/* Customer Info Panel - Bolder Blue Theme */
+/* Customer Info Panel - Bold Blue */
 .vbox-customer-info {
-    -fx-background-color: #d9ecff; /* Light blue */
+    -fx-background-color: #fdf9f0;
     -fx-border-radius: 12px;
     -fx-padding: 16px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 6, 0, 0, 2);
 }
 
-/* History StackPane - Bolder Green Theme */
+/* History StackPane - Bold Green */
 .stack-pane-history {
-    -fx-background-color: #e6f7e6; /* Light green */
+    -fx-background-color: #4CAF50;
     -fx-border-radius: 12px;
     -fx-padding: 16px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 6, 0, 0, 2);
 }
+
+/* Headers */
+.column-header {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 0;
+}
+
+/* TextField Styling */
+
 
 /* FontAwesome Icon Styling */
 .font-awesome-icon {
@@ -42,11 +52,11 @@
 
 /* TextField Styling */
 .text-field {
-    -fx-background-color: white;
-    -fx-border-color: #c0c0c0;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #ccc;
     -fx-border-radius: 6px;
     -fx-padding: 8px;
-    -fx-text-fill: #202124;
+    -fx-text-fill: #000000;
 }
 
 .text-field:hover {

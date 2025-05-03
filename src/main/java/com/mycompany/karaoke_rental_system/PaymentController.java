@@ -54,7 +54,9 @@ public class PaymentController implements Initializable {
         setupReservationCombo();
         setupSummaryTable();
         setupHistoryTable();
-        loadUnpaidReservations();
+        setupTableSelectionListener();
+        loadUnpaidReservations();         // Combo box: unpaid only
+        loadAllReservationsForTable();
         loadPaymentMethodData();
 
     }
@@ -71,18 +73,10 @@ public class PaymentController implements Initializable {
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    // Bind to Reservation properties
-                    item.getReservation().paidAmountProperty().addListener((obs, oldVal, newVal) -> {
-                        setText(item.toString());
-                    });
-                    item.getReservation().totalAmountProperty().addListener((obs, oldVal, newVal) -> {
-                        setText(item.toString());
-                    });
                     setText(item.toString());
                 }
             }
         });
-
         reservationCombo.setButtonCell(new ListCell<ReservationWrapper>() {
             @Override
             protected void updateItem(ReservationWrapper item, boolean empty) {
@@ -92,6 +86,33 @@ public class PaymentController implements Initializable {
                 } else {
                     setText(item.toString());
                 }
+            }
+        });
+
+        reservationCombo.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                Reservation reservation = newVal.getReservation();
+
+                // Unbind before rebinding to avoid errors
+                balanceLabel.textProperty().unbind();
+                paymentProgress.progressProperty().unbind();
+
+                // Rebind to selected reservation
+                balanceLabel.textProperty().bind(Bindings.createStringBinding(
+                        () -> String.format("Balance: ₱%.2f", reservation.getTotalAmount() - reservation.getPaidAmount()),
+                        reservation.paidAmountProperty()
+                ));
+
+                paymentProgress.progressProperty().bind(Bindings.when(
+                        reservation.totalAmountProperty().greaterThan(0)
+                ).then(
+                        Bindings.divide(reservation.paidAmountProperty(), reservation.totalAmountProperty())
+                ).otherwise(0.0));
+
+                updatePaymentInfo(reservation);
+            } else {
+                balanceLabel.textProperty().set("Balance: ₱0.00");
+                paymentProgress.setProgress(0);
             }
         });
     }
@@ -108,6 +129,65 @@ public class PaymentController implements Initializable {
         );
         statusCol.setCellValueFactory(cellData -> cellData.getValue().statusProperty());
         paymentSummaryTable.setItems(paymentSummaries);
+    }
+    // Add this to your initialize() method after setupHistoryTable()
+    private void setupTableSelectionListener() {
+        paymentSummaryTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                // Get reservation ID from the selected PaymentSummary
+                int selectedReservationId = newVal.getReservationId();
+
+                // Try to find this reservation in the combo box items first
+                boolean foundInCombo = false;
+                for (ReservationWrapper wrapper : unpaidReservations) {
+                    if (wrapper.getReservation().getReservationId() == selectedReservationId) {
+                        // Select it in the combo box to reuse existing binding logic
+                        reservationCombo.getSelectionModel().select(wrapper);
+                        foundInCombo = true;
+                        break;
+                    }
+                }
+
+                // If not found in combo box (e.g., if it's a paid reservation)
+                if (!foundInCombo) {
+                    // Unbind before setting new values to avoid errors
+                    balanceLabel.textProperty().unbind();
+                    paymentProgress.progressProperty().unbind();
+
+                    // Update UI directly with PaymentSummary data
+                    balanceLabel.setText(String.format("Balance: ₱%.2f", newVal.getBalance()));
+
+                    double progressValue = 0.0;
+                    if (newVal.getTotalAmount() > 0) {
+                        progressValue = newVal.getAmountPaid() / newVal.getTotalAmount();
+                    }
+                    paymentProgress.setProgress(progressValue);
+
+                    // Load payment history for this reservation
+                    loadPaymentHistoryForReservation(selectedReservationId);
+                }
+            }
+        });
+    }
+    private void loadPaymentHistoryForReservation(int reservationId) {
+        paymentHistories.clear();
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            String query = "SELECT * FROM payments WHERE reservation_id = ?";
+            PreparedStatement pst = conn.prepareStatement(query);
+            pst.setInt(1, reservationId);
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                paymentHistories.add(new PaymentHistory(
+                        rs.getDate("payment_date").toString(),
+                        rs.getDouble("amount"),
+                        rs.getString("payment_method"),
+                        getUsernameById(rs.getInt("recorded_by"))
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setupHistoryTable() {
@@ -144,8 +224,6 @@ public class PaymentController implements Initializable {
             PreparedStatement pst = conn.prepareStatement(query);
             ResultSet rs = pst.executeQuery();
             unpaidReservations.clear();
-            paymentSummaries.clear();
-
             while (rs.next()) {
                 Reservation reservation = new Reservation();
                 reservation.reservationIdProperty().set(rs.getInt("reservation_id"));
@@ -155,22 +233,38 @@ public class PaymentController implements Initializable {
                 reservation.totalAmountProperty().set(rs.getDouble("total_amount"));
                 reservation.paidAmountProperty().set(rs.getDouble("paid_amount"));
                 reservation.paymentStatusProperty().set(rs.getString("payment_status"));
-
-                // Set customer
                 Customer customer = new Customer();
                 customer.setName(rs.getString("customer_name"));
                 reservation.customerProperty().set(customer);
-
-                // Add to combo box model
                 unpaidReservations.add(new ReservationWrapper(reservation));
+            }
+            reservationCombo.setItems(unpaidReservations);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-                // Add to summary table model
+    private void loadAllReservationsForTable() {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            String query = "SELECT * FROM reservation_summary";
+            PreparedStatement pst = conn.prepareStatement(query);
+            ResultSet rs = pst.executeQuery();
+            paymentSummaries.clear();
+            while (rs.next()) {
+                Reservation reservation = new Reservation();
+                reservation.reservationIdProperty().set(rs.getInt("reservation_id"));
+                reservation.customerIdProperty().set(rs.getInt("customer_id"));
+                reservation.startDateProperty().set(rs.getDate("start_datetime").toLocalDate());
+                reservation.endDateProperty().set(rs.getDate("end_datetime").toLocalDate());
+                reservation.totalAmountProperty().set(rs.getDouble("total_amount"));
+                reservation.paidAmountProperty().set(rs.getDouble("paid_amount"));
+                reservation.paymentStatusProperty().set(rs.getString("payment_status"));
+                Customer customer = new Customer();
+                customer.setName(rs.getString("customer_name"));
+                reservation.customerProperty().set(customer);
                 paymentSummaries.add(new PaymentSummary(reservation));
             }
-
-            reservationCombo.setItems(unpaidReservations);
             paymentSummaryTable.setItems(paymentSummaries);
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -347,6 +441,18 @@ public class PaymentController implements Initializable {
                     showAlert("Overpayment", "This payment exceeds the total due by ₱" + String.format("%.2f", overpaid));
                 }
             }
+        }
+    }
+    private double getCurrentTotalDue(int reservationId) throws SQLException {
+        String query = "SELECT COALESCE(SUM(ri.price_per_unit), 0) + COALESCE(r.overdue_charges, 0) AS total_due " +
+                "FROM reservation_items ri " +
+                "LEFT JOIN reservations r ON ri.reservation_id = r.reservation_id " +
+                "WHERE ri.reservation_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pst = conn.prepareStatement(query)) {
+            pst.setInt(1, reservationId);
+            ResultSet rs = pst.executeQuery();
+            return rs.next() ? rs.getDouble("total_due") : 0.0;
         }
     }
 

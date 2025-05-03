@@ -1,54 +1,97 @@
-/* Root Container Styling */
+/* Root Container */
 .root {
-    -fx-background-color: #f8f9fa; /* Light background for the entire app */
-    -fx-padding: 20px; /* Add padding around the root container */
+    -fx-background-color: #e9ecef;
+    -fx-padding: 20px;
 }
 
-/* VBox Styling */
-.vbox {
-    -fx-spacing: 16px; /* Add spacing between components */
-    -fx-padding: 16px; /* Add padding inside the VBox */
-    -fx-background-color: white; /* White background for the main VBox */
-    -fx-border-radius: 8px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 4, 0, 0, 2);
+/* Base Card Style */
+.card {
+    -fx-border-radius: 12px;
+    -fx-padding: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 6, 0, 0, 2);
+    -fx-background-color: white;
 }
 
-/* GridPane Styling */
-.grid-pane {
-    -fx-hgap: 16px; /* Horizontal gap between columns */
-    -fx-vgap: 16px; /* Vertical gap between rows */
-    -fx-padding: 16px; /* Padding inside the GridPane */
-    -fx-background-color: white; /* White background for the GridPane */
-    -fx-border-radius: 8px;
-    -fx-border-color: #e5e5e5;
+/* Headers */
+.header-text {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
 }
 
-/* DatePicker Styling */
+.column-header {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #5f6368;
+    -fx-padding: 10px 16px;
+    -fx-border-color: transparent transparent #e0e0e0 transparent;
+}
+
+/* TextField Styling */
+.text-field {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 6px;
+    -fx-padding: 8px;
+    -fx-text-fill: #000000;
+}
+
+.text-field:hover {
+    -fx-border-color: #a0a0a0;
+}
+
+.text-field:focused {
+    -fx-border-color: #1A73E8;
+    -fx-border-width: 1.5px;
+}
+
+/* Search Field (Optional if needed) */
+.search-text-field {
+    -fx-border-color: #c0c0c0;
+    -fx-border-radius: 20px;
+    -fx-padding: 8px 16px;
+}
+
+.search-text-field:hover {
+    -fx-border-color: #a0a0a0;
+}
+
+.search-text-field:focused {
+    -fx-border-color: #1A73E8;
+    -fx-border-width: 1.5px;
+}
+
+/* DatePicker */
 .date-picker {
     -fx-background-color: white;
-    -fx-border-color: #ced4da;
-    -fx-border-radius: 4px;
-    -fx-padding: 8px;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 6px;
+    -fx-padding: 4px 8px;
 }
 
 .date-picker:hover {
-    -fx-border-color: #adb5bd;
+    -fx-border-color: #a0a0a0;
 }
 
 .date-picker:focused {
-    -fx-border-color: #0d6efd; /* Blue border when focused */
+    -fx-border-color: #1A73E8;
+    -fx-border-width: 1.5px;
 }
 
-/* ComboBox Styling */
+/* ComboBox */
 .combo-box {
     -fx-background-color: white;
-    -fx-border-color: #ced4da;
-    -fx-border-radius: 4px;
-    -fx-padding: 8px;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 6px;
+    -fx-padding: 4px 8px;
 }
 
 .combo-box:hover {
-    -fx-border-color: #adb5bd;
+    -fx-border-color: #a0a0a0;
+}
+
+.combo-box:focused {
+    -fx-border-color: #1A73E8;
+    -fx-border-width: 1.5px;
 }
 
 .combo-box .arrow-button {
@@ -59,95 +102,96 @@
     -fx-background-color: #6c757d;
 }
 
-/* Button Styling */
-.button {
-    -fx-background-color: #0d6efd; /* Blue background */
-    -fx-text-fill: white; /* White text */
+/* Buttons */
+.styled-button {
+    -fx-background-color: #1A73E8;
+    -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-padding: 10px 20px;
-    -fx-background-radius: 25px; /* Rounded corners */
+    -fx-background-radius: 8px;
     -fx-cursor: hand;
 }
 
-.button:hover {
-    -fx-background-color: #0b5ed7; /* Darker blue on hover */
+.styled-button:hover {
+    -fx-background-color: #155FB2;
 }
 
-/* HBox Styling */
-.hbox {
-    -fx-spacing: 16px; /* Add spacing between components */
-    -fx-padding: 16px; /* Add padding inside the HBox */
+/* HBox/VBox Layouts */
+.hbox,
+.vbox {
+    -fx-spacing: 16px;
+    -fx-padding: 16px;
 }
 
-/* TableView Base Styling */
+/* TableView */
 .table-view {
-    -fx-background-color: white;
-    -fx-background-radius: 8px;
-    -fx-border-radius: 8px;
-    -fx-border-color: #e5e5e5;
-    -fx-padding: 0;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 4, 0, 0, 2);
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 6, 0, 0, 2);
 }
 
-/* Table Header Styling */
 .table-view .column-header-background {
-    -fx-background-color: white;
+    -fx-background-color: #f0f2f5;
     -fx-background-radius: 8px 8px 0 0;
-    -fx-padding: 0 0 8px 0;
+    -fx-padding: 12px 16px;
 }
 
 .table-view .column-header {
     -fx-background-color: transparent;
     -fx-font-size: 13px;
     -fx-font-weight: bold;
-    -fx-text-fill: #6c757d;
-    -fx-padding: 16px 10px 8px 10px;
-    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-text-fill: #5f6368;
+    -fx-padding: 10px 16px;
+    -fx-border-color: transparent transparent #e0e0e0 transparent;
 }
 
 .table-view .column-header .label {
-    -fx-text-fill: #6c757d;
+    -fx-text-fill: #5f6368;
     -fx-alignment: center-left;
 }
 
-/* Table Cell Styling */
 .table-view .table-cell {
-    -fx-padding: 16px 10px;
+    -fx-padding: 12px 16px;
     -fx-border-color: transparent;
     -fx-font-size: 13px;
     -fx-alignment: center-left;
+    -fx-text-fill: #202124;
 }
 
 .table-view .table-row-cell {
     -fx-background-color: white;
-    -fx-border-color: transparent transparent #f5f5f5 transparent;
     -fx-padding: 0;
+    -fx-border-color: transparent transparent #f0f2f5 transparent;
 }
 
 .table-view .table-row-cell:odd {
-    -fx-background-color: white; /* No alternating row color in the reference */
+    -fx-background-color: #f8fafc;
 }
 
 .table-view .table-row-cell:selected {
-    -fx-background-color: #f8f9fa;
-    -fx-text-fill: #212529;
+    -fx-background-color: #d9ecff;
+    -fx-text-fill: #202124;
 }
 
-/* ListView Styling */
+.table-view .table-row-cell:hover {
+    -fx-background-color: #e8f0fe;
+}
+
+/* ListView */
 .list-view {
-    -fx-background-color: white;
-    -fx-border-color: #e5e5e5;
-    -fx-border-radius: 8px;
-    -fx-padding: 16px;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
 }
 
 .list-view .list-cell {
-    -fx-padding: 16px;
-    -fx-font-size: 14px;
-    -fx-text-fill: #343a40;
+    -fx-padding: 12px 16px;
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 8px;
+    -fx-margin: 2px 0;
+    -fx-text-fill: #202124;
 }
 
 .list-view .list-cell:selected {
-    -fx-background-color: #f8f9fa;
-    -fx-text-fill: #212529;
+    -fx-background-color: #e8f0fe;
 }

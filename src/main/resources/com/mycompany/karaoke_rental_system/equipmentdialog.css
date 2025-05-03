@@ -1,86 +1,63 @@
-/* Root Container Styling */
 .root {
-    -fx-background-color: #f8f9fa; /* Light background for the entire app */
-    -fx-padding: 20px; /* Add padding around the root container */
+    -fx-background-color: #e9ecef;
+    -fx-padding: 20px;
 }
 
-/* VBox Styling */
-.vbox {
-    -fx-spacing: 16px; /* Add spacing between components */
-    -fx-padding: 16px; /* Add padding inside the VBox */
-    -fx-background-color: white; /* White background for the main VBox */
-    -fx-border-radius: 8px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 4, 0, 0, 2);
-}
-
-/* TextField Styling */
 .text-field {
     -fx-background-color: white;
-    -fx-border-color: #ced4da;
-    -fx-border-radius: 4px;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 6px;
     -fx-padding: 8px;
+    -fx-text-fill: black;
 }
 
 .text-field:hover {
-    -fx-border-color: #adb5bd;
+    -fx-border-color: #a0a0a0;
 }
 
 .text-field:focused {
-    -fx-border-color: #0d6efd; /* Blue border when focused */
+    -fx-border-color: #1A73E8;
+    -fx-border-width: 1.5px;
 }
 
-/* TextArea Styling */
 .text-area {
     -fx-background-color: white;
-    -fx-border-color: #ced4da;
-    -fx-border-radius: 4px;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 6px;
     -fx-padding: 8px;
+    -fx-text-fill: black;
 }
 
 .text-area:hover {
-    -fx-border-color: #adb5bd;
+    -fx-border-color: #a0a0a0;
 }
 
 .text-area:focused {
-    -fx-border-color: #0d6efd; /* Blue border when focused */
+    -fx-border-color: #1A73E8;
+    -fx-border-width: 1.5px;
 }
 
-/* ComboBox Styling */
 .combo-box {
     -fx-background-color: white;
-    -fx-border-color: #ced4da;
-    -fx-border-radius: 4px;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 6px;
     -fx-padding: 8px;
 }
 
-.combo-box:hover {
-    -fx-border-color: #adb5bd;
+.combo-box:focused {
+    -fx-border-color: #1A73E8;
+    -fx-border-width: 1.5px;
 }
 
-.combo-box .arrow-button {
-    -fx-background-color: transparent;
-}
-
-.combo-box .arrow {
-    -fx-background-color: #6c757d;
-}
-
-/* Button Styling */
-.button {
-    -fx-background-color: #0d6efd; /* Blue background */
-    -fx-text-fill: white; /* White text */
+.styled-button {
+    -fx-background-color: #1A73E8;
+    -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-padding: 10px 20px;
-    -fx-background-radius: 25px; /* Rounded corners */
+    -fx-background-radius: 8px;
     -fx-cursor: hand;
 }
 
-.button:hover {
-    -fx-background-color: #0b5ed7; /* Darker blue on hover */
-}
-
-/* HBox Styling */
-.hbox {
-    -fx-spacing: 16px; /* Add spacing between components */
-    -fx-padding: 16px; /* Add padding inside the HBox */
+.styled-button:hover {
+    -fx-background-color: #155FB2;
 }

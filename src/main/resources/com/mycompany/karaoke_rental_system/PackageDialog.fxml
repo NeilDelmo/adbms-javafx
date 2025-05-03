@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.cell.PropertyValueFactory?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
+<?import javafx.scene.layout.*?>
 
-<VBox styleClass="vbox" stylesheets="@packagedialog.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.PackageDialogController">
+<VBox styleClass="vbox" stylesheets="@packagedialog.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.PackageDialogController">
     <children>
         <TextField fx:id="nameField" promptText="Package Name" styleClass="text-field" stylesheets="@packagedialog.css" />
         <TextArea fx:id="descriptionField" prefHeight="100.0" promptText="Description" styleClass="text-area" stylesheets="@packagedialog.css" />
@@ -30,16 +24,16 @@
         </TableView>
 
         <HBox alignment="CENTER" prefHeight="84.0" prefWidth="454.0" spacing="10" styleClass="hbox" stylesheets="@packagedialog.css">
-            <Button fx:id="addButton" onAction="#handleAddEquipment" prefHeight="54.0" prefWidth="167.0" text="Add to Package" />
-            <Button fx:id="removeButton" onAction="#handleRemoveEquipment" prefHeight="26.0" prefWidth="174.0" styleClass="hbox" text="Remove from Package" />
+            <Button fx:id="addButton" onAction="#handleAddEquipment" prefHeight="43.0" prefWidth="143.0" styleClass="styled-button" text="Add to Package" />
+            <Button fx:id="removeButton" onAction="#handleRemoveEquipment" prefHeight="41.0" prefWidth="208.0" styleClass="styled-button" text="Remove from Package" />
         </HBox>
 
-        <ListView fx:id="selectedEquipmentList" prefHeight="200.0" stylesheets="@packagedialog.css" />
+        <ListView fx:id="selectedEquipmentList" prefHeight="200.0" styleClass="text-area" stylesheets="@packagedialog.css" />
         <TextField fx:id="bundlePriceField" promptText="Bundle Price" styleClass="text-field" stylesheets="@packagedialog.css" />
 
         <HBox alignment="CENTER" spacing="10">
-            <Button fx:id="saveButton" onAction="#handleSave" text="Save" />
-            <Button fx:id="cancelButton" onAction="#handleCancel" text="Cancel" />
+            <Button fx:id="saveButton" onAction="#handleSave" styleClass="styled-button" text="Save" />
+            <Button fx:id="cancelButton" onAction="#handleCancel" styleClass="styled-button" text="Cancel" />
         </HBox>
     </children>
 </VBox>

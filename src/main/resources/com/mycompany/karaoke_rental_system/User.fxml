@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="750.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.UserController">
+<BorderPane prefHeight="750.0" prefWidth="850.0" styleClass="root" stylesheets="@User.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.UserController">
    <top>
       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Management " textAlignment="CENTER" wrappingWidth="440.8499755859375" BorderPane.alignment="CENTER">
          <font>
@@ -40,7 +40,7 @@
             <PasswordField fx:id="passwordTextField" prefHeight="26.0" prefWidth="144.0" promptText="Password" />
             <PasswordField fx:id="confirmPasswordTextField" promptText="Confirm Password" />
             <ComboBox fx:id="roleComboBox" prefHeight="26.0" prefWidth="121.0" promptText="Role" />
-            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#saveUser" prefHeight="26.0" prefWidth="63.0" text="Save" />
+            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#saveUser" prefHeight="41.0" prefWidth="88.0" styleClass="styled-button" text="Save" />
          </children>
       </VBox>
    </left>

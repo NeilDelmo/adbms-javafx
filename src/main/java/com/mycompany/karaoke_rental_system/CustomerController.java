@@ -237,6 +237,8 @@ public class CustomerController implements Initializable {
 
         try {
             List<String> similarNames = getSimilarNamesInDatabase(name, null);
+            boolean proceed = true;
+
             if (!similarNames.isEmpty()) {
                 StringBuilder message = new StringBuilder("The following similar names were found:\n");
                 for (String similarName : similarNames) {
@@ -250,25 +252,39 @@ public class CustomerController implements Initializable {
                 alert.setContentText(message.toString());
 
                 Optional<ButtonType> result = alert.showAndWait();
-                if (!result.isPresent() || result.get() != ButtonType.YES) {
-                    return;
-                }
+                proceed = result.isPresent() && result.get() == ButtonType.OK;
             }
 
-            try (Connection conn = DatabaseConnection.getConnection();
-                 CallableStatement cstmt = conn.prepareCall("{call sp_insert_customer(?, ?, ?, ?, ?)}")) {
-                cstmt.setString(1, name);
-                cstmt.setString(2, phone);
-                cstmt.setString(3, address);
-                cstmt.setInt(4, Model.getInstance().getcurrentuserid());
-                cstmt.registerOutParameter(5, Types.INTEGER);
-                cstmt.execute();
-                int newCustomerId = cstmt.getInt(5);
-                clearFields();
-                loadCustomers();
+            if (proceed) {
+                try (Connection conn = DatabaseConnection.getConnection();
+                     CallableStatement cstmt = conn.prepareCall("{call sp_insert_customer(?, ?, ?, ?, ?)}")) {
+
+                    cstmt.setString(1, name);
+                    cstmt.setString(2, phone);
+                    cstmt.setString(3, address);
+                    cstmt.setInt(4, Model.getInstance().getcurrentuserid());
+                    cstmt.registerOutParameter(5, Types.INTEGER);
+
+                    boolean hasResultSet = cstmt.execute(); // May return false if only OUT params
+
+                    // Try to get the new ID regardless
+                    int newCustomerId = cstmt.getInt(5);
+
+                    if (newCustomerId <= 0) {
+                        showAlert("Error", "Failed to insert customer. Please check the database.");
+                        return;
+                    }
+
+                    clearFields();
+                    loadCustomers(); // Ensure this method reloads and updates the UI
+                } catch (SQLException e) {
+                    e.printStackTrace(); // For debugging
+                    showAlert("Database Error", "Error saving customer: " + e.getMessage());
+                }
             }
         } catch (SQLException e) {
-            showAlert("Database Error", "Error saving customer: " + e.getMessage());
+            e.printStackTrace();
+            showAlert("Database Error", "Error checking similar names: " + e.getMessage());
         }
     }
     @FXML
@@ -390,23 +406,39 @@ public class CustomerController implements Initializable {
 }
     private List<String> getSimilarNamesInDatabase(String nameToCheck, Integer excludeCustomerId) throws SQLException {
         List<String> similarNames = new ArrayList<>();
+
+        // Extract the first word from the name
+        String[] parts = nameToCheck.split("\\s+");
+        String firstName = parts.length > 0 ? parts[0].trim() : nameToCheck;
+
         String query;
+
         if (excludeCustomerId == null) {
-            query = "SELECT name FROM customers WHERE name ILIKE ?";
+            query = "SELECT name FROM customers WHERE " +
+                    "(SUBSTRING_INDEX(LOWER(name), ' ', 1) LIKE CONCAT(LOWER(?), '%') OR " +
+                    "LOWER(?) LIKE CONCAT(SUBSTRING_INDEX(LOWER(name), ' ', 1), '%'))";
         } else {
-            query = "SELECT name FROM customers WHERE name ILIKE ? AND customer_id != ?";
+            query = "SELECT name FROM customers WHERE " +
+                    "(SUBSTRING_INDEX(LOWER(name), ' ', 1) LIKE CONCAT(LOWER(?), '%') OR " +
+                    "LOWER(?) LIKE CONCAT(SUBSTRING_INDEX(LOWER(name), ' ', 1), '%')) AND customer_id != ?";
         }
+
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setString(1, "%" + nameToCheck + "%");
+
+            pstmt.setString(1, firstName); // Match existing names starting with new first name
+            pstmt.setString(2, firstName); // Match new name starting with existing first name
+
             if (excludeCustomerId != null) {
-                pstmt.setInt(2, excludeCustomerId);
+                pstmt.setInt(3, excludeCustomerId);
             }
+
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 similarNames.add(rs.getString("name"));
             }
         }
+
         return similarNames;
     }
 

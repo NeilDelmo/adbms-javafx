@@ -101,6 +101,16 @@ public class EquipmentDialogController implements Initializable {
             return;
         }
 
+        // Prevent invalid status change: Rented → Available
+        if (equipment != null) {
+            String originalStatus = equipment.getStatus();
+            String newStatus = statusComboBox.getValue();
+            if (Equipment.STATUS_RENTED.equals(originalStatus) && Equipment.STATUS_AVAILABLE.equals(newStatus)) {
+                showAlert("Invalid Status Change", "Cannot set equipment to Available while it is rented.");
+                return;
+            }
+        }
+
         // Proceed with database operations if all validations pass
         String query;
         if (equipment == null) {
@@ -109,7 +119,8 @@ public class EquipmentDialogController implements Initializable {
             query = "UPDATE equipment SET name = ?, description = ?, rental_price = ?, overdue_penalty = ?, status = ?, updated_by = ? WHERE equipment_id = ?";
         }
 
-        try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
             if (equipment == null) {
                 // Insert new equipment
@@ -126,7 +137,7 @@ public class EquipmentDialogController implements Initializable {
                 statement.setDouble(3, rentalPrice);
                 statement.setDouble(4, overduePenalty);
                 statement.setString(5, status);
-                statement.setInt(6,currentUserId);
+                statement.setInt(6, currentUserId);
                 statement.setInt(7, equipment.getEquipmentId());
             }
 
@@ -134,16 +145,16 @@ public class EquipmentDialogController implements Initializable {
 
             if (affectedRows == 0) {
                 showAlert("Database Error", "Failed to save equipment information.");
+            } else {
+                // Close the dialog only on success
+                Stage stage = (Stage) saveButton.getScene().getWindow();
+                stage.close();
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
             showAlert("Database Error", "An error occurred while saving to the database: " + e.getMessage());
         }
-
-        // Close the dialog
-        Stage stage = (Stage) saveButton.getScene().getWindow();
-        stage.close();
     }
 
     private void showAlert(String title, String message) {
@@ -163,7 +174,7 @@ public class EquipmentDialogController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        statusComboBox.getItems().addAll("Available", "Rented");
+        statusComboBox.getItems().addAll(Equipment.STATUS_AVAILABLE, Equipment.STATUS_RENTED);
     }
 
 }

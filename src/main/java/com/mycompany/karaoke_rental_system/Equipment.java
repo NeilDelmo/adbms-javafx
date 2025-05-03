@@ -7,6 +7,8 @@ import javafx.beans.NamedArg;
 import javafx.beans.property.*;
 
 public class Equipment {
+    public static final String STATUS_AVAILABLE = "Available";
+    public static final String STATUS_RENTED = "Rented";
      private  final IntegerProperty equipmentId =  new SimpleIntegerProperty();
     private final StringProperty name =  new SimpleStringProperty();
     private final StringProperty description = new SimpleStringProperty();

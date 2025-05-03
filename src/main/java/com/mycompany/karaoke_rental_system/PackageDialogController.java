@@ -95,16 +95,41 @@ public class PackageDialogController {
 
     @FXML
     private void handleAddEquipment() {
-        Equipment selectedEquipmentItem = equipmentTable.getSelectionModel().getSelectedItem();
-        if (selectedEquipmentItem != null) {
-            selectedEquipment.add(selectedEquipmentItem);
-            equipmentList.remove(selectedEquipmentItem);
-            updateBundlePrice();
+        // Prevent modification if package contains rented equipment
+        if (isEditMode && isAnyEquipmentRented(selectedEquipment)) {
+            showAlert("Locked Package", "Cannot add equipment to a package containing rented items.");
+            return;
         }
+
+        Equipment selectedEquipmentItem = equipmentTable.getSelectionModel().getSelectedItem();
+        if (selectedEquipmentItem == null) return;
+
+        // Prevent adding rented equipment
+        if (Equipment.STATUS_RENTED.equals(selectedEquipmentItem.getStatus())) {
+            showAlert("Rented Equipment", "Cannot add rented equipment to a package.");
+            return;
+        }
+
+        // Prevent duplicate equipment
+        if (isEquipmentAlreadyAdded(selectedEquipmentItem)) {
+            showAlert("Duplicate Equipment", "This equipment is already in the package.");
+            return;
+        }
+
+        // Add equipment to selected list and update bundle price
+        selectedEquipment.add(selectedEquipmentItem);
+        equipmentList.remove(selectedEquipmentItem);
+        updateBundlePrice();
     }
 
     @FXML
     private void handleRemoveEquipment() {
+        // Prevent modification if package contains rented equipment
+        if (isEditMode && isAnyEquipmentRented(selectedEquipment)) {
+            showAlert("Locked Package", "Cannot remove equipment from a package containing rented items.");
+            return;
+        }
+
         Equipment selectedEquipmentItem = selectedEquipmentList.getSelectionModel().getSelectedItem();
         if (selectedEquipmentItem != null) {
             selectedEquipment.remove(selectedEquipmentItem);
@@ -281,6 +306,13 @@ public class PackageDialogController {
                 .mapToDouble(Equipment::getRentalPrice)
                 .sum();
         bundlePriceField.setText(String.format("%.2f", total)); // Update the text field
+    }
+    private boolean isAnyEquipmentRented(ObservableList<Equipment> list) {
+        return list.stream()
+                .anyMatch(e -> Equipment.STATUS_RENTED.equals(e.getStatus()));
+    }
+    private boolean isEquipmentAlreadyAdded(Equipment equipment) {
+        return selectedEquipment.contains(equipment);
     }
     private void showAlert(String title, String message) {
         javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);

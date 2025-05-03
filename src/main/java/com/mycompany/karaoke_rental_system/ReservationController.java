@@ -27,7 +27,7 @@ public class ReservationController implements Initializable {
 
     public Button record_btn;
     @FXML
-    private ComboBox <String> filter_reservation_cmb;
+    private ComboBox<String> filter_reservation_cmb;
 
     @FXML
     private TableColumn<Reservation, String> statusCol;
@@ -77,13 +77,13 @@ public class ReservationController implements Initializable {
     private ObservableList<Package> packageList;
 
     private Package selectedPackage;
-    private ObservableList<Reservation>masterReservationList;
+    private ObservableList<Reservation> masterReservationList;
 
     private Customer selectedCustomer;
 
-    public void setSelectedCustomer(Customer customer){
+    public void setSelectedCustomer(Customer customer) {
         this.selectedCustomer = customer;
-        if(customer != null && customer_cmb != null){
+        if (customer != null && customer_cmb != null) {
             customer_cmb.getSelectionModel().select(customer);
         }
     }
@@ -109,10 +109,10 @@ public class ReservationController implements Initializable {
 
         checkAvailability();
 
-        filter_reservation_cmb.getItems().addAll("All","Pending","Confirmed","Completed","Cancelled","Overdue");
+        filter_reservation_cmb.getItems().addAll("All", "Pending", "Confirmed", "Completed", "Cancelled", "Overdue");
         filter_reservation_cmb.getSelectionModel().selectFirst();
 
-        filter_reservation_cmb.valueProperty().addListener((obs,oldVal,newVal)-> filterReservations(newVal));
+        filter_reservation_cmb.valueProperty().addListener((obs, oldVal, newVal) -> filterReservations(newVal));
 
     }
 
@@ -143,7 +143,7 @@ public class ReservationController implements Initializable {
                 -> new SimpleStringProperty(cellData.getValue().getPkg().getName()));
         // Reservation Status
         statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
-        ObservableList<String> statusOptions = FXCollections.observableArrayList("Pending","Confirmed", "Completed", "Cancelled", "Overdue");
+        ObservableList<String> statusOptions = FXCollections.observableArrayList("Pending", "Confirmed", "Completed", "Cancelled", "Overdue");
         statusCol.setCellFactory(ComboBoxTableCell.forTableColumn(statusOptions));
         statusCol.setOnEditCommit(event -> {
             Reservation reservation = event.getRowValue();
@@ -154,18 +154,34 @@ public class ReservationController implements Initializable {
                 return;
             }
 
-            // Update the reservation status in the database
-            updateReservationStatus(reservation.getReservationId(), newStatus);
+            // ✅ Check if current status is restricted
+            String currentStatus = reservation.getStatus();
+            if (isRestrictedStatus(currentStatus)) {
+                showError("Status Locked",
+                        "Cannot change status of a reservation that is " + currentStatus + ".");
+                return;
+            }
 
-            // Update the reservation object
+            // Proceed with valid status update
+            updateReservationStatus(reservation.getReservationId(), newStatus);
             reservation.setStatus(newStatus);
 
-            // Trigger any related actions (e.g., updating equipment status)
+            // Handle equipment status if completed
             if ("Completed".equals(newStatus)) {
                 updateEquipmentStatus(reservation);
             }
         });
     }
+
+    // Helper method to check restricted statuses
+    private boolean isRestrictedStatus(String status) {
+        return status != null && (
+                status.equals("Overdue") ||
+                        status.equals("Completed") ||
+                        status.equals("Cancelled")
+        );
+    }
+
     private void updateReservationStatus(int reservationId, String newStatus) {
         int currentUser = Model.getInstance().getcurrentuserid();
         if (currentUser <= 0) currentUser = 1;
@@ -183,6 +199,7 @@ public class ReservationController implements Initializable {
             showError("Database Error", "Failed to update reservation status: " + e.getMessage());
         }
     }
+
     private void updateEquipmentStatus(int equipmentId, String newStatus) throws SQLException {
         int currentUser = Model.getInstance().getcurrentuserid();
         if (currentUser <= 0) currentUser = 1;
@@ -196,6 +213,7 @@ public class ReservationController implements Initializable {
             pstmt.executeUpdate();
         }
     }
+
     private void updateEquipmentStatus(Reservation reservation) {
         try {
             int reservationId = reservation.getReservationId();
@@ -371,6 +389,58 @@ public class ReservationController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
             showError("Reservation Failed", "Error creating reservation: " + e.getMessage());
+        }
+    }
+    @FXML
+    private void handleCancelReservation() {
+        Reservation selectedReservation = reservation_table.getSelectionModel().getSelectedItem();
+        if (selectedReservation == null) {
+            showError("No Selection", "Please select a reservation to cancel.");
+            return;
+        }
+
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            String sql = "{call sp_cancel_reservation(?, ?)}";
+            try (CallableStatement stmt = conn.prepareCall(sql)) {
+                stmt.setInt(1, selectedReservation.getReservationId());
+                stmt.setInt(2, Model.getInstance().getcurrentuserid());
+                stmt.execute();
+            }
+            loadReservations();  // Reload reservations
+            checkAvailability(); // Refresh package availability
+            showSuccess("Cancellation Successful", "Reservation ID: " + selectedReservation.getReservationId() + " has been cancelled.");
+        } catch (SQLException e) {
+            showError("Cancellation Failed", "Error cancelling reservation: " + e.getMessage());
+        }
+    }
+    @FXML
+    private void handleConfirmReservation() {
+        Reservation selectedReservation = reservation_table.getSelectionModel().getSelectedItem();
+        if (selectedReservation == null) {
+            showError("No Selection", "Please select a reservation to confirm.");
+            return;
+        }
+
+        // ✅ Check if current status is restricted
+        if (isRestrictedStatus(selectedReservation.getStatus())) {
+            showError("Action Not Allowed",
+                    "Cannot confirm a reservation that is " + selectedReservation.getStatus() + ".");
+            return;
+        }
+
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            String sql = "{call sp_confirm_reservation(?, ?)}";
+            try (CallableStatement stmt = conn.prepareCall(sql)) {
+                stmt.setInt(1, selectedReservation.getReservationId());
+                stmt.setInt(2, Model.getInstance().getcurrentuserid());
+                stmt.execute();
+            }
+            loadReservations();
+            checkAvailability();
+            showSuccess("Confirmation Successful",
+                    "Reservation ID: " + selectedReservation.getReservationId() + " has been confirmed.");
+        } catch (SQLException e) {
+            showError("Confirmation Failed", "Error confirming reservation: " + e.getMessage());
         }
     }
 
