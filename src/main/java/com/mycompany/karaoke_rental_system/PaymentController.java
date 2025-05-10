@@ -3,7 +3,6 @@ package com.mycompany.karaoke_rental_system;
 import com.mycompany.karaoke_rental_system.Model.Model;
 import com.mycompany.karaoke_rental_system.data.DatabaseConnection;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
@@ -13,14 +12,13 @@ import javafx.scene.control.*;
 
 import java.net.URL;
 import java.sql.*;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class PaymentController implements Initializable {
     public PieChart methodPiechart;
     // FXML Injections
-    @FXML private ComboBox<ReservationWrapper> reservationCombo;
+    @FXML private ComboBox<RentalWrapper> rentalCombo;
     @FXML private TextField amountField;
     @FXML private ComboBox<String> methodCombo;
     @FXML private Label balanceLabel;
@@ -43,7 +41,7 @@ public class PaymentController implements Initializable {
     @FXML private TableColumn<PaymentHistory, String> methodCol;
     @FXML private TableColumn<PaymentHistory, String> recordedByCol;
 
-    private ObservableList<ReservationWrapper> unpaidReservations = FXCollections.observableArrayList();
+    private ObservableList<RentalWrapper> unpaidRentals = FXCollections.observableArrayList();
     private ObservableList<PaymentSummary> paymentSummaries = FXCollections.observableArrayList();
     private ObservableList<PaymentHistory> paymentHistories = FXCollections.observableArrayList();
 
@@ -66,9 +64,9 @@ public class PaymentController implements Initializable {
     }
 
     private void setupReservationCombo() {
-        reservationCombo.setCellFactory(param -> new ListCell<ReservationWrapper>() {
+        rentalCombo.setCellFactory(param -> new ListCell<RentalWrapper>() {
             @Override
-            protected void updateItem(ReservationWrapper item, boolean empty) {
+            protected void updateItem(RentalWrapper item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
@@ -77,21 +75,21 @@ public class PaymentController implements Initializable {
                 }
             }
         });
-        reservationCombo.setButtonCell(new ListCell<ReservationWrapper>() {
+        rentalCombo.setButtonCell(new ListCell<RentalWrapper>() {
             @Override
-            protected void updateItem(ReservationWrapper item, boolean empty) {
+            protected void updateItem(RentalWrapper item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
-                    setText("Select Reservation");
+                    setText("Select Rental");
                 } else {
                     setText(item.toString());
                 }
             }
         });
 
-        reservationCombo.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+        rentalCombo.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
-                Reservation reservation = newVal.getReservation();
+                Rental rental = newVal.getRental();
 
                 // Unbind before rebinding to avoid errors
                 balanceLabel.textProperty().unbind();
@@ -99,17 +97,17 @@ public class PaymentController implements Initializable {
 
                 // Rebind to selected reservation
                 balanceLabel.textProperty().bind(Bindings.createStringBinding(
-                        () -> String.format("Balance: ₱%.2f", reservation.getTotalAmount() - reservation.getPaidAmount()),
-                        reservation.paidAmountProperty()
+                        () -> String.format("Balance: ₱%.2f", rental.getTotalAmount() - rental.getPaidAmount()),
+                        rental.paidAmountProperty()
                 ));
 
                 paymentProgress.progressProperty().bind(Bindings.when(
-                        reservation.totalAmountProperty().greaterThan(0)
+                        rental.totalAmountProperty().greaterThan(0)
                 ).then(
-                        Bindings.divide(reservation.paidAmountProperty(), reservation.totalAmountProperty())
+                        Bindings.divide(rental.paidAmountProperty(), rental.totalAmountProperty())
                 ).otherwise(0.0));
 
-                updatePaymentInfo(reservation);
+                updatePaymentInfo(rental);
             } else {
                 balanceLabel.textProperty().set("Balance: ₱0.00");
                 paymentProgress.setProgress(0);
@@ -118,7 +116,7 @@ public class PaymentController implements Initializable {
     }
 
     private void setupSummaryTable() {
-        reservationIdCol.setCellValueFactory(cellData -> cellData.getValue().reservationIdProperty().asObject());
+        reservationIdCol.setCellValueFactory(cellData -> cellData.getValue().rentalIdProperty().asObject());
         totalAmountCol.setCellValueFactory(cellData -> cellData.getValue().totalAmountProperty().asObject());
         amountPaidCol.setCellValueFactory(cellData -> cellData.getValue().amountPaidProperty().asObject());
 
@@ -135,14 +133,14 @@ public class PaymentController implements Initializable {
         paymentSummaryTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 // Get reservation ID from the selected PaymentSummary
-                int selectedReservationId = newVal.getReservationId();
+                int selectedReservationId = newVal.getRentalId();
 
                 // Try to find this reservation in the combo box items first
                 boolean foundInCombo = false;
-                for (ReservationWrapper wrapper : unpaidReservations) {
-                    if (wrapper.getReservation().getReservationId() == selectedReservationId) {
+                for (RentalWrapper wrapper : unpaidRentals) {
+                    if (wrapper.getRental().getRentalId()== selectedReservationId) {
                         // Select it in the combo box to reuse existing binding logic
-                        reservationCombo.getSelectionModel().select(wrapper);
+                        rentalCombo.getSelectionModel().select(wrapper);
                         foundInCombo = true;
                         break;
                     }
@@ -172,7 +170,7 @@ public class PaymentController implements Initializable {
     private void loadPaymentHistoryForReservation(int reservationId) {
         paymentHistories.clear();
         try (Connection conn = DatabaseConnection.getConnection()) {
-            String query = "SELECT * FROM payments WHERE reservation_id = ?";
+            String query = "SELECT * FROM payments WHERE rental_id = ?";
             PreparedStatement pst = conn.prepareStatement(query);
             pst.setInt(1, reservationId);
             ResultSet rs = pst.executeQuery();
@@ -200,45 +198,45 @@ public class PaymentController implements Initializable {
     }
 
 
-    public void setReservation(Reservation reservation) {
-        ReservationWrapper reservationWrapper = new ReservationWrapper(reservation);
-        unpaidReservations.add(reservationWrapper);
-        reservationCombo.getSelectionModel().select(reservationWrapper);
+    public void setReservation(Rental rental) {
+        RentalWrapper rentalWrapper = new RentalWrapper(rental);
+        unpaidRentals.add(rentalWrapper);
+        rentalCombo.getSelectionModel().select(rentalWrapper);
 
         // Bind balance label
         balanceLabel.textProperty().bind(Bindings.createStringBinding(
                 () -> String.format("Balance: ₱%.2f",
-                        reservation.getTotalAmount() - reservation.getPaidAmount()),
-                reservation.paidAmountProperty()
+                        rental.getTotalAmount() - rental.getPaidAmount()),
+                rental.paidAmountProperty()
         ));
 
         // Bind progress bar
         paymentProgress.progressProperty().bind(Bindings.divide(
-                reservation.paidAmountProperty(),
-                reservation.totalAmountProperty()
+                rental.paidAmountProperty(),
+                rental.totalAmountProperty()
         ));
     }
     private void loadUnpaidReservations() {
         try (Connection conn = DatabaseConnection.getConnection()) {
-            String query = "SELECT * FROM reservation_summary WHERE payment_status != 'Paid'";
+            String query = "SELECT * FROM rental_summary WHERE payment_status != 'Paid'";
             PreparedStatement pst = conn.prepareStatement(query);
             ResultSet rs = pst.executeQuery();
-            unpaidReservations.clear();
+            unpaidRentals.clear();
             while (rs.next()) {
-                Reservation reservation = new Reservation();
-                reservation.reservationIdProperty().set(rs.getInt("reservation_id"));
-                reservation.customerIdProperty().set(rs.getInt("customer_id"));
-                reservation.startDateProperty().set(rs.getDate("start_datetime").toLocalDate());
-                reservation.endDateProperty().set(rs.getDate("end_datetime").toLocalDate());
-                reservation.totalAmountProperty().set(rs.getDouble("total_amount"));
-                reservation.paidAmountProperty().set(rs.getDouble("paid_amount"));
-                reservation.paymentStatusProperty().set(rs.getString("payment_status"));
+                Rental rental = new Rental();
+                rental.rentalIdProperty().set(rs.getInt("rental_id"));
+                rental.customerIdProperty().set(rs.getInt("customer_id"));
+                rental.startDateProperty().set(rs.getDate("start_datetime").toLocalDate());
+                rental.endDateProperty().set(rs.getDate("end_datetime").toLocalDate());
+                rental.totalAmountProperty().set(rs.getDouble("total_amount"));
+                rental.paidAmountProperty().set(rs.getDouble("paid_amount"));
+                rental.paymentStatusProperty().set(rs.getString("payment_status"));
                 Customer customer = new Customer();
                 customer.setName(rs.getString("customer_name"));
-                reservation.customerProperty().set(customer);
-                unpaidReservations.add(new ReservationWrapper(reservation));
+                rental.customerProperty().set(customer);
+                unpaidRentals.add(new RentalWrapper(rental));
             }
-            reservationCombo.setItems(unpaidReservations);
+            rentalCombo.setItems(unpaidRentals);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -246,23 +244,23 @@ public class PaymentController implements Initializable {
 
     private void loadAllReservationsForTable() {
         try (Connection conn = DatabaseConnection.getConnection()) {
-            String query = "SELECT * FROM reservation_summary";
+            String query = "SELECT * FROM rental_summary";
             PreparedStatement pst = conn.prepareStatement(query);
             ResultSet rs = pst.executeQuery();
             paymentSummaries.clear();
             while (rs.next()) {
-                Reservation reservation = new Reservation();
-                reservation.reservationIdProperty().set(rs.getInt("reservation_id"));
-                reservation.customerIdProperty().set(rs.getInt("customer_id"));
-                reservation.startDateProperty().set(rs.getDate("start_datetime").toLocalDate());
-                reservation.endDateProperty().set(rs.getDate("end_datetime").toLocalDate());
-                reservation.totalAmountProperty().set(rs.getDouble("total_amount"));
-                reservation.paidAmountProperty().set(rs.getDouble("paid_amount"));
-                reservation.paymentStatusProperty().set(rs.getString("payment_status"));
+                Rental rental = new Rental();
+                rental.rentalIdProperty().set(rs.getInt("rental_id"));
+                rental.customerIdProperty().set(rs.getInt("customer_id"));
+                rental.startDateProperty().set(rs.getDate("start_datetime").toLocalDate());
+                rental.endDateProperty().set(rs.getDate("end_datetime").toLocalDate());
+                rental.totalAmountProperty().set(rs.getDouble("total_amount"));
+                rental.paidAmountProperty().set(rs.getDouble("paid_amount"));
+                rental.paymentStatusProperty().set(rs.getString("payment_status"));
                 Customer customer = new Customer();
                 customer.setName(rs.getString("customer_name"));
-                reservation.customerProperty().set(customer);
-                paymentSummaries.add(new PaymentSummary(reservation));
+                rental.customerProperty().set(customer);
+                paymentSummaries.add(new PaymentSummary(rental));
             }
             paymentSummaryTable.setItems(paymentSummaries);
         } catch (SQLException e) {
@@ -270,12 +268,12 @@ public class PaymentController implements Initializable {
         }
     }
 
-    private void updatePaymentInfo(Reservation reservation) {
+    private void updatePaymentInfo(Rental rental) {
         // Update summary table
         for (PaymentSummary summary : paymentSummaries) {
-            if (summary.getReservationId() == reservation.getReservationId()) {
-                summary.setAmountPaid(reservation.getPaidAmount());
-                summary.setStatus(reservation.getPaymentStatus());
+            if (summary.getRentalId() == rental.getRentalId()) {
+                summary.setAmountPaid(rental.getPaidAmount());
+                summary.setStatus(rental.getPaymentStatus());
                 break;
             }
         }
@@ -283,9 +281,9 @@ public class PaymentController implements Initializable {
         // Update history table
         paymentHistories.clear();
         try (Connection conn = DatabaseConnection.getConnection()) {
-            String query = "SELECT * FROM payments WHERE reservation_id = ?";
+            String query = "SELECT * FROM payments WHERE rental_id = ?";
             PreparedStatement pst = conn.prepareStatement(query);
-            pst.setInt(1, reservation.getReservationId());
+            pst.setInt(1, rental.getRentalId());
             ResultSet rs = pst.executeQuery();
 
             while (rs.next()) {
@@ -338,9 +336,9 @@ public class PaymentController implements Initializable {
     }
     @FXML
     private void submitPayment() {
-        ReservationWrapper selected = reservationCombo.getValue();
+        RentalWrapper selected = rentalCombo.getValue();
         if (selected == null) {
-            showAlert("No Selection", "Please select a reservation first.");
+            showAlert("No Selection", "Please select a rentals first.");
             return;
         }
 
@@ -364,9 +362,9 @@ public class PaymentController implements Initializable {
             }
 
             // Get reservation and calculate balance
-            Reservation reservation = selected.getReservation();
-            double totalDue = reservation.getTotalAmount();
-            double currentPaid = reservation.getPaidAmount();
+            Rental rental = selected.getRental();
+            double totalDue = rental.getTotalAmount();
+            double currentPaid = rental.getPaidAmount();
             double balance = totalDue - currentPaid;
 
             // Handle overpayment
@@ -389,19 +387,19 @@ public class PaymentController implements Initializable {
             }
             // Prevent zero division in progress bar
             else if (totalDue <= 0) {
-                showAlert("Invalid Reservation", "This reservation has no valid amount to pay.");
+                showAlert("Invalid Rental", "This rental has no valid amount to pay.");
                 return;
             }
 
             // Save payment to database
-            int reservationId = reservation.getReservationId();
+            int reservationId = rental.getRentalId();
             savePaymentToDatabase(reservationId, amount, paymentMethod);
 
             // Update local reservation model
-            reservation.setPaidAmount(currentPaid + amount);
+            rental.setPaidAmount(currentPaid + amount);
 
             // Update UI
-            updatePaymentInfo(reservation);
+            updatePaymentInfo(rental);
             amountField.clear();
             methodCombo.getSelectionModel().selectFirst();
 
@@ -445,9 +443,9 @@ public class PaymentController implements Initializable {
     }
     private double getCurrentTotalDue(int reservationId) throws SQLException {
         String query = "SELECT COALESCE(SUM(ri.price_per_unit), 0) + COALESCE(r.overdue_charges, 0) AS total_due " +
-                "FROM reservation_items ri " +
-                "LEFT JOIN reservations r ON ri.reservation_id = r.reservation_id " +
-                "WHERE ri.reservation_id = ?";
+                "FROM rental_items ri " +
+                "LEFT JOIN rentals r ON ri.rental_id = r.rental_id " +
+                "WHERE ri.rental_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pst = conn.prepareStatement(query)) {
             pst.setInt(1, reservationId);

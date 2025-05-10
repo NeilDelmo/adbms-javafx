@@ -6,24 +6,24 @@ import javafx.beans.property.SimpleObjectProperty;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class ReservationWrapper {
-        private final ObjectProperty<Reservation> reservation = new SimpleObjectProperty<>();
+public class RentalWrapper {
+        private final ObjectProperty<Rental> rental = new SimpleObjectProperty<>();
 
-        public ReservationWrapper(Reservation reservation) {
-            this.reservation.set(reservation);
+        public RentalWrapper(Rental reservation) {
+            this.rental.set(reservation);
         }
 
-        public Reservation getReservation() {
-            return reservation.get();
+        public Rental getRental() {
+            return rental.get();
         }
 
     @Override
     public String toString() {
-        if (reservation.get() == null) {
+        if (rental.get() == null) {
             return "Unknown Reservation";
         }
 
-        Reservation res = reservation.get();
+        Rental res = rental.get();
 
         String customerName = (res.customerProperty().get() != null)
                 ? res.customerProperty().get().getName()

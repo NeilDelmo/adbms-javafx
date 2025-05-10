@@ -27,7 +27,7 @@
             <String fx:value="chart-plot-background" />
             </styleClass>
         </LineChart>
-        <AnchorPane layoutX="340.0" layoutY="181.0" prefHeight="86.0" prefWidth="244.0" stylesheets="@dashboard.css">
+        <AnchorPane layoutX="340.0" layoutY="170.0" prefHeight="86.0" prefWidth="244.0" stylesheets="@dashboard.css">
             <children>
                 <Label fx:id="totalRentsLabel" layoutX="111.0" layoutY="34.0" styleClass="total-rents-label" stylesheets="@dashboard.css" text="Total rents" />
                 <Text layoutX="14.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="total-rents-text" text="Total Rents" />
@@ -38,7 +38,7 @@
          </styleClass>
         </AnchorPane>
         <Text fx:id="username_lbl" layoutX="116.0" layoutY="67.09921875" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="welcome-label" text="Puge" wrappingWidth="68.79999999999995" AnchorPane.topAnchor="10.0" />
-        <AnchorPane layoutX="303.0" layoutY="90.0" prefHeight="82.0" prefWidth="294.0" stylesheets="@dashboard.css">
+        <AnchorPane layoutX="305.0" layoutY="76.0" prefHeight="82.0" prefWidth="294.0" stylesheets="@dashboard.css">
             <children>
                 <Label fx:id="totalRevenueLabel" layoutX="127.0" layoutY="32.0" styleClass="total-rents-label" stylesheets="@dashboard.css" text="Total Revenue" />
                 <Text layoutX="57.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="total-rents-text" text="Rental" />
@@ -48,7 +48,7 @@
             <String fx:value="anchor-pane-content" />
          </styleClass>
         </AnchorPane>
-        <AnchorPane layoutX="37.0" layoutY="183.0" prefHeight="82.0" prefWidth="294.0" stylesheets="@dashboard.css">
+        <AnchorPane layoutX="37.0" layoutY="172.0" prefHeight="82.0" prefWidth="294.0" stylesheets="@dashboard.css">
             <children>
                 <Label fx:id="confirmedLabel" layoutX="171.0" layoutY="29.0" styleClass="total-rents-label" stylesheets="@dashboard.css" text="Confirmed" />
                 <Text layoutX="52.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="total-rents-text" text="Confirmed" />
@@ -71,7 +71,7 @@
             <String fx:value="line-chart" />
          </styleClass>
         </BarChart>
-      <AnchorPane layoutX="35.0" layoutY="89.0" prefHeight="86.0" prefWidth="214.0" stylesheets="@dashboard.css">
+      <AnchorPane layoutX="56.0" layoutY="75.0" prefHeight="86.0" prefWidth="214.0" stylesheets="@dashboard.css">
          <children>
             <Label fx:id="topCustomerLabel" layoutX="134.0" layoutY="33.0" styleClass="total-rents-label" stylesheets="@dashboard.css" text="Customer" />
             <Text layoutX="14.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="total-rents-text" text="Top Customer" />
@@ -94,7 +94,7 @@
             <String fx:value="chart-line-symbol" />
          </styleClass>
       </AreaChart>
-      <AnchorPane layoutX="609.0" layoutY="89.0" prefHeight="86.0" prefWidth="147.0" stylesheets="@dashboard.css">
+      <AnchorPane layoutX="612.0" layoutY="75.0" prefHeight="86.0" prefWidth="147.0" stylesheets="@dashboard.css">
          <children>
             <Label fx:id="overDueLabel" layoutX="120.0" layoutY="34.0" styleClass="total-rents-label" stylesheets="@dashboard.css" text="Overdue" />
             <Text layoutX="14.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="total-rents-text" text="OverDue" />
@@ -104,7 +104,7 @@
             <String fx:value="anchor-pane-content" />
          </styleClass>
       </AnchorPane>
-      <AnchorPane layoutX="592.0" layoutY="181.0" prefHeight="86.0" prefWidth="147.0" stylesheets="@dashboard.css">
+      <AnchorPane layoutX="592.0" layoutY="170.0" prefHeight="86.0" prefWidth="147.0" stylesheets="@dashboard.css">
          <children>
             <Label fx:id="cancelledLabel" layoutX="128.0" layoutY="33.0" styleClass="total-rents-label" stylesheets="@dashboard.css" text="Cancelled" />
             <Text layoutX="14.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="total-rents-text" text="Cancelled" />

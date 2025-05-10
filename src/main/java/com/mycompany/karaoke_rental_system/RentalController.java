@@ -3,7 +3,6 @@ package com.mycompany.karaoke_rental_system;
 import com.mycompany.karaoke_rental_system.Model.Model;
 import java.net.URL;
 import java.sql.Connection;
-import java.time.temporal.ChronoUnit;
 import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
 
@@ -23,26 +22,26 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.cell.ComboBoxTableCell;
 
-public class ReservationController implements Initializable {
+public class RentalController implements Initializable {
 
     public Button record_btn;
     @FXML
-    private ComboBox<String> filter_reservation_cmb;
+    private ComboBox<String> filter_rental_cmb;
 
     @FXML
-    private TableColumn<Reservation, String> statusCol;
+    private TableColumn<Rental, String> statusCol;
 
     @FXML
     private TableColumn<Package, Double> bundlePriceCol;
 
     @FXML
-    private TableColumn<Reservation, String> customerCol;
+    private TableColumn<Rental, String> customerCol;
 
     @FXML
     private ComboBox<Customer> customer_cmb;
 
     @FXML
-    private TableColumn<Reservation, String> addressCol;
+    private TableColumn<Rental, String> addressCol;
 
     @FXML
     private DatePicker end_date;
@@ -60,10 +59,10 @@ public class ReservationController implements Initializable {
     private TableView<Package> package_table;
 
     @FXML
-    private TableColumn<Reservation, String> periodCol;
+    private TableColumn<Rental, String> periodCol;
 
     @FXML
-    private TableView<Reservation> reservation_table;
+    private TableView<Rental> rental_table;
 
     @FXML
     private DatePicker start_date;
@@ -72,12 +71,12 @@ public class ReservationController implements Initializable {
     private ComboBox<String> status_cmb;
 
     @FXML
-    private TableColumn<Reservation, String> packageCol;
+    private TableColumn<Rental, String> packageCol;
 
     private ObservableList<Package> packageList;
 
     private Package selectedPackage;
-    private ObservableList<Reservation> masterReservationList;
+    private ObservableList<Rental> masterRentalList;
 
     private Customer selectedCustomer;
 
@@ -95,7 +94,7 @@ public class ReservationController implements Initializable {
         setupDateListener(); // Add this
         setupPackageSelection();
         setupListView();
-        reservation_table.setEditable(true);
+        rental_table.setEditable(true);
         TableColumnsForReservation();
         loadReservations();
 
@@ -109,10 +108,10 @@ public class ReservationController implements Initializable {
 
         checkAvailability();
 
-        filter_reservation_cmb.getItems().addAll("All", "Pending", "Confirmed", "Completed", "Cancelled", "Overdue");
-        filter_reservation_cmb.getSelectionModel().selectFirst();
+        filter_rental_cmb.getItems().addAll("All", "Pending", "Confirmed", "Completed", "Cancelled", "Overdue");
+        filter_rental_cmb.getSelectionModel().selectFirst();
 
-        filter_reservation_cmb.valueProperty().addListener((obs, oldVal, newVal) -> filterReservations(newVal));
+        filter_rental_cmb.valueProperty().addListener((obs, oldVal, newVal) -> filterReservations(newVal));
 
     }
 
@@ -131,7 +130,7 @@ public class ReservationController implements Initializable {
                 -> new SimpleStringProperty(cellData.getValue().getCustomer().getName()));
         // Period (Start Date - End Date)
         periodCol.setCellValueFactory(cellData -> {
-            Reservation res = cellData.getValue();
+            Rental res = cellData.getValue();
             String period = res.getStartDate().toString() + " - " + res.getEndDate().toString();
             return new SimpleStringProperty(period);
         });
@@ -146,11 +145,11 @@ public class ReservationController implements Initializable {
         ObservableList<String> statusOptions = FXCollections.observableArrayList("Pending", "Confirmed", "Completed", "Cancelled", "Overdue");
         statusCol.setCellFactory(ComboBoxTableCell.forTableColumn(statusOptions));
         statusCol.setOnEditCommit(event -> {
-            Reservation reservation = event.getRowValue();
+            Rental reservation = event.getRowValue();
             String newStatus = event.getNewValue();
 
             if (reservation == null || newStatus == null || newStatus.isEmpty()) {
-                showError("Invalid Selection", "Unable to update reservation.");
+                showError("Invalid Selection", "Unable to update rental.");
                 return;
             }
 
@@ -158,12 +157,12 @@ public class ReservationController implements Initializable {
             String currentStatus = reservation.getStatus();
             if (isRestrictedStatus(currentStatus)) {
                 showError("Status Locked",
-                        "Cannot change status of a reservation that is " + currentStatus + ".");
+                        "Cannot change status of a rental that is " + currentStatus + ".");
                 return;
             }
 
             // Proceed with valid status update
-            updateReservationStatus(reservation.getReservationId(), newStatus);
+            updateReservationStatus(reservation.getRentalId(), newStatus);
             reservation.setStatus(newStatus);
 
             // Handle equipment status if completed
@@ -189,7 +188,7 @@ public class ReservationController implements Initializable {
         if (currentUser <= 0) currentUser = 1;
 
         try (Connection conn = DatabaseConnection.getConnection()) {
-            String sql = "UPDATE reservations SET status = ?, updated_by = ? WHERE reservation_id = ?";
+            String sql = "UPDATE rental SET status = ?, updated_by = ? WHERE rental_id = ?";
             try (PreparedStatement pst = conn.prepareStatement(sql)) {
                 pst.setString(1, newStatus);
                 pst.setInt(2, currentUser);
@@ -198,7 +197,7 @@ public class ReservationController implements Initializable {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            showError("Database Error", "Failed to update reservation status: " + e.getMessage());
+            showError("Database Error", "Failed to update rental status: " + e.getMessage());
         }
     }
 
@@ -216,12 +215,12 @@ public class ReservationController implements Initializable {
         }
     }
 
-    private void updateEquipmentStatus(Reservation reservation) {
+    private void updateEquipmentStatus(Rental reservation) {
         try {
-            int reservationId = reservation.getReservationId();
+            int reservationId = reservation.getRentalId();
 
             // Query to get associated equipment IDs from reservation_items
-            String query = "SELECT equipment_id FROM reservation_items WHERE reservation_id = ?";
+            String query = "SELECT equipment_id FROM rental_items WHERE rental_id = ?";
             try (Connection conn = DatabaseConnection.getConnection();
                  PreparedStatement pstmt = conn.prepareStatement(query)) {
                 pstmt.setInt(1, reservationId);
@@ -354,17 +353,17 @@ public class ReservationController implements Initializable {
     }
 
     private void filterReservations(String status) {
-        ObservableList<Reservation> filteredReservations = FXCollections.observableArrayList();
+        ObservableList<Rental> filteredReservations = FXCollections.observableArrayList();
 
         // Iterate through the master list
-        for (Reservation reservation : masterReservationList) {
-            if ("All".equals(status) || reservation.getStatus().equals(status)) {
-                filteredReservations.add(reservation);
+        for (Rental rental : masterRentalList) {
+            if ("All".equals(status) || rental.getStatus().equals(status)) {
+                filteredReservations.add(rental);
             }
         }
 
         // Update the reservation table with the filtered list
-        reservation_table.setItems(filteredReservations);
+        rental_table.setItems(filteredReservations);
     }
 
     @FXML
@@ -383,7 +382,7 @@ public class ReservationController implements Initializable {
             addPackageToReservation(conn, reservationId);
 
             conn.commit();
-            showSuccess("Reservation Created", "Reservation ID: " + reservationId);
+            showSuccess("Rental Created", "Rental ID: " + reservationId);
             resetForm();
             ViewFactory vf = new ViewFactory();
             vf.clearViews();
@@ -391,64 +390,64 @@ public class ReservationController implements Initializable {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            showError("Reservation Failed", "Error creating reservation: " + e.getMessage());
+            showError("Rental Failed", "Error creating rental: " + e.getMessage());
         }
     }
     @FXML
     private void handleCancelReservation() {
-        Reservation selectedReservation = reservation_table.getSelectionModel().getSelectedItem();
-        if (selectedReservation == null) {
-            showError("No Selection", "Please select a reservation to cancel.");
+        Rental selectedRental = rental_table.getSelectionModel().getSelectedItem();
+        if (selectedRental == null) {
+            showError("No Selection", "Please select a rental to cancel.");
             return;
         }
 
         try (Connection conn = DatabaseConnection.getConnection()) {
-            String sql = "{call sp_cancel_reservation(?, ?)}";
+            String sql = "{call sp_cancel_rental(?, ?)}";
             try (CallableStatement stmt = conn.prepareCall(sql)) {
-                stmt.setInt(1, selectedReservation.getReservationId());
+                stmt.setInt(1, selectedRental.getRentalId());
                 stmt.setInt(2, Model.getInstance().getcurrentuserid());
                 stmt.execute();
             }
             loadReservations();  // Reload reservations
             checkAvailability(); // Refresh package availability
-            showSuccess("Cancellation Successful", "Reservation ID: " + selectedReservation.getReservationId() + " has been cancelled.");
+            showSuccess("Cancellation Successful", "Rental ID: " + selectedRental.getRentalId() + " has been cancelled.");
         } catch (SQLException e) {
-            showError("Cancellation Failed", "Error cancelling reservation: " + e.getMessage());
+            showError("Cancellation Failed", "Error cancelling rental: " + e.getMessage());
         }
     }
     @FXML
     private void handleConfirmReservation() {
-        Reservation selectedReservation = reservation_table.getSelectionModel().getSelectedItem();
-        if (selectedReservation == null) {
-            showError("No Selection", "Please select a reservation to confirm.");
+        Rental selectedRental = rental_table.getSelectionModel().getSelectedItem();
+        if (selectedRental == null) {
+            showError("No Selection", "Please select a rental to confirm.");
             return;
         }
 
         // ✅ Check if current status is restricted
-        if (isRestrictedStatus(selectedReservation.getStatus())) {
+        if (isRestrictedStatus(selectedRental.getStatus())) {
             showError("Action Not Allowed",
-                    "Cannot confirm a reservation that is " + selectedReservation.getStatus() + ".");
+                    "Cannot confirm a rental that is " + selectedRental.getStatus() + ".");
             return;
         }
 
         try (Connection conn = DatabaseConnection.getConnection()) {
-            String sql = "{call sp_confirm_reservation(?, ?)}";
+            String sql = "{call sp_confirm_rental(?, ?)}";
             try (CallableStatement stmt = conn.prepareCall(sql)) {
-                stmt.setInt(1, selectedReservation.getReservationId());
+                stmt.setInt(1, selectedRental.getRentalId());
                 stmt.setInt(2, Model.getInstance().getcurrentuserid());
                 stmt.execute();
             }
             loadReservations();
             checkAvailability();
             showSuccess("Confirmation Successful",
-                    "Reservation ID: " + selectedReservation.getReservationId() + " has been confirmed.");
+                    "Rental ID: " + selectedRental.getRentalId() + " has been confirmed.");
         } catch (SQLException e) {
-            showError("Confirmation Failed", "Error confirming reservation: " + e.getMessage());
+            showError("Confirmation Failed", "Error confirming rental: " + e.getMessage());
         }
     }
 
     private int createReservation(Connection conn) throws SQLException {
-        String sql = "{call sp_create_reservation(?, ?, ?, ?, ?)}";
+        String sql = "{call sp_create_rental(?, ?, ?, ?, ?)}";
         try (CallableStatement stmt = conn.prepareCall(sql)) {
             // Bind parameters
             stmt.setInt(1, customer_cmb.getValue().getCustomerId());
@@ -474,7 +473,7 @@ public class ReservationController implements Initializable {
 
             // Retrieve the generated reservation ID
             int reservationId = stmt.getInt(5);
-            System.out.println("Created Reservation ID: " + reservationId); // Debug output
+            System.out.println("Created Rental ID: " + reservationId); // Debug output
             return reservationId;
         }
     }
@@ -482,7 +481,7 @@ public class ReservationController implements Initializable {
     private void addPackageToReservation(Connection conn, int reservationId) throws SQLException {
         int currentUserId = Model.getInstance().getcurrentuserid();
 
-        String sql = "{CALL sp_add_reservation_item(?, ?, ?, ?)}";
+        String sql = "{CALL sp_add_rental_item(?, ?, ?, ?)}";
 
         try (CallableStatement cstmt = conn.prepareCall(sql)) {
             cstmt.setInt(1, reservationId);
@@ -527,7 +526,7 @@ public class ReservationController implements Initializable {
         LocalDate endDate = end_date.getValue();
 
         if (checkForOverlappingReservations(selectedCustomer, startDate, endDate)) {
-            showError("Duplicate Reservation", "This customer already has a reservation within the specified date range.");
+            showError("Duplicate Rental", "This customer already has a Rented within the specified date range.");
             return false;
         }
         return true;
@@ -564,7 +563,7 @@ public class ReservationController implements Initializable {
     }
 
     private boolean checkForOverlappingReservations(Customer customer, LocalDate startDate, LocalDate endDate) {
-        String query = "SELECT COUNT(*) AS count FROM reservations "
+        String query = "SELECT COUNT(*) AS count FROM rentals "
                 + "WHERE customer_id = ? "
                 + "AND (start_datetime <= ? AND end_datetime >= ?)";
         try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pst = conn.prepareStatement(query)) {
@@ -577,7 +576,7 @@ public class ReservationController implements Initializable {
                 return count > 0; // Return true if overlapping reservations exist
             }
         } catch (SQLException e) {
-            showError("Database Error", "Failed to check for overlapping reservations: " + e.getMessage());
+            showError("Database Error", "Failed to check for overlapping rentals: " + e.getMessage());
         }
         return false;
     }
@@ -585,46 +584,45 @@ public class ReservationController implements Initializable {
     private void loadReservations() {
         try (Connection conn = DatabaseConnection.getConnection()) {
             String query = "SELECT * FROM current_rentals";
-
             PreparedStatement pst = conn.prepareStatement(query);
             ResultSet rs = pst.executeQuery();
 
-            ObservableList<Reservation> reservations = FXCollections.observableArrayList();
+            // Create a new list to hold the loaded rentals
+            ObservableList<Rental> rentals = FXCollections.observableArrayList();
+
             while (rs.next()) {
-                // Create Customer object
+                // Build Customer object
                 Customer customer = new Customer(
                         rs.getInt("customer_id"),
                         rs.getString("customer_name"),
                         rs.getString("address")
                 );
 
-                // Create Package object
+                // Build Package object
                 Package pkg = new Package(
                         rs.getInt("package_id"),
                         rs.getString("package_name"),
                         rs.getDouble("price"),
-                        "" // Status will be empty here as it's not relevant in this context
+                        "" // Status is not needed here
                 );
 
-                // Create Reservation object
-                Reservation reservation = new Reservation();
-                reservation.setReservationId(rs.getInt("reservation_id"));
-                reservation.setCustomer(customer);
-                reservation.setPkg(pkg);
-                reservation.setStartDate(rs.getDate("start_datetime").toLocalDate());
-                reservation.setEndDate(rs.getDate("end_datetime").toLocalDate());
-                reservation.setStatus(rs.getString("status"));
-                reservation.setOverdueCharges((rs.getDouble("overdue_charges")));
+                // Create and configure the Rental object
+                Rental rental = new Rental();
+                rental.setRentalId(rs.getInt("rental_id"));
+                rental.setCustomer(customer);
+                rental.setPkg(pkg);
+                rental.setStartDate(rs.getDate("start_datetime").toLocalDate());
+                rental.setEndDate(rs.getDate("end_datetime").toLocalDate());
+                rental.setStatus(rs.getString("status"));
+                rental.setOverdueCharges(rs.getDouble("overdue_charges"));
 
-                reservation.setReservationId(rs.getInt("reservation_id"));
-                System.out.println("Loaded Reservation ID: " + rs.getInt("reservation_id"));
-                System.out.println("Customer Name: " + rs.getString("customer_name"));
-                System.out.println("Package Name: " + rs.getString("package_name"));
-
-                reservations.add(reservation);
+                // Add the rental to the list
+                rentals.add(rental);
             }
-            masterReservationList = reservations;
-            reservation_table.setItems(masterReservationList);
+
+            // Assign the list to the masterReservationList and update the table
+            masterRentalList = rentals;
+            rental_table.setItems(masterRentalList);
 
         } catch (SQLException e) {
             showError("Database Error", "Failed to load reservations: " + e.getMessage());

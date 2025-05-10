@@ -72,18 +72,18 @@ public class DashboardController implements Initializable {
     private void loadBasicStats(Connection conn) throws SQLException {
         String reservationStatsSQL = """
             SELECT 
-                COUNT(*) AS total_reservations,
+                COUNT(*) AS total_rentals,
                 SUM(CASE WHEN status = 'Confirmed' THEN 1 ELSE 0 END) AS confirmed,
                 SUM(CASE WHEN status = 'Cancelled' THEN 1 ELSE 0 END) AS cancelled,
                 SUM(CASE WHEN status = 'Overdue' THEN 1 ELSE 0 END) AS overdue
-            FROM reservations
+            FROM rentals
         """;
 
         try (PreparedStatement pstmt = conn.prepareStatement(reservationStatsSQL);
              ResultSet rs = pstmt.executeQuery()) {
 
             if (rs.next()) {
-                totalRentsLabel.setText(String.valueOf(rs.getInt("total_reservations")));
+                totalRentsLabel.setText(String.valueOf(rs.getInt("total_rentals")));
                 confirmedLabel.setText(String.valueOf(rs.getInt("confirmed")));
                 cancelledLabel.setText(String.valueOf(rs.getInt("cancelled")));
                 overDueLabel.setText(String.valueOf(rs.getInt("overdue")));
@@ -94,7 +94,7 @@ public class DashboardController implements Initializable {
         // Top Customer - Only Confirmed or Completed Reservations
         String topCustomerSQL = """
     SELECT c.name
-    FROM reservations r
+    FROM rentals r
     JOIN customers c ON r.customer_id = c.customer_id
     WHERE r.status IN ('Confirmed', 'Completed')
     GROUP BY c.customer_id
@@ -143,7 +143,7 @@ public class DashboardController implements Initializable {
     private void loadPopularItems(Connection conn) throws SQLException {
         String equipmentSQL = """
         SELECT e.name, COUNT(ri.equipment_id) AS count
-        FROM reservation_items ri
+        FROM rental_items ri
         JOIN equipment e ON ri.equipment_id = e.equipment_id
         GROUP BY e.equipment_id
         ORDER BY count DESC
@@ -152,7 +152,7 @@ public class DashboardController implements Initializable {
 
         String packageSQL = """
         SELECT p.name, COUNT(ri.package_id) AS count
-        FROM reservation_items ri
+        FROM rental_items ri
         JOIN packages p ON ri.package_id = p.package_id
         GROUP BY p.package_id
         ORDER BY count DESC
@@ -194,7 +194,7 @@ public class DashboardController implements Initializable {
         SELECT 
             DAYNAME(start_datetime) AS day_of_week,
             ROUND(AVG(TIMESTAMPDIFF(MINUTE, start_datetime, end_datetime) / 60), 2) AS avg_hours
-        FROM reservations
+        FROM rentals
         WHERE status IN ('Completed', 'Overdue')
         GROUP BY day_of_week
         ORDER BY FIELD(day_of_week,

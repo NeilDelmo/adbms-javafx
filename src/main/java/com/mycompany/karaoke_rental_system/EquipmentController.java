@@ -269,7 +269,7 @@ public class EquipmentController implements Initializable {
     Package selectedPackage = package_table.getSelectionModel().getSelectedItem();
     if (selectedPackage != null) {
         // Check if the package is used in any reservation
-        String checkQuery = "SELECT COUNT(*) FROM reservation_items WHERE package_id = ?";
+        String checkQuery = "SELECT COUNT(*) FROM rental_items WHERE package_id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement checkStmt = connection.prepareStatement(checkQuery)) {
             checkStmt.setInt(1, selectedPackage.getPackageId());
@@ -279,7 +279,7 @@ public class EquipmentController implements Initializable {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Deletion Blocked");
                 alert.setHeaderText("Cannot delete package");
-                alert.setContentText("This package is linked to existing reservations. Delete reservations first.");
+                alert.setContentText("This package is linked to existing rental. Delete rental first.");
                 alert.showAndWait();
                 return; // Exit the method to prevent further execution
             }

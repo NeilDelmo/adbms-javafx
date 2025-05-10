@@ -301,12 +301,12 @@ public class CustomerController implements Initializable {
     private void loadCustomers() {
         customers.clear();
         String query = "SELECT c.customer_id, c.name, c.phone, c.address, c.created_by, "
-                + "COUNT(r.reservation_id) AS total_bookings, "
+                + "COUNT(r.rental_id) AS total_bookings, "
                 + "MAX(r.end_datetime) AS last_booking, "
                 + "COALESCE(SUM(p.amount), 0) AS total_spent "
                 + "FROM customers c "
-                + "LEFT JOIN reservations r ON c.customer_id = r.customer_id "
-                + "LEFT JOIN payments p ON r.reservation_id = p.reservation_id "
+                + "LEFT JOIN rentals r ON c.customer_id = r.customer_id "
+                + "LEFT JOIN payments p ON r.rental_id = p.rental_id "
                 + "GROUP BY c.customer_id";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -360,15 +360,15 @@ public class CustomerController implements Initializable {
     private void loadRentalHistory(int customerId) {
         rental_history.clear();
         String query
-                = "SELECT r.reservation_id, c.name AS customer_name, "
+                = "SELECT r.rental_id, c.name AS customer_name, "
                 + "r.start_datetime, r.end_datetime, r.status, "
                 + "COALESCE(SUM(CASE WHEN ri.package_id IS NOT NULL THEN p.bundle_price ELSE ri.price_per_unit END), 0) AS total_rental_value "
-                + "FROM reservations r "
+                + "FROM rentals r "
                 + "JOIN customers c ON r.customer_id = c.customer_id "
-                + "LEFT JOIN reservation_items ri ON r.reservation_id = ri.reservation_id "
+                + "LEFT JOIN rental_items ri ON r.rental_id = ri.rental_id "
                 + "LEFT JOIN packages p ON ri.package_id = p.package_id "
                 + "WHERE r.customer_id = ? "
-                + "GROUP BY r.reservation_id, c.name, r.start_datetime, r.end_datetime, r.status";
+                + "GROUP BY r.rental_id, c.name, r.start_datetime, r.end_datetime, r.status";
 
         try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
 
@@ -377,7 +377,7 @@ public class CustomerController implements Initializable {
 
             while (rs.next()) {
                 rental_history.add(new RentalHistory(
-                        rs.getInt("reservation_id"),
+                        rs.getInt("rental_id"),
                         rs.getString("customer_name"),
                         rs.getTimestamp("start_datetime").toLocalDateTime(),
                         rs.getTimestamp("end_datetime").toLocalDateTime(),

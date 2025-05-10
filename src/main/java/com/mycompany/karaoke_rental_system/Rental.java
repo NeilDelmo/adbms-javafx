@@ -8,9 +8,9 @@ import javafx.beans.property.*;
 import java.time.LocalDate;
 import java.util.Optional;
 
-public class Reservation {
+public class Rental {
 
-    private final IntegerProperty reservationId = new SimpleIntegerProperty();
+    private final IntegerProperty rentalId = new SimpleIntegerProperty();
     private final ObjectProperty<Customer> customer = new SimpleObjectProperty<>();
     private final IntegerProperty customerId = new SimpleIntegerProperty();
     private final ObjectProperty<LocalDate> startDate =  new SimpleObjectProperty<>();
@@ -22,10 +22,10 @@ public class Reservation {
     private final DoubleProperty paidAmount = new SimpleDoubleProperty();
     private final StringProperty paymentStatus = new SimpleStringProperty("Unpaid");
 
-    public Reservation(int reservationId,int customerId, Customer customer, LocalDate startDate,
+    public Rental(int rentalId,int customerId, Customer customer, LocalDate startDate,
                        LocalDate endDate, String status, Package pkg,
                        Double overdueCharges, Double totalAmount) {
-        this.reservationId.set(reservationId);
+        this.rentalId.set(rentalId);
         this.customerId.set(customerId);
         this.customer.set(customer);
         this.startDate.set(startDate);
@@ -38,19 +38,19 @@ public class Reservation {
         this.paymentStatus.set("Unpaid"); // Default status
         this.paidAmount.addListener((obs,oldVal,newVal)->updatePaymentStatus());
     }
-    public Reservation(){
+    public Rental(){
         this.paidAmount.addListener((obs, oldVal, newVal)-> updatePaymentStatus());
     }
 
-    public int getReservationId() {
-        return reservationId.get();
+    public int getRentalId() {
+        return rentalId.get();
     }
 
-    public IntegerProperty reservationIdProperty(){
-        return reservationId;
+    public IntegerProperty rentalIdProperty(){
+        return rentalId;
     }
-    public void setReservationId(int reservationId){
-        this.reservationId.set(reservationId);
+    public void setRentalId(int reservationId){
+        this.rentalId.set(reservationId);
     }
     public Customer getCustomer(){
         return customer.get();

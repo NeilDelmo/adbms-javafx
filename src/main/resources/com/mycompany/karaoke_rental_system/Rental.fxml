@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox id="VBox" prefHeight="750.0" prefWidth="850.0" styleClass="mainFxmlClass" stylesheets="@Reservation.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.ReservationController">
+<VBox id="VBox" prefHeight="750.0" prefWidth="850.0" styleClass="mainFxmlClass" stylesheets="@Rental.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.karaoke_rental_system.RentalController">
     <GridPane hgap="5" prefHeight="45.0" prefWidth="814.0" vgap="5">
         <DatePicker fx:id="start_date" prefHeight="30.0" prefWidth="120.0" promptText="Start Date" GridPane.rowIndex="1" />
         <DatePicker fx:id="end_date" prefHeight="30.0" prefWidth="120.0" promptText="End Date" GridPane.columnIndex="1" GridPane.rowIndex="1" />
@@ -30,7 +30,7 @@
         </rowConstraints>
     </GridPane>
     <HBox prefHeight="254.0" spacing="10" VBox.vgrow="ALWAYS">
-        <TableView fx:id="package_table" prefHeight="254.0" stylesheets="@Reservation.css" HBox.hgrow="ALWAYS">
+        <TableView fx:id="package_table" prefHeight="254.0" stylesheets="@Rental.css" HBox.hgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="packageNameCol" prefWidth="132.00000381469727" text="Name" />
                 <TableColumn fx:id="bundlePriceCol" prefWidth="111.19999694824219" text="Price" />
@@ -40,12 +40,12 @@
         <ListView fx:id="packageContentsList" prefHeight="257.0" prefWidth="396.0" HBox.hgrow="ALWAYS" />
     </HBox>
     <HBox alignment="CENTER" prefHeight="52.0" prefWidth="828.0" spacing="10">
-        <ComboBox fx:id="filter_reservation_cmb" prefHeight="31.0" prefWidth="201.0" promptText="Filter Reservations" />
+        <ComboBox fx:id="filter_rental_cmb" prefHeight="31.0" prefWidth="201.0" promptText="Filter Reservations" />
         <Button fx:id="add_reservation_btn" onAction="#handleAddReservation" prefHeight="31.0" styleClass="styled-button" text="Add Reservation" />
       <Button mnemonicParsing="false" onAction="#handleCancelReservation" styleClass="styled-button" text="Cancel" />
       <Button mnemonicParsing="false" onAction="#handleConfirmReservation" styleClass="styled-button" text="Confirm" />
     </HBox>
-    <TableView fx:id="reservation_table" prefHeight="350.0" VBox.vgrow="ALWAYS">
+    <TableView fx:id="rental_table" prefHeight="350.0" VBox.vgrow="ALWAYS">
         <columns>
             <TableColumn fx:id="customerCol" prefWidth="152.00000381469727" text="Customer" />
             <TableColumn fx:id="periodCol" prefWidth="163.1999969482422" text="Period" />

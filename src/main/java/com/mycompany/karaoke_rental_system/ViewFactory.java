@@ -4,7 +4,6 @@ import java.io.IOException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -16,7 +15,7 @@ public class ViewFactory {
     private VBox reservationView;
     private AnchorPane equipmentView;
     private CustomerController customerController;
-    private ReservationController reservationController;
+    private RentalController rentalController;
     private Customer selectedCustomer;
     private VBox paymentView;
     private BorderPane managementView;
@@ -61,16 +60,16 @@ public class ViewFactory {
     public VBox getReservationView() {
         if (reservationView == null) {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/Reservation.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/karaoke_rental_system/Rental.fxml"));
                 reservationView = loader.load();
-                reservationController = loader.getController();
+                rentalController = loader.getController();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        if (selectedCustomer != null && reservationController != null) {
-            reservationController.setSelectedCustomer(selectedCustomer);
+        if (selectedCustomer != null && rentalController != null) {
+            rentalController.setSelectedCustomer(selectedCustomer);
         }
 
         return reservationView;

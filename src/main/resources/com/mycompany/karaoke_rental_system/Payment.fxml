@@ -28,7 +28,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <ComboBox fx:id="reservationCombo" prefHeight="26.0" prefWidth="166.0" promptText="Reservation" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                <ComboBox fx:id="rentalCombo" prefHeight="26.0" prefWidth="166.0" promptText="Reservation" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                 <TextField fx:id="amountField" prefHeight="26.0" prefWidth="219.0" promptText="Amount" GridPane.columnIndex="2" GridPane.rowIndex="0" />
                 <ComboBox fx:id="methodCombo" prefHeight="26.0" prefWidth="167.0" promptText="Method of payment" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                 <Label fx:id="balanceLabel" text="Label" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />

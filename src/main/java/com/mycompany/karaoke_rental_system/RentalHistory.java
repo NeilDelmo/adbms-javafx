@@ -25,7 +25,7 @@ public class RentalHistory {
         }
 
         // Getters
-        public int getReservationId() {
+        public int getRental() {
             return reservationId.get();
         }
         public IntegerProperty getReservationIdProperty(){return reservationId;}
